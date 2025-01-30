@@ -8,12 +8,12 @@
   <body>
     <h1>Together for Texas</h1>
     <p>
-      Welcome to Together for Texas! We are a non-profit organization that
-      provides resources to those in need in Texas. We are dedicated to helping
-      those who have been affected by natural disasters, such as hurricanes,
-      floods, and wildfires. Our mission is to provide support to those who need
-      it most, and to help rebuild communities that have been devastated by
-      these disasters.
+      Welcome to Together for Texas! We are a volunteer organization dedicated
+      to supporting our community. We work together to provide resources and
+      assistance to those in need, offering help in areas like food, shelter,
+      education, and other community-driven initiatives. Our mission is to
+      uplift and empower individuals, creating a stronger, more connected
+      community for everyone.
     </p>
     <h2>Sign In</h2>
     <form action="/login" method="post">
