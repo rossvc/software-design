@@ -4,19 +4,97 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registration - Together for Texas</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+          body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          max-width: 400px;
+          background: white;
+          padding: 40px;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-container {
+            width: 100%;
+            text-align: center;
+        }
+        .form-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            font-weight: bold;
+            display: block;
+            text-align: left;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container .buttons {
+            text-align: center;
+        }
+
+        .back-link {
+            text-align: left;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+        <script>
+          function validatePassword() {
+              var password = document.getElementById("password").value;
+              var confirmPassword = document.getElementById("confirm_password").value;
+              if (password !== confirmPassword) {
+                  alert("Passwords do not match!");
+                  return false;
+              }
+              return true;
+          }
+
+      </script>
   </head>
   <body>
-    <h1>Register for Together for Texas</h1>
+    <div class="container">
+      <div class="form-container">
+        <div class="back-link">
+          <a href="Homepage.html">Back to Home</a>
+          </div>
+    <h2>Register</h2>
     <form action="/register" method="post">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" name="firstName" required /><br /><br />
+      <label for="Username">Username:</label>
+      <input type="text" id="Username" name="Username" required /><br /><br />
 
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" name="lastName" required /><br /><br />
+      <label for="Password">Password:</label>
+      <input type="password" id="Password" name="Password" required /><br /><br />
+     
+      <label for="confirm_password">Confirm Password:</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+   
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required /><br /><br />
-      <input type="submit" value="Register" />
+      <div class="buttons">
+      <button type="submit"> CONFIRM </button>
+        </div>
     </form>
+    </div>
+  </div>
   </body>
 </html>

@@ -14,3 +14,11 @@
 .buttons button:hover {
     background-color: #2563eb;
 }
+
+.back-link a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+.back-link a:hover {
+    text-decoration: underline;
+}
