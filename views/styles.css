@@ -22,3 +22,14 @@
 .back-link a:hover {
     text-decoration: underline;
 }
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid whitesmoke;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.form-container label:after {
+    content: " *";
+    color: red;
+}
