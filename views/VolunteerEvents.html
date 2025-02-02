@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Volunteer Event Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        font-size: 24px;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .card {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        position: relative;
+      }
+
+      .card h3 {
+        font-size: 18px;
+        margin: 0 0 10px;
+      }
+
+      .card p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+      }
+
+      .card button {
+        background-color: #0951bd;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .card button:hover {
+        background-color: #073a8d;
+      }
+
+      .registered-message {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 16px;
+        color: green;
+        font-weight: bold;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 80%;
+        max-width: 400px;
+        padding: 20px;
+        z-index: 1000;
+      }
+
+      .show-modal {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">User Volunteer Event Details</div>
+    <div class="container">
+      <div class="card">
+        <h3>Community Clean-Up</h3>
+        <p>
+          Join us for a community clean-up event. We’ll be picking up litter,
+          recycling, and beautifying local parks. All volunteers are welcome!
+        </p>
+        <button onclick="showModal('modal1')">Register</button>
+        <div id="modal1" class="modal">
+          <h3>Community Clean-Up</h3>
+          <p>
+            Join us for a community clean-up event. All volunteers are welcome!
+          </p>
+          <button onclick="closeModal('modal1')">Close</button>
+          <button onclick="register('modal1')">Register</button>
+          <div
+            id="message-modal1"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Animal Shelter Assistant</h3>
+        <p>
+          Assist with caring for animals at the local shelter. Duties include
+          feeding, grooming, and playing with pets to help them get adopted.
+        </p>
+        <button onclick="showModal('modal2')">Register</button>
+        <div id="modal2" class="modal">
+          <h3>Animal Shelter Assistant</h3>
+          <p>Assist with caring for animals at the local shelter.</p>
+          <button onclick="closeModal('modal2')">Close</button>
+          <button onclick="register('modal2')">Register</button>
+          <div
+            id="message-modal2"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Charity Run Organizer</h3>
+        <p>
+          Help organize a charity run event. Tasks include registration, setting
+          up the course, and coordinating with participants.
+        </p>
+        <button onclick="showModal('modal3')">Register</button>
+        <div id="modal3" class="modal">
+          <h3>Charity Run Organizer</h3>
+          <p>Help organize a charity run event and coordinate participants.</p>
+          <button onclick="closeModal('modal3')">Close</button>
+          <button onclick="register('modal3')">Register</button>
+          <div
+            id="message-modal3"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Library Volunteer</h3>
+        <p>
+          Assist with organizing and shelving books, helping patrons, and
+          supporting library events. Ideal for book lovers!
+        </p>
+        <button onclick="showModal('modal4')">Register</button>
+        <div id="modal4" class="modal">
+          <h3>Library Volunteer</h3>
+          <p>Assist with organizing and shelving books, helping patrons.</p>
+          <button onclick="closeModal('modal4')">Close</button>
+          <button onclick="register('modal4')">Register</button>
+          <div
+            id="message-modal4"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Senior Center Companion</h3>
+        <p>
+          Spend time with seniors at a local center, engaging in activities,
+          providing companionship, and helping with daily tasks.
+        </p>
+        <button onclick="showModal('modal5')">Register</button>
+        <div id="modal5" class="modal">
+          <h3>Senior Center Companion</h3>
+          <p>
+            Spend time with seniors, engaging in activities and companionship.
+          </p>
+          <button onclick="closeModal('modal5')">Close</button>
+          <button onclick="register('modal5')">Register</button>
+          <div
+            id="message-modal5"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Park Beautification</h3>
+        <p>
+          Help with planting trees, painting benches, and maintaining trails at
+          local parks to enhance community spaces.
+        </p>
+        <button onclick="showModal('modal6')">Register</button>
+        <div id="modal6" class="modal">
+          <h3>Park Beautification</h3>
+          <p>Help with planting trees and maintaining trails at local parks.</p>
+          <button onclick="closeModal('modal6')">Close</button>
+          <button onclick="register('modal6')">Register</button>
+          <div
+            id="message-modal6"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Food Bank Helper</h3>
+        <p>
+          Assist in sorting, packing, and distributing food to families in need
+          at the local food bank.
+        </p>
+        <button onclick="showModal('modal7')">Register</button>
+        <div id="modal7" class="modal">
+          <h3>Food Bank Helper</h3>
+          <p>
+            Assist in sorting, packing, and distributing food to families in
+            need.
+          </p>
+          <button onclick="closeModal('modal7')">Close</button>
+          <button onclick="register('modal7')">Register</button>
+          <div
+            id="message-modal7"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Clothing Drive Coordinator</h3>
+        <p>
+          Organize and manage a clothing drive to collect and distribute
+          clothing for those in need.
+        </p>
+        <button onclick="showModal('modal8')">Register</button>
+        <div id="modal8" class="modal">
+          <h3>Clothing Drive Coordinator</h3>
+          <p>Organize and manage a clothing drive for those in need.</p>
+          <button onclick="closeModal('modal8')">Close</button>
+          <button onclick="register('modal8')">Register</button>
+          <div
+            id="message-modal8"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Youth Mentor</h3>
+        <p>
+          Mentor local youth by helping them with schoolwork, teaching life
+          skills, and offering guidance to succeed in their goals.
+        </p>
+        <button onclick="showModal('modal9')">Register</button>
+        <div id="modal9" class="modal">
+          <h3>Youth Mentor</h3>
+          <p>
+            Mentor local youth by helping them with schoolwork and life skills.
+          </p>
+          <button onclick="closeModal('modal9')">Close</button>
+          <button onclick="register('modal9')">Register</button>
+          <div
+            id="message-modal9"
+            class="registered-message"
+            style="display: none"
+          >
+            Congratulations!<br />Registered
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      function register(modalId) {
+        document.querySelector(
+          `#${modalId} button:last-of-type`
+        ).style.display = "none";
+        document.querySelector(
+          `#${modalId} .registered-message`
+        ).style.display = "block";
+      }
+    </script>
+  </body>
+</html>
