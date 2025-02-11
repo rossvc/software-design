@@ -29,7 +29,3 @@ input, select, textarea {
     border-radius: 4px;
     box-sizing: border-box;
 }
-.form-container label:after {
-    content: " *";
-    color: red;
-}
