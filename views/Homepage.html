@@ -5,37 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Together for Texas</title>
     <link rel="stylesheet" href="styles.css" />
+    <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
+        font-family: Arial, sans-serif;
+        background-color: whitesmoke;
+      }
+
+      .header {
+        background-color: #0951bd;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between; 
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      
+      .main-content {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        height: 100vh;
-        background-color: whitesmoke;
-        font-family: Arial, sans-serif;
+        width: 100%;
+        height: calc(100vh - 60px); 
         padding-right: 10%;
+        margin-top: 60px; 
       }
+
       .container {
         text-align: left;
         background: transparent;
         padding: 40px;
         border-radius: 10px;
-        box-shadow: none;
       }
+
       .content h1 {
         font-size: 36px;
         margin-bottom: 10px;
       }
+
       .content p {
         font-size: 18px;
         color: #555;
         margin-bottom: 20px;
-      }
-      .logo {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
 
       .buttons button {
@@ -48,29 +80,61 @@
         border: none;
         cursor: pointer;
       }
+
       .buttons button:hover {
         background-color: #073a8d;
       }
+
+      .main-logo img {
+        width: 600px;
+        height: auto;
+      }
+
     </style>
   </head>
   <body>
-    <div class="logo">
-      <img
-        src="https://i.postimg.cc/T1TkKCpK/logo.png"
-        alt="logo"
-        width="600px"
-        height="auto"
-      />
+    <div class="header">
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
     </div>
-    <div class="container">
-      <div class="content">
-        <h1>Welcome to Volunteer Center!</h1>
-        <p>Find an event near you</p>
-        <div class="buttons">
-          <button onclick="location.href='Registration.html'">Sign Up</button>
-          <button onclick="location.href='Signin.html'">Log In</button>
+    <div class="main-content">
+      <div class="main-logo">
+        <img
+          src="https://i.postimg.cc/T1TkKCpK/logo.png"
+          alt="logo"
+        />
+      </div>
+
+      <div class="container">
+        <div class="content">
+          <h1>Welcome to Volunteer Center!</h1>
+          <p>Find an event near you</p>
+          <div class="buttons">
+            <button onclick="location.href='Registration.html'">Sign Up</button>
+            <button onclick="location.href='Signin.html'">Log In</button>
+          </div>
         </div>
       </div>
     </div>
   </body>
 </html>
+<footer
+  style="
+    background-color: #0951bd;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    bottom: 0;
+  "
+>
+  &copy; 2025 Volunteer Center. All rights reserved.
+</footer>
+

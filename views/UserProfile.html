@@ -10,6 +10,11 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: whitesmoke;
@@ -24,12 +29,27 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+      
+      .header .logo img {
+        height: 40px;
+        width: auto;
+        }
+
+      .menu-icon {
+      cursor: pointer;
       }
 
       .container {
         background-color: whitesmoke;
         width: 400px;
-        margin: 40px auto 40px 20px;
+        margin: 80px auto 40px 20px;
         padding: 20px;
         border-radius: 8px;
         overflow: visible;
@@ -99,7 +119,7 @@
         />
       </div>
       <div class="menu-icon">
-        <i class="bx bx-menu" style="color: black; font-size: 30px"></i>
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
 
