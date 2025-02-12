@@ -17,11 +17,10 @@
         .header {
             background-color: #0951bd;
             color: whitesmoke;
-            padding: 25px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
             
         }
 
@@ -53,13 +52,27 @@
             resize: vertical;
             min-height: 40px;
         }
-
+        .menu-icon{
+            cursor:pointer;
+        }
+        .logo img{
+            height: 40px;
+            width:auto;
+        }
+        input, textarea, select {
+            border: 2px solid black;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: black;
+        }
         
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">          
+        <div class="logo">
+            <img src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png" alt="logo">         
         </div>
         <div class="menu-icon">
             <i class='bx bx-menu' style='color: black; font-size: 30px;'></i>
