@@ -1,84 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Together for Texas</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            margin: 0;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-    
-        .form-container {
-            width: 100%;
-            text-align: center;
-        }
-        .form-container h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .form-container label {
-            font-weight: bold;
-            display: block;
-            text-align: left;
-        }
-        .form-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .form-container .buttons {
-            text-align: center;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
 
-        .back-link {
-            text-align: left;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
+      .form-container {
+        width: 100%;
+        text-align: center;
+      }
+      .form-container h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .form-container label {
+        font-weight: bold;
+        display: block;
+        text-align: left;
+      }
+      .form-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .form-container .buttons {
+        text-align: center;
+      }
+      .form-container .buttons button {
+        background-color: #0951bd;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
 
+      .back-link {
+        text-align: left;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="form-container">
-            <div class="back-link">
-                <a href="Homepage.html">Back to Home</a>
-            </div>
-            <h2>Login</h2>
-            <form action="/login" method="post">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                
-                <div class="buttons">
-                    <button type="submit">CONFIRM</button>
-                </div>
-            </form>
+      <div class="form-container">
+        <div class="back-link">
+          <a href="Homepage.html">Back to Home</a>
         </div>
+        <h2>Login</h2>
+        <form action="/login" method="post">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+
+          <div class="buttons">
+            <button type="submit">CONFIRM</button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+  </body>
 </html>
