@@ -3,16 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registration - Together for Texas</title>
+    <title>Registration - Volunteer Center</title>
     <style>
       body {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
         height: 100vh;
         background-color: whitesmoke;
         font-family: Arial, sans-serif;
         margin: 0;
+      }
+      .header {
+        width: 100%;
+        background-color: #0951bd;
+        color: white;
+        text-align: left;
+        padding: 20px 0px;
+        font-size: 18px;
+      }
+      .footer {
+        width: 100%;
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 20px 0px;
+        font-size: 18px;
       }
       .container {
         display: flex;
@@ -25,6 +42,7 @@
         padding: 40px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin: auto;
       }
       .form-container {
         width: 100%;
@@ -52,7 +70,6 @@
       .form-container .buttons button {
         background-color: #0951bd;
         color: white;
-        text-decoration: none;
         padding: 8px 16px;
         border-radius: 4px;
         font-size: 14px;
@@ -110,6 +127,7 @@
     </script>
   </head>
   <body>
+    <div class="header">Volunteer Registration</div>
     <div class="container">
       <div class="form-container">
         <div class="back-link">
@@ -146,5 +164,6 @@
         </form>
       </div>
     </div>
+    <div class="footer">&copy; 2025 Volunteer Center. All rights reserved.</div>
   </body>
 </html>

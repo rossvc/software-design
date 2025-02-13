@@ -3,17 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Together for Texas</title>
+    <title>Login - Volunteer Center</title>
     <link rel="stylesheet" href="styles.css" />
     <style>
       body {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
         background-color: #f0f0f0;
         font-family: Arial, sans-serif;
         margin: 0;
+      }
+      .header {
+        width: 100%;
+        background-color: #0951bd;
+        color: white;
+        text-align: left;
+        padding: 15px 0;
+        font-size: 18px;
+        position: fixed;
+        left: 0;
+      }
+      .footer {
+        width: 100%;
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        font-size: 18px;
+        position: fixed;
+        left: 0;
+      }
+      .header {
+        top: 0;
+      }
+      .footer {
+        bottom: 0;
       }
       .container {
         display: flex;
@@ -27,7 +54,6 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
-
       .form-container {
         width: 100%;
         text-align: center;
@@ -62,7 +88,6 @@
         cursor: pointer;
         margin-top: 10px;
       }
-
       .back-link {
         text-align: left;
         font-size: 14px;
@@ -71,10 +96,11 @@
     </style>
   </head>
   <body>
+    <header class="header">Volunteer Center</header>
     <div class="container">
       <div class="form-container">
         <div class="back-link">
-          <a href="Homepage.html">Back to Home</a>
+          <a href="Homepage.html" style="color: #0951bd">Back to Home</a>
         </div>
         <h2>Login</h2>
         <form action="/login" method="post">
@@ -90,5 +116,8 @@
         </form>
       </div>
     </div>
+    <footer class="footer">
+      &copy; 2025 Volunteer Center. All rights reserved.
+    </footer>
   </body>
 </html>
