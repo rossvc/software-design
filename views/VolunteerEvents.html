@@ -4,29 +4,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Volunteer Event Details</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: #f5f5f5;
         margin: 0;
         padding: 0;
       }
-
       .header {
         background-color: #0951bd;
-        color: white;
-        text-align: left;
-        padding: 20px 0;
-        font-size: 24px;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
       }
-
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+      .menu-icon {
+        cursor: pointer;
+        font-size: 30px;
+        color: white;
+        margin-left: auto;
+      }
       .container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
-        padding: 20px;
+        padding: 80px 20px 20px;
       }
-
       .card {
         background-color: white;
         border: 1px solid #ccc;
@@ -35,18 +57,15 @@
         padding: 15px;
         position: relative;
       }
-
       .card h3 {
         font-size: 18px;
         margin: 0 0 10px;
       }
-
       .card p {
         font-size: 14px;
         color: #555;
         margin-bottom: 20px;
       }
-
       .card button {
         background-color: #0951bd;
         color: white;
@@ -56,11 +75,9 @@
         cursor: pointer;
         font-size: 14px;
       }
-
       .card button:hover {
         background-color: #073a8d;
       }
-
       .registered-message {
         text-align: center;
         margin-top: 10px;
@@ -68,7 +85,6 @@
         color: green;
         font-weight: bold;
       }
-
       .modal {
         display: none;
         position: fixed;
@@ -83,14 +99,41 @@
         padding: 20px;
         z-index: 1000;
       }
-
       .show-modal {
         display: block;
+      }
+      footer {
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+      }
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        color: whitesmoke;
       }
     </style>
   </head>
   <body>
-    <div class="header">User Volunteer Event Details</div>
+    <div class="header">
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="title">Volunteer Events</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+    </div>
+
     <div class="container">
       <div class="card">
         <h3>Community Clean-Up</h3>
@@ -291,6 +334,19 @@
         </div>
       </div>
     </div>
+    <footer
+      style="
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+      "
+    >
+      &copy; 2025 Volunteer Center. All rights reserved.
+    </footer>
 
     <script>
       function showModal(modalId) {

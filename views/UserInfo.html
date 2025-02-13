@@ -85,6 +85,34 @@
         margin: 0;
         font-size: 14px;
       }
+      /* Notification Card Styling */
+      .notification {
+        background-color: #fffae5;
+        border-left: 5px solid #ffcc00;
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 16px;
+      }
+      .notification h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+      .notification p {
+        margin: 0;
+        font-size: 14px;
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        float: right;
+        cursor: pointer;
+        color: #cc9900;
+      }
+      .close-btn:hover {
+        color: #a67c00;
+      }
     </style>
   </head>
   <body>
@@ -114,8 +142,23 @@
             <h3>Beach Cleanup</h3>
             <p>Join us for a beach cleanup event to protect marine life.</p>
           </div>
+          <!-- Notification Card -->
+          <div class="notification" id="notification">
+            <button class="close-btn" onclick="closeNotification()">×</button>
+            <h3>Notification</h3>
+            <p>
+              Beach Cleanup starts in 3 days! Don't forget to bring gloves and
+              water.
+            </p>
+          </div>
         </div>
       </div>
     </div>
+
+    <script>
+      function closeNotification() {
+        document.getElementById("notification").style.display = "none";
+      }
+    </script>
   </body>
 </html>

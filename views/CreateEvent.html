@@ -96,53 +96,70 @@
   </head>
   <body>
     <div class="header">Create New Event</div>
-
     <div class="container">
-      <form>
+      <form id="event-form">
         <label for="event-name">Event Name:</label>
-        <input type="text" id="event-name" placeholder="Enter event name" />
+        <input
+          type="text"
+          id="event-name"
+          name="event-name"
+          maxlength="100"
+          placeholder="Enter event name (required)"
+          required
+        />
 
-        <label for="description">Description:</label>
+        <label for="description">Event Description:</label>
         <textarea
           id="description"
+          name="description"
           rows="4"
           maxlength="300"
-          placeholder="Enter Description"
+          placeholder="Enter description (required)"
+          required
         ></textarea>
-        <div class="char-counter">300 characters remaining</div>
+        <div class="char-counter" id="desc-counter">
+          300 characters remaining
+        </div>
 
         <label for="location">Location:</label>
-        <input type="text" id="location" placeholder="City, State" />
+        <textarea
+          id="location"
+          name="location"
+          rows="2"
+          placeholder="City, State (required)"
+          required
+        ></textarea>
 
         <label for="urgency">Urgency:</label>
-        <select id="urgency">
+        <select id="urgency" name="urgency" required>
           <option value="">Select</option>
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
 
-        <label for="skills">Skills:</label>
-        <select id="skills">
-          <option value="">Select Skill</option>
-          <option value="Teaching & Tutoring">Teaching</option>
+        <label for="skills">Required Skills:</label>
+        <select id="skills" name="skills" multiple required>
+          <option value="Teaching">Teaching</option>
           <option value="Childcare">Childcare</option>
           <option value="Elderly Care">Elderly Care</option>
           <option value="First Aid">First Aid</option>
           <option value="CPR">CPR</option>
           <option value="Disability Support">Disability Support</option>
-          <option value="Language Translation">Translation (Spanish)</option>
-          <option value="Language Translation">Translation (Vietnamese)</option>
+          <option value="Translation (Spanish)">Translation (Spanish)</option>
+          <option value="Translation (Vietnamese)">
+            Translation (Vietnamese)
+          </option>
         </select>
 
         <label>Time Range:</label>
         <div class="time-range">
-          <input type="time" id="start-time" />
-          <input type="time" id="end-time" />
+          <input type="time" id="start-time" name="start-time" required />
+          <input type="time" id="end-time" name="end-time" required />
         </div>
 
-        <label for="date">Date:</label>
-        <input type="date" id="date" />
+        <label for="date">Event Date:</label>
+        <input type="date" id="date" name="date" required />
 
         <div class="button-container">
           <button type="button" class="button button-upload">
@@ -152,6 +169,26 @@
         </div>
       </form>
     </div>
+
+    <script>
+      document
+        .getElementById("description")
+        .addEventListener("input", function () {
+          let remaining = 300 - this.value.length;
+          document.getElementById("desc-counter").textContent =
+            remaining + " characters remaining";
+        });
+
+      document
+        .getElementById("event-form")
+        .addEventListener("submit", function (e) {
+          let skills = document.getElementById("skills").selectedOptions;
+          if (skills.length === 0) {
+            alert("Please select at least one skill.");
+            e.preventDefault();
+          }
+        });
+    </script>
   </body>
 </html>
 <footer
