@@ -4,7 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registration - Volunteer Center</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         display: flex;
         flex-direction: column;
@@ -16,13 +25,32 @@
         margin: 0;
       }
       .header {
-        width: 100%;
-        background-color: #0951bd;
-        color: white;
-        text-align: left;
-        padding: 20px 0px;
-        font-size: 18px;
-      }
+      background-color: #0951bd;
+      color: whitesmoke;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      height: 60px;
+      z-index: 1000;
+    }
+    .header .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .header .title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: whitesmoke;
+    }
       .footer {
         width: 100%;
         background-color: #0951bd;
@@ -97,6 +125,16 @@
         content: " *";
         color: red;
       }
+      .footer {
+      background-color: #0951bd;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
     </style>
     <script>
       function validatePassword() {
@@ -127,7 +165,16 @@
     </script>
   </head>
   <body>
-    <div class="header">Volunteer Registration</div>
+    <div class="header">
+      <div class="logo">
+        <img src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png" alt="logo">
+      </div>
+      <div class="title">Register</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+    </div>
+    
     <div class="container">
       <div class="form-container">
         <div class="back-link">

@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Events Dashboard - Volunteer Center</title>
     <link rel="stylesheet" href="styles.css" />
+    <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
     <style>
+            * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: whitesmoke;
@@ -13,13 +22,37 @@
         padding: 0;
       }
 
+    
       .header {
         background-color: #0951bd;
         color: whitesmoke;
-        padding: 25px;
+        padding: 15px 25px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      .menu-icon {
+        cursor: pointer;
+      }
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: whitesmoke;
       }
 
       .dashboard-container {
@@ -142,7 +175,16 @@
   </head>
   <body>
     <div class="header">
-      <h1>Events Dashboard</h1>
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="title">Events Dashboard</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
     </div>
 
     <div class="dashboard-container">
@@ -299,7 +341,9 @@
     text-align: center;
     padding: 10px;
     width: 100%;
+    position: fixed;
     bottom: 0;
+    left: 0;
   "
 >
   &copy; 2025 Volunteer Center. All rights reserved.
