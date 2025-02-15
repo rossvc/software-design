@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - Volunteer Center</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: whitesmoke;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        background-color: #0951bd;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: whitesmoke;
+      }
+
+      .menu-icon {
+        cursor: pointer;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 80px auto 60px;
+        padding: 20px;
+      }
+
+      .filters {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .filter-button {
+        padding: 8px 16px;
+        border: 1px solid #0951bd;
+        border-radius: 20px;
+        background: white;
+        color: #0951bd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .filter-button.active {
+        background: #0951bd;
+        color: white;
+      }
+
+      .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .notification {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+
+      .notification:hover {
+        transform: translateX(5px);
+      }
+
+      .notification.unread {
+        border-left: 4px solid #0951bd;
+      }
+
+      .notification-icon {
+        background: #e8f0fe;
+        padding: 10px;
+        border-radius: 50%;
+        color: #0951bd;
+      }
+
+      .notification-content {
+        flex: 1;
+      }
+
+      .notification-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .notification-message {
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .notification-time {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .notification-type {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 10px;
+      }
+
+      .type-assignment {
+        background-color: #e8f0fe;
+        color: #0951bd;
+      }
+
+      .type-update {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      .type-reminder {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .mark-all-read {
+        background-color: #0951bd;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: auto;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .empty-state i {
+        font-size: 48px;
+        color: #ccc;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 600px) {
+        .filters {
+          flex-direction: column;
+        }
+        .mark-all-read {
+          width: 100%;
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="title">Notifications</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="filters">
+        <button class="filter-button active" data-filter="all">All</button>
+        <button class="filter-button" data-filter="assignment">Assignments</button>
+        <button class="filter-button" data-filter="update">Updates</button>
+        <button class="filter-button" data-filter="reminder">Reminders</button>
+        <button class="mark-all-read">Mark All as Read</button>
+      </div>
+
+      <div class="notification-list">
+        <div class="notification unread" data-type="assignment">
+          <div class="notification-icon">
+            <i class="bx bx-calendar-check" style="font-size: 24px"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              New Event Assignment
+              <span class="notification-type type-assignment">Assignment</span>
+            </div>
+            <div class="notification-message">
+              You have been assigned to "Beach Cleanup" event on February 20, 2025.
+            </div>
+            <div class="notification-time">2 hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification unread" data-type="update">
+          <div class="notification-icon">
+            <i class="bx bx-refresh" style="font-size: 24px"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              Event Update
+              <span class="notification-type type-update">Update</span>
+            </div>
+            <div class="notification-message">
+              The location for "Senior Care Workshop" has been updated to "Main Community Center".
+            </div>
+            <div class="notification-time">5 hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification" data-type="reminder">
+          <div class="notification-icon">
+            <i class="bx bx-bell" style="font-size: 24px"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              Event Reminder
+              <span class="notification-type type-reminder">Reminder</span>
+            </div>
+            <div class="notification-message">
+              Don't forget about your upcoming event "Teaching Workshop" tomorrow at 9 AM.
+            </div>
+            <div class="notification-time">1 day ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="background-color: #0951bd; color: white; text-align: center; padding: 10px; width: 100%; position: fixed; bottom: 0; left: 0;">
+      &copy; 2025 Volunteer Center. All rights reserved.
+    </footer>
+
+    <script>
+      const filterButtons = document.querySelectorAll('.filter-button');
+      const notifications = document.querySelectorAll('.notification');
+
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+
+          const filterValue = button.dataset.filter;
+          notifications.forEach(notification => {
+            if (filterValue === 'all' || notification.dataset.type === filterValue) {
+              notification.style.display = '';
+            } else {
+              notification.style.display = 'none';
+            }
+          });
+
+          const visibleNotifications = document.querySelectorAll('.notification[style=""]');
+          const emptyState = document.querySelector('.empty-state');
+          if (visibleNotifications.length === 0) {
+            if (!emptyState) {
+              const empty = document.createElement('div');
+              empty.className = 'empty-state';
+              empty.innerHTML = `
+                <i class="bx bx-bell-off"></i>
+                <p>No notifications to show</p>
+              `;
+              document.querySelector('.notification-list').appendChild(empty);
+            }
+          } else if (emptyState) {
+            emptyState.remove();
+          }
+        });
+      });
+
+      const markAllReadButton = document.querySelector('.mark-all-read');
+      markAllReadButton.addEventListener('click', () => {
+        notifications.forEach(notification => {
+          notification.classList.remove('unread');
+        });
+      });
+
+      notifications.forEach(notification => {
+        notification.addEventListener('click', () => {
+          notification.classList.remove('unread');
+        });
+      });
+    </script>
+  </body>
+</html>

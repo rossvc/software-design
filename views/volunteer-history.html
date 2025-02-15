@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer History - Volunteer Center</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: whitesmoke;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        background-color: #0951bd;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: whitesmoke;
+      }
+
+      .menu-icon {
+        cursor: pointer;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 80px auto 60px;
+        padding: 20px;
+      }
+
+      .filters {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .filter-select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        min-width: 150px;
+      }
+
+      .export-button {
+        background-color: #0951bd;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+      }
+
+      th {
+        background-color: #f8fafc;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        color: #1e293b;
+        border-bottom: 2px solid #e2e8f0;
+        cursor: pointer;
+      }
+
+      th:hover {
+        background-color: #f1f5f9;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #475569;
+      }
+
+      tr:hover {
+        background-color: #f8fafc;
+      }
+
+      .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .status-upcoming {
+        background-color: #e8f0fe;
+        color: #0951bd;
+      }
+
+      .status-cancelled {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+
+      .urgency-high {
+        color: #dc2626;
+      }
+
+      .urgency-medium {
+        color: #d97706;
+      }
+
+      .urgency-low {
+        color: #059669;
+      }
+
+      .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .skill-tag {
+        background-color: #e5e7eb;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+
+      .sort-icon {
+        display: inline-block;
+        margin-left: 5px;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 15px;
+        gap: 10px;
+      }
+
+      .pagination button {
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .pagination button.active {
+        background: #0951bd;
+        color: white;
+        border-color: #0951bd;
+      }
+
+      .pagination button:disabled {
+        background: #f3f4f6;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 768px) {
+        .filters {
+          flex-direction: column;
+        }
+        .search-box, .filter-select, .export-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="title">Volunteer History</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="filters">
+        <input type="text" class="search-box" placeholder="Search events..." />
+        <select class="filter-select" id="status-filter">
+          <option value="">All Status</option>
+          <option value="completed">Completed</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <select class="filter-select" id="urgency-filter">
+          <option value="">All Urgency</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <button class="export-button">
+          <i class="bx bx-download"></i>
+          Export CSV
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Event Name <span class="sort-icon">↓</span></th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Required Skills</th>
+              <th>Urgency</th>
+              <th>Event Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Beach Cleanup</td>
+              <td>Community beach cleanup event</td>
+              <td>Galveston Beach</td>
+              <td>
+                <div class="skills-list">
+                  <span class="skill-tag">First Aid</span>
+                </div>
+              </td>
+              <td><span class="urgency-high">High</span></td>
+              <td>Feb 20, 2025</td>
+              <td><span class="status-badge status-upcoming">Upcoming</span></td>
+            </tr>
+            <tr>
+              <td>Senior Care Workshop</td>
+              <td>Workshop on elderly care basics</td>
+              <td>Community Center</td>
+              <td>
+                <div class="skills-list">
+                  <span class="skill-tag">Elderly Care</span>
+                  <span class="skill-tag">First Aid</span>
+                </div>
+              </td>
+              <td><span class="urgency-medium">Medium</span></td>
+              <td>Jan 15, 2025</td>
+              <td><span class="status-badge status-completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Teaching Workshop</td>
+              <td>Basic teaching skills workshop</td>
+              <td>Public Library</td>
+              <td>
+                <div class="skills-list">
+                  <span class="skill-tag">Teaching</span>
+                </div>
+              </td>
+              <td><span class="urgency-low">Low</span></td>
+              <td>Jan 10, 2025</td>
+              <td><span class="status-badge status-cancelled">Cancelled</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <button disabled><i class="bx bx-chevron-left"></i></button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button><i class="bx bx-chevron-right"></i></button>
+      </div>
+    </div>
+
+    <footer style="background-color: #0951bd; color: white; text-align: center; padding: 10px; width: 100%; position: fixed; bottom: 0; left: 0;">
+      &copy; 2025 Volunteer Center. All rights reserved.
+    </footer>
+
+    <script>
+      document.querySelectorAll('th').forEach(header => {
+        header.addEventListener('click', () => {
+          const table = header.closest('table');
+          const index = Array.from(header.parentElement.children).indexOf(header);
+          const rows = Array.from(table.querySelectorAll('tbody tr'));
+          const isAscending = header.querySelector('.sort-icon').textContent === '↓';
+          
+          document.querySelectorAll('.sort-icon').forEach(icon => {
+            icon.textContent = '↕';
+          });
+          header.querySelector('.sort-icon').textContent = isAscending ? '↑' : '↓';
+
+          rows.sort((a, b) => {
+            const aValue = a.children[index].textContent;
+            const bValue = b.children[index].textContent;
+            return isAscending 
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue);
+          });
+
+          const tbody = table.querySelector('tbody');
+          tbody.innerHTML = '';
+          rows.forEach(row => tbody.appendChild(row));
+        });
+      });
+
+      const searchBox = document.querySelector('.search-box');
+      searchBox.addEventListener('input', () => {
+        const searchTerm = searchBox.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+      });
+
+      const filters = document.querySelectorAll('.filter-select');
+      filters.forEach(filter => {
+        filter.addEventListener('change', () => {
+          const rows = document.querySelectorAll('tbody tr');
+          const statusFilter = document.getElementById('status-filter').value;
+          const urgencyFilter = document.getElementById('urgency-filter').value;
+          
+          rows.forEach(row => {
+            const status = row.querySelector('.status-badge').textContent.toLowerCase();
+            const urgency = row.querySelector('[class^="urgency-"]').textContent.toLowerCase();
+            const statusMatch = !statusFilter || status.includes(statusFilter);
+            const urgencyMatch = !urgencyFilter || urgency.includes(urgencyFilter);
+            
+            row.style.display = statusMatch && urgencyMatch ? '' : 'none';
+          });
+        });
+      });
+
+      document.querySelector('.export-button').addEventListener('click', () => {
+        const table = document.querySelector('table');
+        const rows = Array.from(table.querySelectorAll('tr'));
+        
+        const csvContent = rows.map(row => {
+          return Array.from(row.children)
+            .map(cell => `"${cell.textContent.trim()}"`)
+            .join(',');
+        }).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'volunteer-history.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    </script>
+  </body>
+</html>
