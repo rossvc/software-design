@@ -124,6 +124,63 @@
         bottom: 0;
         left: 0;
       }
+
+      /* Custom Alert Box */
+      .alert {
+        display: none; /* Hide by default */
+        position: fixed;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ff4d4d;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 400px;
+        text-align: center;
+        justify-content: space-between;
+        align-items: center;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .alert.success {
+        background-color: #28a745;
+      }
+
+      .alert button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+        to {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+      }
     </style>
   </head>
   <body>
@@ -160,45 +217,70 @@
       </div>
     </div>
 
+    <!-- Custom Alert Box -->
+    <div id="customAlert" class="alert">
+      <span id="alertMessage"></span>
+      <button onclick="closeAlert()">×</button>
+    </div>
+
     <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
+
+    <script>
+      // Mock user database with role-based access
+      const users = [
+        { username: "admin", password: "admin123", role: "admin" },
+        { username: "volunteer", password: "volunteer123", role: "volunteer" },
+      ];
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("loginForm");
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent form from submitting normally
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          const user = users.find(
+            (user) => user.username === username && user.password === password
+          );
+
+          if (user) {
+            showAlert("Login successful!", "success");
+
+            setTimeout(() => {
+              if (user.role === "admin") {
+                window.location.href = "AdminEventsDashboard.html";
+              } else if (user.role === "volunteer") {
+                window.location.href = "VolunteerEvents.html";
+              }
+            }, 1500);
+          } else {
+            showAlert("Invalid username or password. Please try again.");
+          }
+        });
+      });
+
+      function showAlert(message, type = "error") {
+        const alertBox = document.getElementById("customAlert");
+        const alertMessage = document.getElementById("alertMessage");
+
+        alertMessage.textContent = message;
+        alertBox.className = `alert ${type === "success" ? "success" : ""}`;
+        alertBox.style.display = "flex";
+
+        setTimeout(closeAlert, 3000);
+      }
+
+      function closeAlert() {
+        const alertBox = document.getElementById("customAlert");
+        alertBox.style.animation = "fadeOut 0.5s ease-in-out";
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 500);
+      }
+    </script>
   </body>
 </html>
-
-<script>
-  // Mock user database with role-based access
-  const users = [
-    { username: "admin", password: "admin123", role: "admin" },
-    { username: "volunteer", password: "volunteer123", role: "volunteer" },
-  ];
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("loginForm");
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent form from submitting normally
-
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      // Check credentials against mock database
-      const user = users.find(
-        (user) => user.username === username && user.password === password
-      );
-
-      if (user) {
-        alert("Login successful!");
-
-        // Redirect based on user role
-        if (user.role === "admin") {
-          window.location.href = "AdminEventsDashboard.html"; // Redirect to Admin Dashboard
-        } else if (user.role === "volunteer") {
-          window.location.href = "VolunteerEvents.html"; // Redirect to Volunteer Events
-        }
-      } else {
-        alert("Invalid username or password. Please try again.");
-      }
-    });
-  });
-</script>
