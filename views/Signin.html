@@ -146,7 +146,7 @@
           <a href="Homepage.html" style="color: #0951bd">Back to Home</a>
         </div>
         <h2>Login</h2>
-        <form action="/login" method="post">
+        <form id="loginForm">
           <label for="username">Username:</label>
           <input type="text" id="username" name="username" required />
 
@@ -159,8 +159,46 @@
         </form>
       </div>
     </div>
+
     <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
   </body>
 </html>
+
+<script>
+  // Mock user database with role-based access
+  const users = [
+    { username: "admin", password: "admin123", role: "admin" },
+    { username: "volunteer", password: "volunteer123", role: "volunteer" },
+  ];
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("loginForm");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form from submitting normally
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      // Check credentials against mock database
+      const user = users.find(
+        (user) => user.username === username && user.password === password
+      );
+
+      if (user) {
+        alert("Login successful!");
+
+        // Redirect based on user role
+        if (user.role === "admin") {
+          window.location.href = "AdminEventsDashboard.html"; // Redirect to Admin Dashboard
+        } else if (user.role === "volunteer") {
+          window.location.href = "VolunteerEvents.html"; // Redirect to Volunteer Events
+        }
+      } else {
+        alert("Invalid username or password. Please try again.");
+      }
+    });
+  });
+</script>
