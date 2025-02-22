@@ -138,10 +138,49 @@
         />
       </div>
       <div class="title">Volunteer Events</div>
-      <div class="menu-icon">
+      <div class="menu-icon" onclick="toggleDropdown()">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
+      <div class="dropdown" id="dropdownMenu" style="display: none;">
+        <div class="dropdown-content">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+        </div>
+      </div>
+      <style>
+        .dropdown {
+          position: absolute;
+          top: 60px;
+          right: 25px;
+          background-color: white;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          overflow: hidden;
+          z-index: 1000;
+        }
+        .dropdown-content a {
+          display: block;
+          padding: 10px 20px;
+          color: #0951bd;
+          text-decoration: none;
+          font-size: 16px;
+        }
+        .dropdown-content a:hover {
+          background-color: #f1f1f1;
+        }
+      </style>
+      <script>
+        function toggleDropdown() {
+          var dropdown = document.getElementById("dropdownMenu");
+          if (dropdown.style.display === "none") {
+        dropdown.style.display = "block";
+          } else {
+        dropdown.style.display = "none";
+          }
+        }
+      </script>
     </div>
+  
 
     <div class="container">
       <div class="card">

@@ -210,3 +210,10 @@
 >
   &copy; 2025 Volunteer Center. All rights reserved.
 </footer>
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    alert('Changes saved!');
+    window.location.href = 'VolunteerEvents.html';
+  });
+</script></script>
