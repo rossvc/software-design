@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Form</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: whitesmoke;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        background-color: #0951bd;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      .menu-icon {
+        cursor: pointer;
+      }
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: whitesmoke;
+      }
+
+      .container {
+        background-color: whitesmoke;
+        width: 400px;
+        margin: 80px auto 40px 20px;
+        padding: 20px;
+        border-radius: 8px;
+        overflow: visible;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      select {
+        overflow-y: auto;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 40px;
+      }
+      .menu-icon {
+        cursor: pointer;
+      }
+      .logo img {
+        height: 40px;
+        width: auto;
+      }
+      input,
+      textarea,
+      select {
+        border: 2px solid black;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: black;
+      }
+
+      .buttons {
+        text-align: left;
+      }
+
+      .buttons button {
+        background-color: #0951bd;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
+      </div>
+      <div class="title">Registration Form</div>
+      <div class="menu-icon">
+        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+    </div>
+
+    <div class="container">
+      <form>
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="required" required />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" placeholder="required" required />
+        </div>
+
+        <div class="form-group">
+          <label for="address2">Address 2</label>
+          <input type="text" id="address2" placeholder="optional" />
+        </div>
+
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="required" required />
+        </div>
+
+        <div class="form-group">
+          <label for="state">State</label>
+          <select id="state" required>
+            <option value="">Choose a State</option>
+            <option value="TX">Texas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="zip">Zip Code</label>
+          <input type="text" id="zip" placeholder="required" required />
+        </div>
+
+        <div class="form-group">
+          <label for="skills">Skills</label>
+          <select id="skills"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="preferences">Preferences</label>
+          <textarea id="preferences" placeholder="optional"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="availability">Availability</label>
+          <input type="date" id="availability" />
+        </div>
+        <div class="buttons">
+          <button type="submit">Register</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+<footer
+  style="
+    background-color: #0951bd;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  "
+>
+  &copy; 2025 Volunteer Center. All rights reserved.
+</footer>
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert('Congratulations! You are registered!');
+        window.location.href = 'VolunteerEvents.html';
+    });
+</script></script>

@@ -25,32 +25,32 @@
         margin: 0;
       }
       .header {
-      background-color: #0951bd;
-      color: whitesmoke;
-      padding: 15px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      height: 60px;
-      z-index: 1000;
-    }
-    .header .logo img {
-      height: 40px;
-      width: auto;
-    }
+        background-color: #0951bd;
+        color: whitesmoke;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 60px;
+        z-index: 1000;
+      }
+      .header .logo img {
+        height: 40px;
+        width: auto;
+      }
 
-    .header .title {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 24px;
-      font-weight: bold;
-      color: whitesmoke;
-    }
+      .header .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: whitesmoke;
+      }
       .footer {
         width: 100%;
         background-color: #0951bd;
@@ -126,15 +126,15 @@
         color: red;
       }
       .footer {
-      background-color: #0951bd;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      width: 100%;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-    }
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
     </style>
     <script>
       function validatePassword() {
@@ -167,14 +167,59 @@
   <body>
     <div class="header">
       <div class="logo">
-        <img src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png" alt="logo">
+        <img
+          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
+          alt="logo"
+        />
       </div>
       <div class="title">Register</div>
       <div class="menu-icon">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
-    
+    <div
+      id="dropdownMenu"
+      class="dropdown-menu"
+      style="
+        display: none;
+        position: absolute;
+        right: 25px;
+        top: 60px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <a
+        href="Homepage.html"
+        style="
+          display: block;
+          padding: 10px;
+          text-decoration: none;
+          color: #0951bd;
+        "
+        >Home</a
+      >
+    </div>
+    <script>
+      document
+        .querySelector(".menu-icon")
+        .addEventListener("click", function () {
+          const dropdownMenu = document.getElementById("dropdownMenu");
+          dropdownMenu.style.display =
+            dropdownMenu.style.display === "none" ? "block" : "none";
+        });
+
+      window.onclick = function (event) {
+        if (!event.target.matches(".menu-icon, .menu-icon *")) {
+          const dropdownMenu = document.getElementById("dropdownMenu");
+          if (dropdownMenu.style.display === "block") {
+            dropdownMenu.style.display = "none";
+          }
+        }
+      };
+    </script>
     <div class="container">
       <div class="form-container">
         <div class="back-link">
@@ -214,3 +259,9 @@
     <div class="footer">&copy; 2025 Volunteer Center. All rights reserved.</div>
   </body>
 </html>
+<script>
+  document.querySelector("form").addEventListener("submit", function (event) {
+    event.preventDefault(); 
+    window.location.href = "RegistrationForm.html";
+  });
+</script></script>

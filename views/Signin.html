@@ -192,10 +192,52 @@
         />
       </div>
       <div class="title">Login</div>
-      <div class="menu-icon">
+      <div class="menu-icon" onclick="toggleDropdown()">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
+    <div
+      id="dropdownMenu"
+      class="dropdown-menu"
+      style="
+        display: none;
+        position: absolute;
+        right: 25px;
+        top: 60px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <a
+        href="Homepage.html"
+        style="
+          display: block;
+          padding: 10px;
+          text-decoration: none;
+          color: #0951bd;
+        "
+        >Home</a
+      >
+    </div>
+    <script>
+      function toggleDropdown() {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        dropdownMenu.style.display =
+          dropdownMenu.style.display === "none" ? "block" : "none";
+      }
+
+      // Close the dropdown if the user clicks outside of it
+      window.onclick = function (event) {
+        if (!event.target.matches(".menu-icon, .menu-icon *")) {
+          const dropdownMenu = document.getElementById("dropdownMenu");
+          if (dropdownMenu.style.display === "block") {
+            dropdownMenu.style.display = "none";
+          }
+        }
+      };
+    </script>
 
     <div class="container">
       <div class="form-container">
