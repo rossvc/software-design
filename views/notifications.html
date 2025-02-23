@@ -211,7 +211,9 @@
     <div class="container">
       <div class="filters">
         <button class="filter-button active" data-filter="all">All</button>
-        <button class="filter-button" data-filter="assignment">Assignments</button>
+        <button class="filter-button" data-filter="assignment">
+          Assignments
+        </button>
         <button class="filter-button" data-filter="update">Updates</button>
         <button class="filter-button" data-filter="reminder">Reminders</button>
         <button class="mark-all-read">Mark All as Read</button>
@@ -228,7 +230,8 @@
               <span class="notification-type type-assignment">Assignment</span>
             </div>
             <div class="notification-message">
-              You have been assigned to "Beach Cleanup" event on February 20, 2025.
+              You have been assigned to "Beach Cleanup" event on February 20,
+              2025.
             </div>
             <div class="notification-time">2 hours ago</div>
           </div>
@@ -244,7 +247,8 @@
               <span class="notification-type type-update">Update</span>
             </div>
             <div class="notification-message">
-              The location for "Senior Care Workshop" has been updated to "Main Community Center".
+              The location for "Senior Care Workshop" has been updated to "Main
+              Community Center".
             </div>
             <div class="notification-time">5 hours ago</div>
           </div>
@@ -260,7 +264,8 @@
               <span class="notification-type type-reminder">Reminder</span>
             </div>
             <div class="notification-message">
-              Don't forget about your upcoming event "Teaching Workshop" tomorrow at 9 AM.
+              Don't forget about your upcoming event "Teaching Workshop"
+              tomorrow at 9 AM.
             </div>
             <div class="notification-time">1 day ago</div>
           </div>
@@ -268,39 +273,55 @@
       </div>
     </div>
 
-    <footer style="background-color: #0951bd; color: white; text-align: center; padding: 10px; width: 100%; position: fixed; bottom: 0; left: 0;">
+    <footer
+      style="
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      "
+    >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
 
     <script>
-      const filterButtons = document.querySelectorAll('.filter-button');
-      const notifications = document.querySelectorAll('.notification');
+      const filterButtons = document.querySelectorAll(".filter-button");
+      const notifications = document.querySelectorAll(".notification");
 
-      filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
 
           const filterValue = button.dataset.filter;
-          notifications.forEach(notification => {
-            if (filterValue === 'all' || notification.dataset.type === filterValue) {
-              notification.style.display = '';
+          notifications.forEach((notification) => {
+            if (
+              filterValue === "all" ||
+              notification.dataset.type === filterValue
+            ) {
+              notification.style.display = "";
             } else {
-              notification.style.display = 'none';
+              notification.style.display = "none";
             }
           });
 
-          const visibleNotifications = document.querySelectorAll('.notification[style=""]');
-          const emptyState = document.querySelector('.empty-state');
+          const visibleNotifications = document.querySelectorAll(
+            '.notification[style=""]'
+          );
+          const emptyState = document.querySelector(".empty-state");
           if (visibleNotifications.length === 0) {
             if (!emptyState) {
-              const empty = document.createElement('div');
-              empty.className = 'empty-state';
+              const empty = document.createElement("div");
+              empty.className = "empty-state";
               empty.innerHTML = `
                 <i class="bx bx-bell-off"></i>
                 <p>No notifications to show</p>
               `;
-              document.querySelector('.notification-list').appendChild(empty);
+              document.querySelector(".notification-list").appendChild(empty);
             }
           } else if (emptyState) {
             emptyState.remove();
@@ -308,16 +329,16 @@
         });
       });
 
-      const markAllReadButton = document.querySelector('.mark-all-read');
-      markAllReadButton.addEventListener('click', () => {
-        notifications.forEach(notification => {
-          notification.classList.remove('unread');
+      const markAllReadButton = document.querySelector(".mark-all-read");
+      markAllReadButton.addEventListener("click", () => {
+        notifications.forEach((notification) => {
+          notification.classList.remove("unread");
         });
       });
 
-      notifications.forEach(notification => {
-        notification.addEventListener('click', () => {
-          notification.classList.remove('unread');
+      notifications.forEach((notification) => {
+        notification.addEventListener("click", () => {
+          notification.classList.remove("unread");
         });
       });
     </script>

@@ -8,126 +8,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-      }
-      .header {
-        background-color: #0951bd;
-        color: whitesmoke;
-        padding: 15px 25px;
-        display: flex;
-        align-items: center;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        height: 60px;
-        z-index: 1000;
-      }
-      .header .logo img {
-        height: 40px;
-        width: auto;
-      }
-      .header .title {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 24px;
-        color: whitesmoke;
-      }
-      .menu-icon {
-        margin-left: auto;
-        cursor: pointer;
-        font-size: 30px;
-        color: white;
-      }
-      .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 80px 20px 20px;
-      }
-      /* Updated Event Card Styles */
-      .card {
-        background: white;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative;
-      }
-      .card h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        color: #0951bd;
-        font-size: 18px;
-      }
-      .card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 4px;
-        margin-bottom: 10px;
-      }
-      .card p {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 20px;
-      }
-      .card button {
-        background-color: #0951bd;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-      .card button:hover {
-        background-color: #073a8d;
-      }
-      .registered-message {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 16px;
-        color: green;
-        font-weight: bold;
-      }
-      .modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        width: 80%;
-        max-width: 400px;
-        padding: 20px;
-        z-index: 1000;
-      }
-      .show-modal {
-        display: block;
-      }
-      footer {
-        background-color: #0951bd;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="VolunteerEvents.css" />
   </head>
   <body>
     <div class="header">
@@ -139,50 +20,18 @@
       </div>
       <div class="title">Volunteer Events</div>
       <div class="menu-icon" onclick="toggleDropdown()">
-        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+        <i class="bx bx-menu"></i>
       </div>
-      <div class="dropdown" id="dropdownMenu" style="display: none;">
+      <div class="dropdown" id="dropdownMenu">
         <div class="dropdown-content">
           <a href="Homepage.html">Home</a>
           <a href="UserInfo.html">Your Profile</a>
         </div>
       </div>
-      <style>
-        .dropdown {
-          position: absolute;
-          top: 60px;
-          right: 25px;
-          background-color: white;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          overflow: hidden;
-          z-index: 1000;
-        }
-        .dropdown-content a {
-          display: block;
-          padding: 10px 20px;
-          color: #0951bd;
-          text-decoration: none;
-          font-size: 16px;
-        }
-        .dropdown-content a:hover {
-          background-color: #f1f1f1;
-        }
-      </style>
-      <script>
-        function toggleDropdown() {
-          var dropdown = document.getElementById("dropdownMenu");
-          if (dropdown.style.display === "none") {
-        dropdown.style.display = "block";
-          } else {
-        dropdown.style.display = "none";
-          }
-        }
-      </script>
     </div>
-  
 
     <div class="container">
+      <!-- All 9 Event Cards -->
       <div class="card">
         <h3>Community Clean-Up</h3>
         <img
@@ -191,35 +40,26 @@
         />
         <p>
           Join us for a community clean-up event. We’ll be picking up litter,
-          recycling, and beautifying local beaches. All volunteers are welcome!
+          recycling, and beautifying local beaches.
         </p>
         <button onclick="showModal('modal1')">Register</button>
         <div id="modal1" class="modal">
           <h3>Community Clean-Up</h3>
           <p>
-            Join us for a community clean-up event. We’ll be picking up litter,
-            recycling, and beautifying local beaches. All volunteers are
-            welcome!
-          </p>
-
-          <p>
-            Location: Galveston beach<br />
+            Location: Galveston Beach<br />
             Urgency: High <br />
             Skills required: None <br />
             Date: March 15, 2025 <br />
-            Time: 9:00 AM - 12:00 PM <br />
+            Time: 9:00 AM - 12:00 PM
           </p>
           <button onclick="closeModal('modal1')">Close</button>
           <button onclick="register('modal1')">Register</button>
-          <div
-            id="message-modal1"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
+          <div id="message-modal1" class="registered-message">
+            Congratulations! Registered
           </div>
         </div>
       </div>
+
       <div class="card">
         <h3>Animal Shelter Assistant</h3>
         <img
@@ -227,29 +67,27 @@
           alt="Animal Shelter Assistant"
         />
         <p>
-          Assist with caring for animals at the local shelter. Duties include
-          feeding, grooming, and playing with pets to help them get adopted.
+          Assist with caring for animals at the local shelter, including
+          feeding, grooming, and playing with pets.
         </p>
         <button onclick="showModal('modal2')">Register</button>
         <div id="modal2" class="modal">
           <h3>Animal Shelter Assistant</h3>
-          <p>Assist with caring for animals at the local shelter.</p>
-          Location: Local Animal Shelter<br />
-          Urgency: Medium<br />
-          Skills required: Basic animal care<br />
-          Date: April 10, 2025<br />
-          Time: 10:00 AM - 2:00 PM<br />
+          <p>
+            Location: Local Animal Shelter<br />
+            Urgency: Medium <br />
+            Skills required: Basic animal care <br />
+            Date: April 10, 2025 <br />
+            Time: 10:00 AM - 2:00 PM
+          </p>
           <button onclick="closeModal('modal2')">Close</button>
           <button onclick="register('modal2')">Register</button>
-          <div
-            id="message-modal2"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
+          <div id="message-modal2" class="registered-message">
+            Congratulations! Registered
           </div>
         </div>
       </div>
+
       <div class="card">
         <h3>Charity Run Organizer</h3>
         <img
@@ -257,32 +95,27 @@
           alt="Charity Run Organizer"
         />
         <p>
-          Help organize a charity run event. Tasks include registration, setting
-          up the course, and coordinating with participants.
+          Help organize a charity run event, including registration, setting up
+          the course, and coordinating with participants.
         </p>
         <button onclick="showModal('modal3')">Register</button>
         <div id="modal3" class="modal">
           <h3>Charity Run Organizer</h3>
           <p>
-            Help organize a charity run event. Tasks include registration,
-            setting up the course, and coordinating with participants.
+            Location: Central Park<br />
+            Urgency: High <br />
+            Skills required: Event planning <br />
+            Date: May 20, 2025 <br />
+            Time: 7:00 AM - 1:00 PM
           </p>
-          Location: Central Park<br />
-          Urgency: High<br />
-          Skills required: Event planning<br />
-          Date: May 20, 2025<br />
-          Time: 7:00 AM - 1:00 PM<br />
           <button onclick="closeModal('modal3')">Close</button>
           <button onclick="register('modal3')">Register</button>
-          <div
-            id="message-modal3"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
+          <div id="message-modal3" class="registered-message">
+            Congratulations! Registered
           </div>
         </div>
       </div>
+
       <div class="card">
         <h3>Library Volunteer</h3>
         <img
@@ -297,25 +130,20 @@
         <div id="modal4" class="modal">
           <h3>Library Volunteer</h3>
           <p>
-            Assist with organizing and shelving books, helping patrons, and
-            supporting library events.
+            Location: Central Library<br />
+            Urgency: Low <br />
+            Skills required: None <br />
+            Date: June 5, 2025 <br />
+            Time: 1:00 PM - 4:00 PM
           </p>
-          Location: Central Library<br />
-          Urgency: Low<br />
-          Skills required: None<br />
-          Date: June 5, 2025<br />
-          Time: 1:00 PM - 4:00 PM<br />
           <button onclick="closeModal('modal4')">Close</button>
           <button onclick="register('modal4')">Register</button>
-          <div
-            id="message-modal4"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
+          <div id="message-modal4" class="registered-message">
+            Congratulations! Registered
           </div>
         </div>
       </div>
+
       <div class="card">
         <h3>Senior Center Companion</h3>
         <img
@@ -323,32 +151,12 @@
           alt="Senior Center Companion"
         />
         <p>
-          Spend time with seniors at a local center, engaging in activities,
-          providing companionship, and helping with daily tasks.
+          Spend time with seniors, engaging in activities, providing
+          companionship, and helping with daily tasks.
         </p>
         <button onclick="showModal('modal5')">Register</button>
-        <div id="modal5" class="modal">
-          <h3>Senior Center Companion</h3>
-          <p>
-            Spend time with seniors at a local center, engaging in activities,
-            providing companionship, and helping with daily tasks.
-          </p>
-          Location: Senior Center<br />
-          Urgency: Medium<br />
-          Skills required: Communication, empathy<br />
-          Date: July 15, 2025<br />
-          Time: 10:00 AM - 1:00 PM<br />
-          <button onclick="closeModal('modal5')">Close</button>
-          <button onclick="register('modal5')">Register</button>
-          <div
-            id="message-modal5"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
-          </div>
-        </div>
       </div>
+
       <div class="card">
         <h3>Park Beautification</h3>
         <img
@@ -357,30 +165,11 @@
         />
         <p>
           Help with planting trees, painting benches, and maintaining trails at
-          local parks to enhance community spaces.
+          local parks.
         </p>
         <button onclick="showModal('modal6')">Register</button>
-        <div id="modal6" class="modal">
-          <h3>Park Beautification</h3>
-          <p></p>
-            Help with planting trees, painting benches, and maintaining trails at local parks to enhance community spaces.
-          </p>
-          Location: Central Park<br />
-          Urgency: Medium<br />
-          Skills required: Gardening, painting<br />
-          Date: August 25, 2025<br />
-          Time: 8:00 AM - 12:00 PM<br />
-          <button onclick="closeModal('modal6')">Close</button>
-          <button onclick="register('modal6')">Register</button>
-          <div
-            id="message-modal6"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
-          </div>
-        </div>
       </div>
+
       <div class="card">
         <h3>Food Bank Helper</h3>
         <img
@@ -388,31 +177,11 @@
           alt="Food Bank Helper"
         />
         <p>
-          Assist in sorting, packing, and distributing food to families in need
-          at the local food bank.
+          Assist in sorting, packing, and distributing food to families in need.
         </p>
         <button onclick="showModal('modal7')">Register</button>
-        <div id="modal7" class="modal">
-          <h3>Food Bank Helper</h3>
-          <p>
-            Assist in sorting, packing, and distributing food to families in need at the local food bank.
-          </p>
-          Location: Local Food Bank<br />
-          Urgency: High<br />
-          Skills required: None<br />
-          Date: September 10, 2025<br />
-          Time: 9:00 AM - 1:00 PM<br />
-          <button onclick="closeModal('modal7')">Close</button>
-          <button onclick="register('modal7')">Register</button>
-          <div
-            id="message-modal7"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
-          </div>
-        </div>
       </div>
+
       <div class="card">
         <h3>Clothing Drive Coordinator</h3>
         <img
@@ -424,27 +193,8 @@
           clothing for those in need.
         </p>
         <button onclick="showModal('modal8')">Register</button>
-        <div id="modal8" class="modal">
-          <h3>Clothing Drive Coordinator</h3>
-        <p>
-          Organize and manage a clothing drive to collect and distribute clothing for those in need.
-        </p>
-        Location: Community Center<br />
-        Urgency: High<br />
-        Skills required: Organizational skills<br />
-        Date: October 5, 2025<br />
-        Time: 10:00 AM - 4:00 PM<br />
-          <button onclick="closeModal('modal8')">Close</button>
-          <button onclick="register('modal8')">Register</button>
-          <div
-            id="message-modal8"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
-          </div>
-        </div>
       </div>
+
       <div class="card">
         <h3>Youth Mentor</h3>
         <img
@@ -453,60 +203,14 @@
         />
         <p>
           Mentor local youth by helping them with schoolwork, teaching life
-          skills, and offering guidance to succeed in their goals.
+          skills, and offering guidance.
         </p>
         <button onclick="showModal('modal9')">Register</button>
-        <div id="modal9" class="modal">
-          <h3>Youth Mentor</h3>
-          <p>
-            Mentor local youth by helping them with schoolwork, teaching life skills, and offering guidance to succeed in their goals.
-          </p>
-          Location: Community Center<br />
-          Urgency: High<br />
-          Skills required: Mentoring, communication<br />
-          Date: November 12, 2025<br />
-          Time: 3:00 PM - 6:00 PM<br />
-          <button onclick="closeModal('modal9')">Close</button>
-          <button onclick="register('modal9')">Register</button>
-          <div
-            id="message-modal9"
-            class="registered-message"
-            style="display: none"
-          >
-            Congratulations!<br />Registered
-          </div>
-        </div>
       </div>
     </div>
-    <footer
-      style="
-        background-color: #0951bd;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-      "
-    >
+
+    <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <script>
-      function showModal(modalId) {
-        document.getElementById(modalId).style.display = "block";
-      }
-      function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-      }
-      function register(modalId) {
-        document.querySelector(
-          `#${modalId} button:last-of-type`
-        ).style.display = "none";
-        document.querySelector(
-          `#${modalId} .registered-message`
-        ).style.display = "block";
-      }
-    </script>
   </body>
 </html>

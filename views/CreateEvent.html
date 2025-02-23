@@ -5,122 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create New Event</title>
     <link
-    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-    rel="stylesheet"
-  />
-    <style>
-            * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-      }
-
-      .header {
-        background-color: #0951bd;
-        color: whitesmoke;
-        padding: 15px 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        height: 60px;
-        z-index: 1000;
-      }
-      .header .logo img {
-        height: 40px;
-        width: auto;
-      }
-
-      .container {
-        width: 80%;
-        max-width: 800px;
-        margin: 120px auto 50px;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        
-      }
-
-      label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-
-      input,
-      textarea,
-      select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-
-      textarea {
-        resize: none;
-      }
-
-      .char-counter {
-        font-size: 0.9em;
-        color: gray;
-        text-align: right;
-      }
-
-      .button-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .button {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 4px;
-        background-color: #0951bd;
-        color: white;
-        cursor: pointer;
-        font-size: 14px;
-      }
-
-      .button:hover {
-        background-color: #073a8c;
-      }
-
-      .button-upload {
-        background-color: #6c757d;
-      }
-
-      .button-upload:hover {
-        background-color: #5a6268;
-      }
-
-      .time-range {
-        display: flex;
-        gap: 10px;
-      }
-      .time-range input {
-        flex: 1;
-      }
-      .header .title {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 24px;
-        color: whitesmoke;
-      }
-    </style>
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="CreateEvent.css" />
   </head>
   <body>
     <div class="header">
@@ -131,11 +19,11 @@
         />
       </div>
       <div class="title">Create New Event</div>
-
       <div class="menu-icon">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
+
     <div class="container">
       <form id="event-form">
         <label for="event-name">Event Name:</label>
@@ -231,15 +119,7 @@
     </script>
   </body>
 </html>
-<footer
-  style="
-    background-color: #0951bd;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    width: 100%;
-    bottom: 0;
-  "
->
+
+<footer class="footer">
   &copy; 2025 Volunteer Center. All rights reserved.
 </footer>

@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: whitesmoke;
+  padding-top: 60px;
+}
+
+.header {
+  background-color: #0951bd;
+  color: whitesmoke;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 60px;
+  z-index: 1000;
+}
+
+.header .logo img {
+  height: 40px;
+  width: auto;
+}
+
+.header .title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: whitesmoke;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  margin-top: 50px;
+}
+
+.form-container {
+  width: 100%;
+  text-align: center;
+}
+
+.form-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-container label {
+  font-weight: bold;
+  display: block;
+  text-align: left;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-container .buttons {
+  text-align: center;
+}
+
+.form-container .buttons button {
+  background-color: #0951bd;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.form-container .buttons button:hover {
+  background-color: #073a8d;
+}
+
+.back-link {
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.footer {
+  background-color: #0951bd;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+/* Custom Alert Box */
+.alert {
+  display: none;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4d4d;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-width: 400px;
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.alert.success {
+  background-color: #28a745;
+}
+
+.alert button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}

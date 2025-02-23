@@ -8,134 +8,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        height: 100vh;
-        background-color: whitesmoke;
-        font-family: Arial, sans-serif;
-        margin: 0;
-      }
-      .header {
-        background-color: #0951bd;
-        color: whitesmoke;
-        padding: 15px 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        height: 60px;
-        z-index: 1000;
-      }
-      .header .logo img {
-        height: 40px;
-        width: auto;
-      }
-
-      .header .title {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 24px;
-        font-weight: bold;
-        color: whitesmoke;
-      }
-      .footer {
-        width: 100%;
-        background-color: #0951bd;
-        color: white;
-        text-align: center;
-        padding: 20px 0px;
-        font-size: 18px;
-      }
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 400px;
-        background: whitesmoke;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        margin: auto;
-      }
-      .form-container {
-        width: 100%;
-        text-align: center;
-      }
-      .form-container h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-      }
-      .form-container label {
-        font-weight: bold;
-        display: block;
-        text-align: left;
-      }
-      .form-container input {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .form-container .buttons {
-        text-align: center;
-      }
-      .form-container .buttons button {
-        background-color: #0951bd;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 14px;
-        border: none;
-        cursor: pointer;
-        margin-top: 10px;
-      }
-      .form-container .buttons button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-      .back-link {
-        text-align: left;
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-      .back-link a {
-        color: #3b82f6;
-        text-decoration: none;
-      }
-      .back-link a:hover {
-        text-decoration: underline;
-      }
-      .form-container label:after {
-        content: " *";
-        color: red;
-      }
-      .footer {
-        background-color: #0951bd;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="Registration.css" />
     <script>
       function validatePassword() {
         var password = document.getElementById("password");
@@ -177,30 +50,8 @@
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
-    <div
-      id="dropdownMenu"
-      class="dropdown-menu"
-      style="
-        display: none;
-        position: absolute;
-        right: 25px;
-        top: 60px;
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      "
-    >
-      <a
-        href="Homepage.html"
-        style="
-          display: block;
-          padding: 10px;
-          text-decoration: none;
-          color: #0951bd;
-        "
-        >Home</a
-      >
+    <div id="dropdownMenu" class="dropdown-menu">
+      <a href="Homepage.html">Home</a>
     </div>
     <script>
       document
@@ -261,7 +112,7 @@
 </html>
 <script>
   document.querySelector("form").addEventListener("submit", function (event) {
-    event.preventDefault(); 
+    event.preventDefault();
     window.location.href = "RegistrationForm.html";
   });
-</script></script>
+</script>
