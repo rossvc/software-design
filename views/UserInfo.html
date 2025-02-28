@@ -19,12 +19,22 @@
         <!-- User Info Section -->
         <div class="card">
           <h2>User Information</h2>
-          <p><strong>Name:</strong> Alejandro A.</p>
-          <p><strong>Address:</strong> 4302 University Dr.</p>
-          <p><strong>City:</strong> Houston, TX 77204</p>
-          <p><strong>Skills:</strong> None</p>
-          <p><strong>Preferences:</strong> Volunteer</p>
-          <p><strong>Availability:</strong> 04/15/2025</p>
+          <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
+          <p>
+            <strong>Address:</strong> <span id="userAddress">Loading...</span>
+          </p>
+          <p><strong>City:</strong> <span id="userCity">Loading...</span></p>
+          <p>
+            <strong>Skills:</strong> <span id="userSkills">Loading...</span>
+          </p>
+          <p>
+            <strong>User role:</strong>
+            <span id="userRole">Loading...</span>
+          </p>
+          <p>
+            <strong>Availability:</strong>
+            <span id="userAvailability">Loading...</span>
+          </p>
           <button onclick="location.href='UserProfile.html'" class="edit-btn">
             Edit Profile
           </button>
@@ -63,3 +73,26 @@
     </script>
   </body>
 </html>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const mockUserData = {
+      name: "Alejandro A.",
+      address: "4302 University Dr.",
+      city: "Houston, TX 77204",
+      skills: "Event Planning, Fundraising, Community Outreach",
+      userRole: "Volunteer",
+      availability: "04/15/2025",
+    };
+
+    setTimeout(() => {
+      document.getElementById("userName").innerText = mockUserData.name;
+      document.getElementById("userAddress").innerText = mockUserData.address;
+      document.getElementById("userCity").innerText = mockUserData.city;
+      document.getElementById("userSkills").innerText = mockUserData.skills;
+      document.getElementById("userRole").innerText = mockUserData.userRole; // Fixed
+      document.getElementById("userAvailability").innerText =
+        mockUserData.availability;
+    }, 1000);
+  });
+</script>
