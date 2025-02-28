@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
     "Reminder: Fundraising event meeting tomorrow at 5 PM.",
   ];
 
-  let notificationIndex = 0; // Track current notification
-  const eventCard = document.getElementById("eventSection"); // Target upcoming events card
+  let notificationIndex = 0;
+  const eventCard = document.getElementById("eventSection");
 
   function showNotification() {
-    if (notificationIndex >= notifications.length) return; // Stop if no more notifications
+    if (notificationIndex >= notifications.length) return;
 
     // Create Notification
     const notificationDiv = document.createElement("div");
@@ -42,19 +42,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <p>${notifications[notificationIndex]}</p>
       `;
 
-    // Append to upcoming events section
     eventCard.appendChild(notificationDiv);
     notificationDiv.style.display = "block";
 
-    notificationIndex++; // Move to next notification
+    notificationIndex++;
   }
 
   // Function to close notification and show the next one
   window.closeNotification = function (buttonElement) {
-    buttonElement.parentElement.remove(); // Remove the current notification
+    buttonElement.parentElement.remove();
     setTimeout(() => {
-      showNotification(); // Show the next notification
-    }, 500); // Short delay before the next notification
+      showNotification();
+    }, 500);
   };
 
   // Start the first notification
