@@ -8,6 +8,7 @@
   </head>
   <body>
     <div class="container">
+      <!-- Header Section -->
       <div class="header">
         <h1>User Profile Page</h1>
         <div class="icon-container">
@@ -15,6 +16,7 @@
           <div class="icon" onclick="toggleNotification()">&#128276;</div>
         </div>
       </div>
+
       <div class="content">
         <!-- User Info Section -->
         <div class="card">
@@ -28,8 +30,7 @@
             <strong>Skills:</strong> <span id="userSkills">Loading...</span>
           </p>
           <p>
-            <strong>User role:</strong>
-            <span id="userRole">Loading...</span>
+            <strong>User role:</strong> <span id="userRole">Loading...</span>
           </p>
           <p>
             <strong>Availability:</strong>
@@ -39,60 +40,20 @@
             Edit Profile
           </button>
         </div>
-        <!-- Events Section -->
-        <div class="card">
+
+        <!-- Upcoming Events Section (Now used for notifications) -->
+        <div class="card" id="eventSection">
           <h2>Your Upcoming Events</h2>
           <div class="event">
             <h3>Beach Cleanup</h3>
             <p>Join us for a beach cleanup event to protect marine life.</p>
           </div>
+          <!-- Notifications will be injected here -->
         </div>
-      </div>
-
-      <!-- Notification Popup -->
-      <div class="notification" id="notification">
-        <button class="close-btn" onclick="closeNotification()">×</button>
-        <h3>Notification</h3>
-        <p>
-          Beach Cleanup starts in 3 days! Don't forget to bring gloves and
-          water.
-        </p>
       </div>
     </div>
 
-    <script>
-      function toggleNotification() {
-        var notification = document.getElementById("notification");
-        notification.style.display =
-          notification.style.display === "block" ? "none" : "block";
-      }
-
-      function closeNotification() {
-        document.getElementById("notification").style.display = "none";
-      }
-    </script>
+    <!-- External JavaScript -->
+    <script src="UserInfo.js"></script>
   </body>
 </html>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const mockUserData = {
-      name: "Alejandro A.",
-      address: "4302 University Dr.",
-      city: "Houston, TX 77204",
-      skills: "Event Planning, Fundraising, Community Outreach",
-      userRole: "Volunteer",
-      availability: "04/15/2025",
-    };
-
-    setTimeout(() => {
-      document.getElementById("userName").innerText = mockUserData.name;
-      document.getElementById("userAddress").innerText = mockUserData.address;
-      document.getElementById("userCity").innerText = mockUserData.city;
-      document.getElementById("userSkills").innerText = mockUserData.skills;
-      document.getElementById("userRole").innerText = mockUserData.userRole; // Fixed
-      document.getElementById("userAvailability").innerText =
-        mockUserData.availability;
-    }, 1000);
-  });
-</script>

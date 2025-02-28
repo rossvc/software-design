@@ -1,0 +1,67 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Mock User Data
+  const mockUserData = {
+    name: "Alejandro A.",
+    address: "4302 University Dr.",
+    city: "Houston, TX 77204",
+    skills: "Event Planning, Fundraising, Community Outreach",
+    userRole: "Volunteer",
+    availability: "04/15/2025",
+  };
+
+  // Load user data with delay
+  setTimeout(() => {
+    document.getElementById("userName").innerText = mockUserData.name;
+    document.getElementById("userAddress").innerText = mockUserData.address;
+    document.getElementById("userCity").innerText = mockUserData.city;
+    document.getElementById("userSkills").innerText = mockUserData.skills;
+    document.getElementById("userRole").innerText = mockUserData.userRole;
+    document.getElementById("userAvailability").innerText =
+      mockUserData.availability;
+  }, 1000);
+
+  // Mock Notifications
+  const notifications = [
+    "Beach Cleanup starts in 3 days! Don't forget to bring gloves and water.",
+    "New volunteer opportunity: Community Garden event this Saturday!",
+    "Reminder: Fundraising event meeting tomorrow at 5 PM.",
+  ];
+
+  let notificationIndex = 0; // Track current notification
+  const eventCard = document.getElementById("eventSection"); // Target upcoming events card
+
+  function showNotification() {
+    if (notificationIndex >= notifications.length) return; // Stop if no more notifications
+
+    // Create Notification
+    const notificationDiv = document.createElement("div");
+    notificationDiv.classList.add("notification");
+    notificationDiv.innerHTML = `
+        <button class="close-btn" onclick="closeNotification(this)">×</button>
+        <h3>Notification</h3>
+        <p>${notifications[notificationIndex]}</p>
+      `;
+
+    // Append to upcoming events section
+    eventCard.appendChild(notificationDiv);
+    notificationDiv.style.display = "block";
+
+    notificationIndex++; // Move to next notification
+  }
+
+  // Function to close notification and show the next one
+  window.closeNotification = function (buttonElement) {
+    buttonElement.parentElement.remove(); // Remove the current notification
+    setTimeout(() => {
+      showNotification(); // Show the next notification
+    }, 500); // Short delay before the next notification
+  };
+
+  // Start the first notification
+  showNotification();
+});
+
+// Placeholder function
+function toggleNotification() {
+  alert("Notifications will be displayed under 'Upcoming Events'.");
+}
