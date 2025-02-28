@@ -9,6 +9,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="Homepage.js" defer></script>
   </head>
   <body>
     <div class="header">
@@ -20,7 +21,11 @@
       </div>
       <div class="title">Homepage</div>
       <div class="menu-icon">
-        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+        <i
+          class="bx bx-menu"
+          id="menuIcon"
+          style="color: white; font-size: 30px"
+        ></i>
       </div>
     </div>
 
@@ -34,8 +39,8 @@
           <h1>Welcome to Volunteer Center!</h1>
           <p>Find an event near you</p>
           <div class="buttons">
-            <button onclick="location.href='Registration.html'">Sign Up</button>
-            <button onclick="location.href='Signin.html'">Log In</button>
+            <button id="signUpBtn">Sign Up</button>
+            <button id="logInBtn">Log In</button>
           </div>
         </div>
       </div>

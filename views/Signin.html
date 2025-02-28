@@ -9,6 +9,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="Signin.js" defer></script>
   </head>
   <body>
     <div class="header">
@@ -19,10 +20,11 @@
         />
       </div>
       <div class="title">Login</div>
-      <div class="menu-icon" onclick="toggleDropdown()">
+      <div class="menu-icon" id="menuIcon">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
     </div>
+
     <div class="container">
       <div class="form-container">
         <div class="back-link">
@@ -46,78 +48,11 @@
     <!-- Custom Alert Box -->
     <div id="customAlert" class="alert">
       <span id="alertMessage"></span>
-      <button onclick="closeAlert()">×</button>
+      <button id="closeAlertBtn">×</button>
     </div>
 
     <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <script>
-      function toggleDropdown() {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        dropdownMenu.style.display =
-          dropdownMenu.style.display === "none" ? "block" : "none";
-      }
-
-      window.onclick = function (event) {
-        if (!event.target.matches(".menu-icon, .menu-icon *")) {
-          const dropdownMenu = document.getElementById("dropdownMenu");
-          if (dropdownMenu.style.display === "block") {
-            dropdownMenu.style.display = "none";
-          }
-        }
-      };
-
-      const users = [
-        { username: "admin", password: "admin123", role: "admin" },
-        { username: "volunteer", password: "volunteer123", role: "volunteer" },
-      ];
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("loginForm");
-
-        form.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const username = document.getElementById("username").value;
-          const password = document.getElementById("password").value;
-
-          const user = users.find(
-            (user) => user.username === username && user.password === password
-          );
-
-          if (user) {
-            showAlert("Login successful!", "success");
-            setTimeout(() => {
-              window.location.href =
-                user.role === "admin"
-                  ? "AdminEventsDashboard.html"
-                  : "VolunteerEvents.html";
-            }, 1500);
-          } else {
-            showAlert("Invalid username or password. Please try again.");
-          }
-        });
-      });
-
-      function showAlert(message, type = "error") {
-        const alertBox = document.getElementById("customAlert");
-        const alertMessage = document.getElementById("alertMessage");
-
-        alertMessage.textContent = message;
-        alertBox.className = `alert ${type === "success" ? "success" : ""}`;
-        alertBox.style.display = "flex";
-
-        setTimeout(closeAlert, 3000);
-      }
-
-      function closeAlert() {
-        const alertBox = document.getElementById("customAlert");
-        alertBox.style.animation = "fadeOut 0.5s ease-in-out";
-        setTimeout(() => {
-          alertBox.style.display = "none";
-        }, 500);
-      }
-    </script>
   </body>
 </html>
