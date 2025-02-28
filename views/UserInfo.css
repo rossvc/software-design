@@ -145,3 +145,31 @@ body {
 .close-btn:hover {
   color: #a67c00;
 }
+
+/* Style for the notification badge */
+.badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 3px 6px;
+  min-width: 18px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Ensure icon-container has relative positioning */
+.icon-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+}
+
+/* Bell icon styles */
+.bell-icon {
+  position: relative;
+  cursor: pointer;
+}

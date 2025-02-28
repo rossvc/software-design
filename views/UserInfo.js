@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     address: "4302 University Dr.",
     city: "Houston.",
     state: "Texas.",
-    zipcode: "77004",
-    skills: "Event Planning, Fundraising, Community Outreach",
-    userRole: "Volunteer",
-    availability: "04/15/2025",
+    zipcode: "77004.",
+    skills: "Event Planning, Fundraising, Community Outreach.",
+    userRole: "Volunteer.",
+    availability: "04/15/2025.",
   };
 
   // Load user data with delay
@@ -27,46 +27,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }, 1000);
 
   // Mock Notifications
-  const notifications = [
+  let notifications = [
     "Beach Cleanup starts in 3 days! Don't forget to bring gloves and water.",
     "New volunteer opportunity: Community Garden event this Saturday!",
     "Reminder: Fundraising event meeting tomorrow at 5 PM.",
   ];
 
-  let notificationIndex = 0;
-  const eventCard = document.getElementById("eventSection");
+  let unreadCount = notifications.length;
+  const badge = document.getElementById("notificationBadge");
+  const notificationSection = document.getElementById("notificationSection");
 
-  function showNotification() {
-    if (notificationIndex >= notifications.length) return;
-
-    // Create Notification
-    const notificationDiv = document.createElement("div");
-    notificationDiv.classList.add("notification");
-    notificationDiv.innerHTML = `
-        <button class="close-btn" onclick="closeNotification(this)">×</button>
-        <h3>Notification</h3>
-        <p>${notifications[notificationIndex]}</p>
-      `;
-
-    eventCard.appendChild(notificationDiv);
-    notificationDiv.style.display = "block";
-
-    notificationIndex++;
+  // Function to update the badge count
+  function updateBadge() {
+    if (unreadCount > 0) {
+      badge.innerText = unreadCount;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
   }
 
-  // Function to close notification and show the next one
-  window.closeNotification = function (buttonElement) {
-    buttonElement.parentElement.remove();
-    setTimeout(() => {
-      showNotification();
-    }, 500);
+  function showNotification() {
+    notificationSection.innerHTML = "";
+
+    if (notifications.length > 0) {
+      const notificationDiv = document.createElement("div");
+      notificationDiv.classList.add("notification");
+      notificationDiv.innerHTML = `
+        <button class="close-btn" onclick="closeNotification()">×</button>
+        <h3>Notification</h3>
+        <p>${notifications[0]}</p>
+      `;
+      notificationSection.appendChild(notificationDiv);
+    }
+  }
+
+  window.closeNotification = function () {
+    notifications.shift();
+    unreadCount--;
+    updateBadge();
+    showNotification();
   };
 
-  // Start the first notification
+  // Initialize badge and show the first notification
+  updateBadge();
   showNotification();
 });
-
-// Placeholder function
-function toggleNotification() {
-  alert("Notifications will be displayed under 'Upcoming Events'.");
-}

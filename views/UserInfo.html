@@ -13,7 +13,10 @@
         <h1>User Profile Page</h1>
         <div class="icon-container">
           <div class="icon">&#128100;</div>
-          <div class="icon" onclick="toggleNotification()">&#128276;</div>
+          <div class="icon bell-icon" onclick="toggleNotification()">
+            &#128276;
+            <span id="notificationBadge" class="badge">3</span>
+          </div>
         </div>
       </div>
 
@@ -26,14 +29,12 @@
             <strong>Last Name:</strong>
             <span id="userLastName">Loading...</span>
           </p>
-
           <p>
             <strong>Address:</strong> <span id="userAddress">Loading...</span>
           </p>
           <p><strong>City:</strong> <span id="userCity">Loading...</span></p>
           <p><strong>State:</strong> <span id="userState">Loading...</span></p>
           <p><strong>Zip Code:</strong> <span id="userZip">Loading...</span></p>
-
           <p>
             <strong>Skills:</strong> <span id="userSkills">Loading...</span>
           </p>
@@ -49,14 +50,15 @@
           </button>
         </div>
 
-        <!-- Upcoming Events Section (Now used for notifications) -->
+        <!-- Upcoming Events Section -->
         <div class="card" id="eventSection">
           <h2>Your Upcoming Events</h2>
           <div class="event">
             <h3>Beach Cleanup</h3>
             <p>Join us for a beach cleanup event to protect marine life.</p>
           </div>
-          <!-- Notifications will be injected here -->
+          <div id="notificationSection"></div>
+          <!-- Separate section for notifications -->
         </div>
       </div>
     </div>
