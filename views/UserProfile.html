@@ -25,7 +25,7 @@
     </div>
 
     <div class="container">
-      <form>
+      <form id="userProfileForm">
         <div class="form-group">
           <label for="fullName">First Name</label>
           <input type="text" id="fullName" placeholder="required" required />
@@ -148,14 +148,6 @@
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
 
-    <script>
-      document
-        .querySelector("form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          alert("Changes saved!");
-          window.location.href = "VolunteerEvents.html";
-        });
-    </script>
+    <script src="UserProfile.js"></script>
   </body>
 </html>
