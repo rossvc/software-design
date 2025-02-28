@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Mock User Data
   const mockUserData = {
-    name: "Alejandro A.",
+    name: "Alejandro.",
+    LastName: "Avila.",
     address: "4302 University Dr.",
-    city: "Houston, TX 77204",
+    city: "Houston.",
+    state: "Texas.",
+    zipcode: "77004",
     skills: "Event Planning, Fundraising, Community Outreach",
     userRole: "Volunteer",
     availability: "04/15/2025",
@@ -12,8 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // Load user data with delay
   setTimeout(() => {
     document.getElementById("userName").innerText = mockUserData.name;
+    document.getElementById("userLastName").innerText = mockUserData.LastName;
     document.getElementById("userAddress").innerText = mockUserData.address;
     document.getElementById("userCity").innerText = mockUserData.city;
+    document.getElementById("userState").innerText = mockUserData.state;
+    document.getElementById("userZip").innerText = mockUserData.zipcode;
     document.getElementById("userSkills").innerText = mockUserData.skills;
     document.getElementById("userRole").innerText = mockUserData.userRole;
     document.getElementById("userAvailability").innerText =
