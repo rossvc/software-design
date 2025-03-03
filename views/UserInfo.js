@@ -73,3 +73,14 @@ document.addEventListener("DOMContentLoaded", function () {
   updateBadge();
   showNotification();
 });
+
+function toggleDropdown() {
+  const dropdownMenu = document.getElementById("dropdownMenu");
+  if (dropdownMenu) {
+    dropdownMenu.classList.toggle("show");
+  }
+}
+
+function toggleNotification() {
+  // ... existing code ...
+}

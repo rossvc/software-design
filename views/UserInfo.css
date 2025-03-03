@@ -173,3 +173,42 @@ body {
   position: relative;
   cursor: pointer;
 }
+
+.menu-icon {
+  cursor: pointer;
+  font-size: 24px;
+  margin-left: 15px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown.show .dropdown-content {
+  display: block;
+}

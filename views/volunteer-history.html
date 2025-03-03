@@ -50,8 +50,43 @@
         color: whitesmoke;
       }
 
-      .menu-icon {
+      .header .menu-icon {
         cursor: pointer;
+        font-size: 28px;
+        color: whitesmoke;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        min-width: 180px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+
+      .dropdown.show .dropdown-content {
+        display: block;
       }
 
       .container {
@@ -236,8 +271,16 @@
         />
       </div>
       <div class="title">Volunteer History</div>
-      <div class="menu-icon">
-        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      <div class="menu-icon" onclick="toggleDropdown()">
+        <i class="bx bx-menu"></i>
+      </div>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="volunteer-matching.html">Volunteer Matching</a>
+        </div>
       </div>
     </div>
 
@@ -351,6 +394,13 @@
     </footer>
 
     <script>
+      function toggleDropdown() {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        if (dropdownMenu) {
+          dropdownMenu.classList.toggle("show");
+        }
+      }
+
       document.querySelectorAll("th").forEach((header) => {
         header.addEventListener("click", () => {
           const table = header.closest("table");

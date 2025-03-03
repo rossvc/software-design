@@ -50,8 +50,43 @@
         color: whitesmoke;
       }
 
-      .menu-icon {
+      .header .menu-icon {
         cursor: pointer;
+        font-size: 28px;
+        color: whitesmoke;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        min-width: 180px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+
+      .dropdown.show .dropdown-content {
+        display: block;
       }
 
       .container {
@@ -67,7 +102,8 @@
         margin-top: 20px;
       }
 
-      .volunteer-section, .event-section {
+      .volunteer-section,
+      .event-section {
         background: white;
         border-radius: 8px;
         padding: 20px;
@@ -86,7 +122,8 @@
         margin-bottom: 10px;
       }
 
-      .volunteer-card, .event-card {
+      .volunteer-card,
+      .event-card {
         border: 1px solid #e5e7eb;
         border-radius: 4px;
         padding: 15px;
@@ -95,11 +132,13 @@
         transition: background-color 0.2s;
       }
 
-      .volunteer-card:hover, .event-card:hover {
+      .volunteer-card:hover,
+      .event-card:hover {
         background-color: #f3f4f6;
       }
 
-      .volunteer-card.selected, .event-card.selected {
+      .volunteer-card.selected,
+      .event-card.selected {
         border: 2px solid #0951bd;
         background-color: #e8f0fe;
       }
@@ -178,8 +217,16 @@
         />
       </div>
       <div class="title">Volunteer Matching</div>
-      <div class="menu-icon">
-        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      <div class="menu-icon" onclick="toggleDropdown()">
+        <i class="bx bx-menu"></i>
+      </div>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="volunteer-history.html">Volunteer History</a>
+        </div>
       </div>
     </div>
 
@@ -187,7 +234,11 @@
       <div class="matching-grid">
         <div class="volunteer-section">
           <div class="search-section">
-            <input type="text" class="search-box" placeholder="Search volunteers..." />
+            <input
+              type="text"
+              class="search-box"
+              placeholder="Search volunteers..."
+            />
             <div class="filters">
               <select id="skill-filter">
                 <option value="">All Skills</option>
@@ -230,7 +281,11 @@
 
         <div class="event-section">
           <div class="search-section">
-            <input type="text" class="search-box" placeholder="Search events..." />
+            <input
+              type="text"
+              class="search-box"
+              placeholder="Search events..."
+            />
             <div class="filters">
               <select id="urgency-filter">
                 <option value="">All Urgency</option>
@@ -248,7 +303,9 @@
           </div>
           <div class="scroll-container">
             <div class="event-card" onclick="selectEvent(this)">
-              <h3>Beach Cleanup <span class="match-score">High Priority</span></h3>
+              <h3>
+                Beach Cleanup <span class="match-score">High Priority</span>
+              </h3>
               <p>Location: Galveston Beach</p>
               <p>Date: February 20, 2025</p>
               <div class="skills-list">
@@ -257,7 +314,10 @@
               <p>Volunteers Needed: 5</p>
             </div>
             <div class="event-card" onclick="selectEvent(this)">
-              <h3>Senior Care Workshop <span class="match-score">Medium Priority</span></h3>
+              <h3>
+                Senior Care Workshop
+                <span class="match-score">Medium Priority</span>
+              </h3>
               <p>Location: Community Center</p>
               <p>Date: March 1, 2025</p>
               <div class="skills-list">
@@ -270,10 +330,23 @@
         </div>
       </div>
 
-      <button id="match-button" class="match-button" disabled>Create Match</button>
+      <button id="match-button" class="match-button" disabled>
+        Create Match
+      </button>
     </div>
 
-    <footer style="background-color: #0951bd; color: white; text-align: center; padding: 10px; width: 100%; position: fixed; bottom: 0; left: 0;">
+    <footer
+      style="
+        background-color: #0951bd;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      "
+    >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
 
@@ -282,52 +355,71 @@
       let selectedEvent = null;
 
       function selectVolunteer(card) {
-        document.querySelectorAll('.volunteer-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        document
+          .querySelectorAll(".volunteer-card")
+          .forEach((c) => c.classList.remove("selected"));
+        card.classList.add("selected");
         selectedVolunteer = card;
         updateMatchButton();
       }
 
       function selectEvent(card) {
-        document.querySelectorAll('.event-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        document
+          .querySelectorAll(".event-card")
+          .forEach((c) => c.classList.remove("selected"));
+        card.classList.add("selected");
         selectedEvent = card;
         updateMatchButton();
       }
 
       function updateMatchButton() {
-        const matchButton = document.getElementById('match-button');
+        const matchButton = document.getElementById("match-button");
         matchButton.disabled = !(selectedVolunteer && selectedEvent);
       }
 
-      document.querySelectorAll('.search-box').forEach(searchBox => {
-        searchBox.addEventListener('input', function() {
+      document.querySelectorAll(".search-box").forEach((searchBox) => {
+        searchBox.addEventListener("input", function () {
           const searchTerm = this.value.toLowerCase();
-          const isVolunteerSearch = this.closest('.volunteer-section');
-          const cards = isVolunteerSearch 
-            ? document.querySelectorAll('.volunteer-card')
-            : document.querySelectorAll('.event-card');
-          
-          cards.forEach(card => {
+          const isVolunteerSearch = this.closest(".volunteer-section");
+          const cards = isVolunteerSearch
+            ? document.querySelectorAll(".volunteer-card")
+            : document.querySelectorAll(".event-card");
+
+          cards.forEach((card) => {
             const text = card.textContent.toLowerCase();
-            card.style.display = text.includes(searchTerm) ? '' : 'none';
+            card.style.display = text.includes(searchTerm) ? "" : "none";
           });
         });
       });
 
-      document.getElementById('match-button').addEventListener('click', function() {
-        if (selectedVolunteer && selectedEvent) {
-          const volunteerName = selectedVolunteer.querySelector('h3').textContent.split('<')[0].trim();
-          const eventName = selectedEvent.querySelector('h3').textContent.split('<')[0].trim();
-          alert(`Successfully matched ${volunteerName} with ${eventName}!`);
-          
-          selectedVolunteer.classList.remove('selected');
-          selectedEvent.classList.remove('selected');
-          selectedVolunteer = null;
-          selectedEvent = null;
-          updateMatchButton();
+      document
+        .getElementById("match-button")
+        .addEventListener("click", function () {
+          if (selectedVolunteer && selectedEvent) {
+            const volunteerName = selectedVolunteer
+              .querySelector("h3")
+              .textContent.split("<")[0]
+              .trim();
+            const eventName = selectedEvent
+              .querySelector("h3")
+              .textContent.split("<")[0]
+              .trim();
+            alert(`Successfully matched ${volunteerName} with ${eventName}!`);
+
+            selectedVolunteer.classList.remove("selected");
+            selectedEvent.classList.remove("selected");
+            selectedVolunteer = null;
+            selectedEvent = null;
+            updateMatchButton();
+          }
+        });
+
+      function toggleDropdown() {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        if (dropdownMenu) {
+          dropdownMenu.classList.toggle("show");
         }
-      });
+      }
     </script>
   </body>
 </html>
