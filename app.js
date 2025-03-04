@@ -13,12 +13,16 @@ const userRoutes = require("./routes/userRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const volunteerMatchingRoutes = require("./routes/volunteerMatchingRoutes");
 const volunteerHistoryRoutes = require("./routes/volunteerHistoryRoutes");
-
+const notificationRoutes = require("./routes/notificationRoutes");
+const createEventRoutes = require("./routes/createEventRoutes");
 // Use routes
 app.use("/api/users", userRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/matching", volunteerMatchingRoutes);
 app.use("/api/history", volunteerHistoryRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/createevents", createEventRoutes);  
+
 
 // Serve the frontend - Always return the main page for client-side routing
 app.get("*", (req, res) => {
