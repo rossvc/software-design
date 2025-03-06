@@ -8,6 +8,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="notifications.js" defer></script>
     <style>
       * {
         margin: 0;
@@ -52,6 +53,39 @@
 
       .menu-icon {
         cursor: pointer;
+      }
+      
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        min-width: 180px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+
+      .dropdown.show .dropdown-content {
+        display: block;
       }
 
       .container {
@@ -206,6 +240,15 @@
       <div class="menu-icon">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
       </div>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="volunteer-matching.html">Volunteer Matching</a>
+          <a href="volunteer-history.html">Volunteer History</a>
+        </div>
+      </div>
     </div>
 
     <div class="container">
@@ -287,60 +330,5 @@
     >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <script>
-      const filterButtons = document.querySelectorAll(".filter-button");
-      const notifications = document.querySelectorAll(".notification");
-
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          filterButtons.forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          const filterValue = button.dataset.filter;
-          notifications.forEach((notification) => {
-            if (
-              filterValue === "all" ||
-              notification.dataset.type === filterValue
-            ) {
-              notification.style.display = "";
-            } else {
-              notification.style.display = "none";
-            }
-          });
-
-          const visibleNotifications = document.querySelectorAll(
-            '.notification[style=""]'
-          );
-          const emptyState = document.querySelector(".empty-state");
-          if (visibleNotifications.length === 0) {
-            if (!emptyState) {
-              const empty = document.createElement("div");
-              empty.className = "empty-state";
-              empty.innerHTML = `
-                <i class="bx bx-bell-off"></i>
-                <p>No notifications to show</p>
-              `;
-              document.querySelector(".notification-list").appendChild(empty);
-            }
-          } else if (emptyState) {
-            emptyState.remove();
-          }
-        });
-      });
-
-      const markAllReadButton = document.querySelector(".mark-all-read");
-      markAllReadButton.addEventListener("click", () => {
-        notifications.forEach((notification) => {
-          notification.classList.remove("unread");
-        });
-      });
-
-      notifications.forEach((notification) => {
-        notification.addEventListener("click", () => {
-          notification.classList.remove("unread");
-        });
-      });
-    </script>
   </body>
 </html>

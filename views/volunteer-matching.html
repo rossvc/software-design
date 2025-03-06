@@ -8,6 +8,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="volunteer-matching.js" defer></script>
     <style>
       * {
         margin: 0;
@@ -349,77 +350,5 @@
     >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <script>
-      let selectedVolunteer = null;
-      let selectedEvent = null;
-
-      function selectVolunteer(card) {
-        document
-          .querySelectorAll(".volunteer-card")
-          .forEach((c) => c.classList.remove("selected"));
-        card.classList.add("selected");
-        selectedVolunteer = card;
-        updateMatchButton();
-      }
-
-      function selectEvent(card) {
-        document
-          .querySelectorAll(".event-card")
-          .forEach((c) => c.classList.remove("selected"));
-        card.classList.add("selected");
-        selectedEvent = card;
-        updateMatchButton();
-      }
-
-      function updateMatchButton() {
-        const matchButton = document.getElementById("match-button");
-        matchButton.disabled = !(selectedVolunteer && selectedEvent);
-      }
-
-      document.querySelectorAll(".search-box").forEach((searchBox) => {
-        searchBox.addEventListener("input", function () {
-          const searchTerm = this.value.toLowerCase();
-          const isVolunteerSearch = this.closest(".volunteer-section");
-          const cards = isVolunteerSearch
-            ? document.querySelectorAll(".volunteer-card")
-            : document.querySelectorAll(".event-card");
-
-          cards.forEach((card) => {
-            const text = card.textContent.toLowerCase();
-            card.style.display = text.includes(searchTerm) ? "" : "none";
-          });
-        });
-      });
-
-      document
-        .getElementById("match-button")
-        .addEventListener("click", function () {
-          if (selectedVolunteer && selectedEvent) {
-            const volunteerName = selectedVolunteer
-              .querySelector("h3")
-              .textContent.split("<")[0]
-              .trim();
-            const eventName = selectedEvent
-              .querySelector("h3")
-              .textContent.split("<")[0]
-              .trim();
-            alert(`Successfully matched ${volunteerName} with ${eventName}!`);
-
-            selectedVolunteer.classList.remove("selected");
-            selectedEvent.classList.remove("selected");
-            selectedVolunteer = null;
-            selectedEvent = null;
-            updateMatchButton();
-          }
-        });
-
-      function toggleDropdown() {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        if (dropdownMenu) {
-          dropdownMenu.classList.toggle("show");
-        }
-      }
-    </script>
   </body>
 </html>

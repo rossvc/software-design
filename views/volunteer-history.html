@@ -8,6 +8,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="volunteer-history.js" defer></script>
     <style>
       * {
         margin: 0;
@@ -392,100 +393,5 @@
     >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <script>
-      function toggleDropdown() {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        if (dropdownMenu) {
-          dropdownMenu.classList.toggle("show");
-        }
-      }
-
-      document.querySelectorAll("th").forEach((header) => {
-        header.addEventListener("click", () => {
-          const table = header.closest("table");
-          const index = Array.from(header.parentElement.children).indexOf(
-            header
-          );
-          const rows = Array.from(table.querySelectorAll("tbody tr"));
-          const isAscending =
-            header.querySelector(".sort-icon").textContent === "↓";
-
-          document.querySelectorAll(".sort-icon").forEach((icon) => {
-            icon.textContent = "↕";
-          });
-          header.querySelector(".sort-icon").textContent = isAscending
-            ? "↑"
-            : "↓";
-
-          rows.sort((a, b) => {
-            const aValue = a.children[index].textContent;
-            const bValue = b.children[index].textContent;
-            return isAscending
-              ? aValue.localeCompare(bValue)
-              : bValue.localeCompare(aValue);
-          });
-
-          const tbody = table.querySelector("tbody");
-          tbody.innerHTML = "";
-          rows.forEach((row) => tbody.appendChild(row));
-        });
-      });
-
-      const searchBox = document.querySelector(".search-box");
-      searchBox.addEventListener("input", () => {
-        const searchTerm = searchBox.value.toLowerCase();
-        const rows = document.querySelectorAll("tbody tr");
-
-        rows.forEach((row) => {
-          const text = row.textContent.toLowerCase();
-          row.style.display = text.includes(searchTerm) ? "" : "none";
-        });
-      });
-
-      const filters = document.querySelectorAll(".filter-select");
-      filters.forEach((filter) => {
-        filter.addEventListener("change", () => {
-          const rows = document.querySelectorAll("tbody tr");
-          const statusFilter = document.getElementById("status-filter").value;
-          const urgencyFilter = document.getElementById("urgency-filter").value;
-
-          rows.forEach((row) => {
-            const status = row
-              .querySelector(".status-badge")
-              .textContent.toLowerCase();
-            const urgency = row
-              .querySelector('[class^="urgency-"]')
-              .textContent.toLowerCase();
-            const statusMatch = !statusFilter || status.includes(statusFilter);
-            const urgencyMatch =
-              !urgencyFilter || urgency.includes(urgencyFilter);
-
-            row.style.display = statusMatch && urgencyMatch ? "" : "none";
-          });
-        });
-      });
-
-      document.querySelector(".export-button").addEventListener("click", () => {
-        const table = document.querySelector("table");
-        const rows = Array.from(table.querySelectorAll("tr"));
-
-        const csvContent = rows
-          .map((row) => {
-            return Array.from(row.children)
-              .map((cell) => `"${cell.textContent.trim()}"`)
-              .join(",");
-          })
-          .join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "volunteer-history.csv";
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
-    </script>
   </body>
 </html>

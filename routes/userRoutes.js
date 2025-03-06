@@ -11,13 +11,21 @@ router.post("/register", (req, res) => {
       .json({ message: "Username and password are required" });
   }
 
-  // For now, just return a success message (no actual database storage)
+  // Create a new user (in a real app, this would be saved to a database)
+  const userId = Date.now();
+  const newUser = {
+    id: userId,
+    username,
+    role: "volunteer", // Default role
+  };
+
+  // Store user in session
+  req.session.user = newUser;
+
+  // Return success message
   res.status(200).json({
     message: "Registration successful",
-    user: {
-      id: Date.now(),
-      username,
-    },
+    user: newUser,
   });
 });
 
@@ -27,8 +35,8 @@ router.post("/login", (req, res) => {
 
   // Mock user credentials (in a real app, this would come from a database)
   const users = [
-    { username: "admin", password: "admin123", role: "admin" },
-    { username: "volunteer", password: "volunteer123", role: "volunteer" },
+    { id: 1, username: "admin", password: "admin123", role: "admin" },
+    { id: 2, username: "volunteer", password: "volunteer123", role: "volunteer" },
   ];
 
   const user = users.find(
@@ -36,9 +44,17 @@ router.post("/login", (req, res) => {
   );
 
   if (user) {
+    // Store user in session
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      role: user.role
+    };
+    
     res.status(200).json({
       message: "Login successful",
       user: {
+        id: user.id,
         username: user.username,
         role: user.role,
       },
@@ -80,6 +96,27 @@ router.put("/profile/:id", (req, res) => {
       ...profileData,
     },
   });
+});
+
+// Logout route
+router.post("/logout", (req, res) => {
+  // Clear the session
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Failed to logout" });
+    }
+    
+    res.status(200).json({ message: "Logout successful" });
+  });
+});
+
+// Get current user from session
+router.get("/current", (req, res) => {
+  if (req.session.user) {
+    res.status(200).json({ user: req.session.user });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
 });
 
 module.exports = router;

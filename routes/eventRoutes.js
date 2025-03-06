@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // Mock events data
 const events = [
@@ -80,8 +81,8 @@ router.get("/:id", (req, res) => {
   res.status(200).json(event);
 });
 
-// Create a new event
-router.post("/", (req, res) => {
+// Create a new event - Admin only
+router.post("/", isAuthenticated, isAdmin, (req, res) => {
   const {
     name,
     description,
@@ -120,8 +121,8 @@ router.post("/", (req, res) => {
   });
 });
 
-// Update an existing event
-router.put("/:id", (req, res) => {
+// Update an existing event - Admin only
+router.put("/:id", isAuthenticated, isAdmin, (req, res) => {
   const eventId = parseInt(req.params.id);
   const eventIndex = events.findIndex((e) => e.id === eventId);
 
@@ -164,8 +165,8 @@ router.put("/:id", (req, res) => {
   });
 });
 
-// Delete an event
-router.delete("/:id", (req, res) => {
+// Delete an event - Admin only
+router.delete("/:id", isAuthenticated, isAdmin, (req, res) => {
   const eventId = parseInt(req.params.id);
   const eventIndex = events.findIndex((e) => e.id === eventId);
 

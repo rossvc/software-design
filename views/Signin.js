@@ -2,10 +2,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Toggle dropdown menu
     function toggleDropdown() {
       const dropdownMenu = document.getElementById("dropdownMenu");
-      dropdownMenu.style.display = dropdownMenu.style.display === "none" ? "block" : "none";
+      if (dropdownMenu) {
+        dropdownMenu.style.display = dropdownMenu.style.display === "none" ? "block" : "none";
+      }
     }
   
-    document.getElementById("menuIcon").addEventListener("click", toggleDropdown);
+    const menuIcon = document.getElementById("menuIcon");
+    if (menuIcon) {
+      menuIcon.addEventListener("click", toggleDropdown);
+    }
   
     // Close dropdown when clicking outside
     window.onclick = function (event) {
@@ -17,31 +22,54 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
   
-    // User credentials
-    const users = [
-      { username: "admin", password: "admin123", role: "admin" },
-      { username: "volunteer", password: "volunteer123", role: "volunteer" },
-    ];
-  
     // Handle login form submission
     document.getElementById("loginForm").addEventListener("submit", function (event) {
       event.preventDefault();
+      
+      // Show loading state
+      const submitButton = this.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.textContent;
+      submitButton.textContent = "Logging in...";
+      submitButton.disabled = true;
+      
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
   
-      const user = users.find(
-        (user) => user.username === username && user.password === password
-      );
-  
-      if (user) {
+      // Call the login API
+      fetch('/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include' // Important for session cookies
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Login failed');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Store user info in session storage
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+        
         showAlert("Login successful!", "success");
         setTimeout(() => {
           window.location.href =
-            user.role === "admin" ? "AdminEventsDashboard.html" : "VolunteerEvents.html";
+            data.user.role === "admin" ? "AdminEventsDashboard.html" : "VolunteerEvents.html";
         }, 1500);
-      } else {
-        showAlert("Invalid username or password. Please try again.");
-      }
+      })
+      .catch(error => {
+        showAlert(error.message || "Invalid username or password. Please try again.");
+      })
+      .finally(() => {
+        // Reset button state
+        submitButton.textContent = originalButtonText;
+        submitButton.disabled = false;
+      });
     });
   
     // Custom alert functions
@@ -49,21 +77,30 @@ document.addEventListener("DOMContentLoaded", function () {
       const alertBox = document.getElementById("customAlert");
       const alertMessage = document.getElementById("alertMessage");
   
-      alertMessage.textContent = message;
-      alertBox.className = `alert ${type === "success" ? "success" : ""}`;
-      alertBox.style.display = "flex";
+      if (alertBox && alertMessage) {
+        alertMessage.textContent = message;
+        alertBox.className = `alert ${type === "success" ? "success" : ""}`;
+        alertBox.style.display = "flex";
   
-      setTimeout(closeAlert, 3000);
+        setTimeout(closeAlert, 3000);
+      } else {
+        // Fallback to regular alert if custom alert elements don't exist
+        alert(message);
+      }
     }
   
     function closeAlert() {
       const alertBox = document.getElementById("customAlert");
-      alertBox.style.animation = "fadeOut 0.5s ease-in-out";
-      setTimeout(() => {
-        alertBox.style.display = "none";
-      }, 500);
+      if (alertBox) {
+        alertBox.style.animation = "fadeOut 0.5s ease-in-out";
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 500);
+      }
     }
   
-    document.getElementById("closeAlertBtn").addEventListener("click", closeAlert);
+    const closeAlertBtn = document.getElementById("closeAlertBtn");
+    if (closeAlertBtn) {
+      closeAlertBtn.addEventListener("click", closeAlert);
+    }
   });
-  

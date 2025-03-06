@@ -24,6 +24,23 @@ const getAllHistory = (req, res) => {
   }
 };
 
+// Get history for the current user
+const getCurrentUserHistory = (req, res) => {
+  try {
+    // Get the current user from the session
+    const user = req.session.user;
+    if (!user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    // Get the history for the current user
+    const history = volunteerHistoryModel.getHistoryByVolunteerId(user.id);
+    res.status(200).json(history);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Get history for a specific volunteer
 const getVolunteerHistory = (req, res) => {
   try {
@@ -278,6 +295,7 @@ const exportHistory = (req, res) => {
 
 module.exports = {
   getAllHistory,
+  getCurrentUserHistory,
   getVolunteerHistory,
   getEventHistory,
   addHistory,

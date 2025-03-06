@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="VolunteerEvents.css" />
+    <script src="VolunteerEvents.js" defer></script>
   </head>
   <body>
     <div class="header">
@@ -216,25 +217,3 @@
     </footer>
   </body>
 </html>
-<script>
-  function showModal(id) {
-    var modal = document.getElementById(id);
-    if (modal) {
-      modal.style.display = "block";
-    }
-  }
-
-  function closeModal(id) {
-    var modal = document.getElementById(id);
-    if (modal) {
-      modal.style.display = "none";
-    }
-  }
-
-  function register(id) {
-    var message = document.getElementById("message-" + id);
-    if (message) {
-      message.style.display = "block";
-    }
-  }
-</script>
