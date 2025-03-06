@@ -1,4 +1,79 @@
 // Mock volunteer history data
+const validStatuses = ["Upcoming", "Completed", "Cancelled", "In Progress"];
+
+const validateHistory = (history) => {
+  const errors = [];
+
+  // Required fields
+  if (!history.volunteerId) errors.push("Volunteer ID is required");
+  if (!history.eventId) errors.push("Event ID is required");
+  if (!history.eventName) errors.push("Event name is required");
+  if (!history.eventDescription) errors.push("Event description is required");
+  if (!history.eventLocation) errors.push("Event location is required");
+  if (!history.requiredSkills || !Array.isArray(history.requiredSkills))
+    errors.push("Required skills must be an array");
+  if (!history.urgency) errors.push("Urgency is required");
+  if (!history.eventDate) errors.push("Event date is required");
+  if (!history.status) errors.push("Status is required");
+  if (typeof history.hoursServed !== "number")
+    errors.push("Hours served must be a number");
+
+  // Field types
+  if (typeof history.volunteerId !== "number")
+    errors.push("Volunteer ID must be a number");
+  if (typeof history.eventId !== "number")
+    errors.push("Event ID must be a number");
+  if (typeof history.eventName !== "string")
+    errors.push("Event name must be a string");
+  if (typeof history.eventDescription !== "string")
+    errors.push("Event description must be a string");
+  if (typeof history.eventLocation !== "string")
+    errors.push("Event location must be a string");
+  if (typeof history.urgency !== "string")
+    errors.push("Urgency must be a string");
+  if (typeof history.eventDate !== "string")
+    errors.push("Event date must be a string");
+  if (typeof history.status !== "string")
+    errors.push("Status must be a string");
+
+  // Field lengths
+  if (
+    history.eventName &&
+    (history.eventName.length < 3 || history.eventName.length > 100)
+  )
+    errors.push("Event name must be between 3 and 100 characters");
+  if (
+    history.eventDescription &&
+    (history.eventDescription.length < 10 ||
+      history.eventDescription.length > 500)
+  )
+    errors.push("Event description must be between 10 and 500 characters");
+  if (
+    history.eventLocation &&
+    (history.eventLocation.length < 2 || history.eventLocation.length > 100)
+  )
+    errors.push("Event location must be between 2 and 100 characters");
+
+  // Date format
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(history.eventDate))
+    errors.push("Invalid date format (should be YYYY-MM-DD)");
+
+  // Status enum
+  if (!validStatuses.includes(history.status))
+    errors.push(`Status must be one of: ${validStatuses.join(", ")}`);
+
+  // Hours served validation
+  if (history.hoursServed < 0) errors.push("Hours served cannot be negative");
+
+  // Urgency enum
+  const validUrgencies = ["Low", "Medium", "High"];
+  if (!validUrgencies.includes(history.urgency))
+    errors.push("Urgency must be Low, Medium, or High");
+
+  return errors;
+};
+
 const volunteerHistory = [
   {
     id: 1,
@@ -62,6 +137,11 @@ module.exports = {
     volunteerHistory.filter((h) => h.eventId === eventId),
   getHistoryById: (id) => volunteerHistory.find((h) => h.id === id),
   addHistory: (history) => {
+    const errors = validateHistory(history);
+    if (errors.length > 0) {
+      throw new Error(JSON.stringify(errors));
+    }
+
     const newHistory = {
       id: volunteerHistory.length + 1,
       ...history,
@@ -71,6 +151,12 @@ module.exports = {
     return newHistory;
   },
   updateHistoryStatus: (id, status) => {
+    if (!validStatuses.includes(status)) {
+      throw new Error(
+        `Invalid status. Must be one of: ${validStatuses.join(", ")}`
+      );
+    }
+
     const historyIndex = volunteerHistory.findIndex((h) => h.id === id);
     if (historyIndex === -1) {
       return null;
@@ -80,6 +166,10 @@ module.exports = {
     return volunteerHistory[historyIndex];
   },
   updateHoursServed: (id, hours) => {
+    if (typeof hours !== "number" || hours < 0) {
+      throw new Error("Hours served must be a non-negative number");
+    }
+
     const historyIndex = volunteerHistory.findIndex((h) => h.id === id);
     if (historyIndex === -1) {
       return null;
@@ -111,4 +201,6 @@ module.exports = {
       totalHoursServed: totalHours,
     };
   },
+  // Expose validation function for testing
+  validateHistory,
 };
