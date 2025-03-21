@@ -9,6 +9,41 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="UserProfile.css" />
+    <style>
+      /* Add dropdown styles */
+      .dropdown {
+        position: absolute;
+        top: 60px;
+        right: 25px;
+        background-color: #0951bd;
+        padding: 10px;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .dropdown-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+      }
+
+      .dropdown-content a {
+        color: whitesmoke;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        display: block;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #2563eb;
+      }
+
+      .show {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <div class="header">
@@ -19,8 +54,18 @@
         />
       </div>
       <div class="title">Profile Form</div>
-      <div class="menu-icon">
+      <div class="menu-icon" onclick="toggleDropdown()">
         <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
+      </div>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="volunteer-matching.html">Volunteer Matching</a>
+          <a href="volunteer-history.html">Volunteer History</a>
+          <a href="notifications.html">Notifications</a>
+        </div>
       </div>
     </div>
 
@@ -149,5 +194,21 @@
     </footer>
 
     <script src="UserProfile.js"></script>
+    <script>
+      // Add dropdown toggle function
+      function toggleDropdown() {
+        document.getElementById("dropdownMenu").classList.toggle("show");
+      }
+
+      // Close dropdown when clicking outside
+      window.onclick = function(event) {
+        if (!event.target.matches('.bx-menu') && !event.target.matches('.menu-icon')) {
+          const dropdown = document.getElementById("dropdownMenu");
+          if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+          }
+        }
+      }
+    </script>
   </body>
 </html>

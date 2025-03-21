@@ -1,4 +1,4 @@
-const db = require('../utils/db');
+const db = require("../utils/db");
 
 // Validation functions
 const validateVolunteer = (volunteer) => {
@@ -91,10 +91,12 @@ const mapDbVolunteerToModelVolunteer = (dbVolunteer) => {
     id: dbVolunteer.id,
     name: dbVolunteer.full_name,
     email: dbVolunteer.username,
-    skills: JSON.parse(dbVolunteer.skills || '[]'),
-    availability: dbVolunteer.availability ? ["Weekdays", "Weekends"] : ["Weekends"],
+    skills: dbVolunteer.skills || "[]",
+    availability: dbVolunteer.availability
+      ? ["Weekdays", "Weekends"]
+      : ["Weekends"],
     location: dbVolunteer.city,
-    matchScore: dbVolunteer.match_score || 0
+    matchScore: dbVolunteer.match_score || 0,
   };
 };
 
@@ -104,11 +106,11 @@ const mapDbEventToModelEvent = (dbEvent) => {
     id: dbEvent.id,
     name: dbEvent.name,
     location: dbEvent.location,
-    date: new Date(dbEvent.event_date).toISOString().split('T')[0],
-    requiredSkills: JSON.parse(dbEvent.required_skills || '[]'),
+    date: new Date(dbEvent.event_date).toISOString().split("T")[0],
+    requiredSkills: JSON.parse(dbEvent.required_skills || "[]"),
     volunteersNeeded: 5, // Default value since it's not stored in the database
     urgency: dbEvent.urgency.charAt(0).toUpperCase() + dbEvent.urgency.slice(1), // Capitalize first letter
-    volunteers: []
+    volunteers: [],
   };
 };
 
@@ -121,89 +123,100 @@ module.exports = {
         JOIN UserProfile up ON uc.id = up.user_id
         WHERE uc.role = 'volunteer'
       `);
-      
+
       return volunteers.map(mapDbVolunteerToModelVolunteer);
     } catch (error) {
-      console.error('Error getting all volunteers:', error);
+      console.error("Error getting all volunteers:", error);
       throw error;
     }
   },
 
   getVolunteerById: async (id) => {
     try {
-      const volunteers = await db.query(`
+      const volunteers = await db.query(
+        `
         SELECT uc.id, uc.username, up.full_name, up.skills, up.city, up.availability
         FROM UserCredentials uc
         JOIN UserProfile up ON uc.id = up.user_id
         WHERE uc.id = ? AND uc.role = 'volunteer'
-      `, [id]);
-      
+      `,
+        [id]
+      );
+
       if (volunteers.length === 0) {
         return null;
       }
-      
+
       return mapDbVolunteerToModelVolunteer(volunteers[0]);
     } catch (error) {
-      console.error('Error getting volunteer by ID:', error);
+      console.error("Error getting volunteer by ID:", error);
       throw error;
     }
   },
 
   getAllEvents: async () => {
     try {
-      const events = await db.query('SELECT * FROM EventDetails');
+      const events = await db.query("SELECT * FROM EventDetails");
       const mappedEvents = events.map(mapDbEventToModelEvent);
-      
+
       // For each event, get the volunteers
       for (const event of mappedEvents) {
-        const volunteers = await db.query(`
+        const volunteers = await db.query(
+          `
           SELECT vm.volunteer_id as id, up.full_name as name, vm.status
           FROM VolunteerMatching vm
           JOIN UserProfile up ON vm.volunteer_id = up.user_id
           WHERE vm.event_id = ?
-        `, [event.id]);
-        
-        event.volunteers = volunteers.map(v => ({
+        `,
+          [event.id]
+        );
+
+        event.volunteers = volunteers.map((v) => ({
           id: v.id,
           name: v.name,
-          status: v.status
+          status: v.status,
         }));
       }
-      
+
       return mappedEvents;
     } catch (error) {
-      console.error('Error getting all events:', error);
+      console.error("Error getting all events:", error);
       throw error;
     }
   },
 
   getEventById: async (id) => {
     try {
-      const events = await db.query('SELECT * FROM EventDetails WHERE id = ?', [id]);
-      
+      const events = await db.query("SELECT * FROM EventDetails WHERE id = ?", [
+        id,
+      ]);
+
       if (events.length === 0) {
         return null;
       }
-      
+
       const event = mapDbEventToModelEvent(events[0]);
-      
+
       // Get volunteers for this event
-      const volunteers = await db.query(`
+      const volunteers = await db.query(
+        `
         SELECT vm.volunteer_id as id, up.full_name as name, vm.status
         FROM VolunteerMatching vm
         JOIN UserProfile up ON vm.volunteer_id = up.user_id
         WHERE vm.event_id = ?
-      `, [id]);
-      
-      event.volunteers = volunteers.map(v => ({
+      `,
+        [id]
+      );
+
+      event.volunteers = volunteers.map((v) => ({
         id: v.id,
         name: v.name,
-        status: v.status
+        status: v.status,
       }));
-      
+
       return event;
     } catch (error) {
-      console.error('Error getting event by ID:', error);
+      console.error("Error getting event by ID:", error);
       throw error;
     }
   },
@@ -217,8 +230,8 @@ module.exports = {
         JOIN UserProfile up ON vm.volunteer_id = up.user_id
         JOIN EventDetails ed ON vm.event_id = ed.id
       `);
-      
-      return matches.map(m => ({
+
+      return matches.map((m) => ({
         id: m.id,
         volunteerId: m.volunteer_id,
         eventId: m.event_id,
@@ -226,10 +239,10 @@ module.exports = {
         event: m.event_name,
         status: m.status,
         matchScore: parseFloat(m.match_score),
-        createdAt: m.created_at.toISOString()
+        createdAt: m.created_at.toISOString(),
       }));
     } catch (error) {
-      console.error('Error getting all matches:', error);
+      console.error("Error getting all matches:", error);
       throw error;
     }
   },
@@ -262,10 +275,10 @@ module.exports = {
 
       // Check if match already exists
       const existingMatches = await db.query(
-        'SELECT * FROM VolunteerMatching WHERE volunteer_id = ? AND event_id = ?',
+        "SELECT * FROM VolunteerMatching WHERE volunteer_id = ? AND event_id = ?",
         [volunteerId, eventId]
       );
-      
+
       if (existingMatches.length > 0) {
         throw new Error("Match already exists");
       }
@@ -274,7 +287,7 @@ module.exports = {
       const result = await db.query(
         `INSERT INTO VolunteerMatching (volunteer_id, event_id, status, match_score) 
          VALUES (?, ?, ?, ?)`,
-        [volunteerId, eventId, 'Pending', matchScore]
+        [volunteerId, eventId, "Pending", matchScore]
       );
 
       // Get the newly created match
@@ -301,10 +314,10 @@ module.exports = {
         event: m.event_name,
         status: m.status,
         matchScore: parseFloat(m.match_score),
-        createdAt: m.created_at.toISOString()
+        createdAt: m.created_at.toISOString(),
       };
     } catch (error) {
-      console.error('Error creating match:', error);
+      console.error("Error creating match:", error);
       throw error;
     }
   },

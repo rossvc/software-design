@@ -10,6 +10,41 @@
       rel="stylesheet"
     />
     <script src="Homepage.js" defer></script>
+    <style>
+      /* Add dropdown styles */
+      .dropdown {
+        position: absolute;
+        top: 60px;
+        right: 25px;
+        background-color: #0951bd;
+        padding: 10px;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .dropdown-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+      }
+
+      .dropdown-content a {
+        color: whitesmoke;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        display: block;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #2563eb;
+      }
+
+      .show {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <div class="header">
@@ -20,12 +55,18 @@
         />
       </div>
       <div class="title">Homepage</div>
-      <div class="menu-icon">
+      <div class="menu-icon" onclick="toggleDropdown()">
         <i
           class="bx bx-menu"
           id="menuIcon"
           style="color: white; font-size: 30px"
         ></i>
+      </div>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <a href="Signin.html">Sign In</a>
+          <a href="Registration.html">Register</a>
+        </div>
       </div>
     </div>
 
@@ -47,5 +88,30 @@
     </div>
 
     <footer>&copy; 2025 Volunteer Center. All rights reserved.</footer>
+    <script>
+      // Existing script content
+      document.getElementById("signUpBtn").addEventListener("click", function() {
+        window.location.href = "Registration.html";
+      });
+      
+      document.getElementById("logInBtn").addEventListener("click", function() {
+        window.location.href = "Signin.html";
+      });
+      
+      // Add dropdown toggle function
+      function toggleDropdown() {
+        document.getElementById("dropdownMenu").classList.toggle("show");
+      }
+
+      // Close dropdown when clicking outside
+      window.onclick = function(event) {
+        if (!event.target.matches('.bx-menu') && !event.target.matches('.menu-icon')) {
+          const dropdown = document.getElementById("dropdownMenu");
+          if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+          }
+        }
+      }
+    </script>
   </body>
 </html>
