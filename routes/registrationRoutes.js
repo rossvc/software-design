@@ -12,7 +12,4 @@ router.post("/", registrationController.registerUser);
 // Handle admin account creation (protected by admin middleware)
 router.post("/admin", isAdmin, registrationController.createAdminAccount);
 
-// Handle first admin account creation (initialization)
-router.post("/admin/init", registrationController.createFirstAdmin);
-
 module.exports = router;

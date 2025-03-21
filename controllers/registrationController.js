@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
       .status(201)
       .json({ message: "User registered successfully", user: newUser });
   } catch (error) {
-    console.error('Registration controller error:', error);
+    console.error("Registration controller error:", error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -38,12 +38,14 @@ const registerUser = async (req, res) => {
 const createAdminAccount = async (req, res) => {
   try {
     const { username, password } = req.body;
-    
+
     // Check if user is authenticated and is an admin
-    if (!req.session.user || req.session.user.role !== 'admin') {
-      return res.status(403).json({ message: "Only administrators can create admin accounts" });
+    if (!req.session.user || req.session.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Only administrators can create admin accounts" });
     }
-    
+
     const creatorId = req.session.user.id;
 
     // Validate input
@@ -54,43 +56,17 @@ const createAdminAccount = async (req, res) => {
     }
 
     // Create admin account
-    const newAdmin = await registrationModel.createAdminAccount(username, password, creatorId);
+    const newAdmin = await registrationModel.createAdminAccount(
+      username,
+      password,
+      creatorId
+    );
 
     res
       .status(201)
       .json({ message: "Admin account created successfully", user: newAdmin });
   } catch (error) {
-    console.error('Admin creation controller error:', error);
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// Handle first admin account creation (initialization)
-const createFirstAdmin = async (req, res) => {
-  try {
-    const { username, password, initKey } = req.body;
-
-    // Validate input
-    if (!username || !password || !initKey) {
-      return res
-        .status(400)
-        .json({ message: "Username, password, and initialization key are required" });
-    }
-
-    // Create first admin account
-    const newAdmin = await registrationModel.createFirstAdmin(username, password, initKey);
-
-    res
-      .status(201)
-      .json({ message: "First admin account created successfully", user: newAdmin });
-  } catch (error) {
-    console.error('First admin creation controller error:', error);
-    
-    // Don't expose specific error about init key in production
-    if (error.message === "Invalid initialization key") {
-      return res.status(403).json({ message: "Unauthorized initialization attempt" });
-    }
-    
+    console.error("Admin creation controller error:", error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -99,5 +75,4 @@ module.exports = {
   getRegistrationPageContent,
   registerUser,
   createAdminAccount,
-  createFirstAdmin,
 };
