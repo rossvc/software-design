@@ -60,7 +60,8 @@
       <div class="dropdown" id="dropdownMenu">
         <div class="dropdown-content">
           <a href="Homepage.html">Home</a>
-          <a href="AdminEventsDashboard.html">Events Dashboard</a>
+          <a href="AdminEventsDashboard.html">Admin Dashboard</a>
+          <a href="volunteer-matching.html">Volunteer Matching</a>
           <a href="notifications.html">Notifications</a>
         </div>
       </div>
@@ -150,16 +151,14 @@
         const userJson = sessionStorage.getItem('user');
         if (!userJson) {
           // Redirect to login if not logged in
-          alert('Please log in to create or edit events');
-          window.location.href = 'Signin.html';
+          window.location.href = "Signin.html";
           return;
         }
 
         const user = JSON.parse(userJson);
         if (user.role !== 'admin') {
           // Redirect if not an admin
-          alert('You do not have permission to access this page');
-          window.location.href = 'VolunteerEvents.html';
+          window.location.href = "VolunteerEvents.html";
           return;
         }
         

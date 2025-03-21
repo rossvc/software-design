@@ -63,9 +63,22 @@
         ></i>
       </div>
       <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-content">
+        <div class="dropdown-content" id="not-logged-in-menu">
           <a href="Signin.html">Sign In</a>
           <a href="Registration.html">Register</a>
+        </div>
+        <div class="dropdown-content" id="user-menu" style="display: none;">
+          <a href="Homepage.html">Home</a>
+          <a href="UserInfo.html">Your Profile</a>
+          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="volunteer-history.html">Volunteer History</a>
+          <a href="notifications.html">Notifications</a>
+        </div>
+        <div class="dropdown-content" id="admin-menu" style="display: none;">
+          <a href="Homepage.html">Home</a>
+          <a href="AdminEventsDashboard.html">Admin Dashboard</a>
+          <a href="volunteer-matching.html">Volunteer Matching</a>
+          <a href="notifications.html">Notifications</a>
         </div>
       </div>
     </div>
@@ -112,6 +125,29 @@
           }
         }
       }
+      
+      // Check if user is logged in and show appropriate menu
+      document.addEventListener("DOMContentLoaded", function() {
+        const userJson = sessionStorage.getItem('user');
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          
+          // Hide sign up and login buttons
+          document.getElementById("signUpBtn").style.display = "none";
+          document.getElementById("logInBtn").style.display = "none";
+          
+          // Hide not logged in menu
+          document.getElementById("not-logged-in-menu").style.display = "none";
+          
+          if (user.role === 'admin') {
+            // Show admin menu
+            document.getElementById("admin-menu").style.display = "block";
+          } else {
+            // Show user menu
+            document.getElementById("user-menu").style.display = "block";
+          }
+        }
+      });
     </script>
   </body>
 </html>

@@ -243,10 +243,12 @@
       <div class="dropdown" id="dropdownMenu">
         <div class="dropdown-content">
           <a href="Homepage.html">Home</a>
-          <a href="UserInfo.html">Your Profile</a>
-          <a href="VolunteerEvents.html">Volunteer Events</a>
+          <a href="UserInfo.html" id="user-profile-link">Your Profile</a>
+          <a href="VolunteerEvents.html" id="volunteer-events-link">Volunteer Events</a>
+          <a href="volunteer-history.html" id="volunteer-history-link">Volunteer History</a>
+          <a href="notifications.html">Notifications</a>
+          <a href="AdminEventsDashboard.html" id="admin-dashboard-link" style="display: none;">Admin Dashboard</a>
           <a href="volunteer-matching.html" id="volunteer-matching-link" style="display: none;">Volunteer Matching</a>
-          <a href="volunteer-history.html">Volunteer History</a>
         </div>
       </div>
     </div>
@@ -331,16 +333,24 @@
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
     <script>
-      // Check if user is admin and show admin-only links
+      // Check if user is logged in and show appropriate links based on role
       document.addEventListener("DOMContentLoaded", function() {
         const userJson = sessionStorage.getItem('user');
-        if (userJson) {
-          const user = JSON.parse(userJson);
-          if (user.role === 'admin') {
-            // Show admin-only links
-            document.getElementById('volunteer-matching-link').style.display = 'block';
-          }
+        if (!userJson) {
+          // Redirect to login if not logged in
+          window.location.href = "Signin.html";
+          return;
         }
+        
+        const user = JSON.parse(userJson);
+        if (user.role === 'admin') {
+          // Show admin-only links
+          document.getElementById('admin-dashboard-link').style.display = 'block';
+          document.getElementById('volunteer-matching-link').style.display = 'block';
+        }
+        
+        // Load notifications data
+        // Add code here to load notifications from API
       });
 
       // Filter notifications
