@@ -1,42 +1,44 @@
-const eventsModel = require("../models/CreateEventModel");
+const eventsModel = require("../models/createEventModel");
 
-const validateEventId = (id) => {
+const validateEventId = async (id) => {
   if (!id || isNaN(id)) {
     throw new Error("Invalid event ID");
   }
-  const event = eventsModel.getEventById(Number(id));
+  const event = await eventsModel.getEventById(Number(id));
   if (!event) {
     throw new Error("Event not found");
   }
   return event;
 };
 
-const getAllEvents = (req, res) => {
+const getAllEvents = async (req, res) => {
   try {
-    const events = eventsModel.getAllEvents();
+    const events = await eventsModel.getAllEvents();
     res.status(200).json(events);
   } catch (error) {
+    console.error('Error getting all events:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-const getEvent = (req, res) => {
+const getEvent = async (req, res) => {
   try {
     const eventId = Number(req.params.id);
     if (!eventId || isNaN(eventId)) {
       return res.status(400).json({ message: "Invalid event ID" });
     }
-    const event = eventsModel.getEventById(eventId);
+    const event = await eventsModel.getEventById(eventId);
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
     res.status(200).json(event);
   } catch (error) {
+    console.error('Error getting event:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-const addEvent = (req, res) => {
+const addEvent = async (req, res) => {
   try {
     const {
       eventName,
@@ -53,7 +55,7 @@ const addEvent = (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const newEvent = eventsModel.addEvent({
+    const newEvent = await eventsModel.addEvent({
       eventName,
       description,
       location,
@@ -69,14 +71,15 @@ const addEvent = (req, res) => {
       event: newEvent,
     });
   } catch (error) {
+    console.error('Error adding event:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-const updateEvent = (req, res) => {
+const updateEvent = async (req, res) => {
   try {
     const eventId = Number(req.params.id);
-    validateEventId(eventId);
+    await validateEventId(eventId);
 
     const { eventName, description, location, urgency, skills, startTime, endTime, date } = req.body;
 
@@ -84,7 +87,7 @@ const updateEvent = (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const updatedEvent = eventsModel.updateEvent(eventId, {
+    const updatedEvent = await eventsModel.updateEvent(eventId, {
       eventName,
       description,
       location,
@@ -104,22 +107,24 @@ const updateEvent = (req, res) => {
       event: updatedEvent,
     });
   } catch (error) {
+    console.error('Error updating event:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-const deleteEvent = (req, res) => {
+const deleteEvent = async (req, res) => {
   try {
     const eventId = Number(req.params.id);
-    validateEventId(eventId);
+    await validateEventId(eventId);
 
-    const deleted = eventsModel.deleteEvent(eventId);
+    const deleted = await eventsModel.deleteEvent(eventId);
     if (!deleted) {
       return res.status(404).json({ message: "Event not found" });
     }
 
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (error) {
+    console.error('Error deleting event:', error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -1,5 +1,5 @@
-// Mock user database
-const users = [];
+const db = require('../utils/db');
+const bcrypt = require('bcrypt');
 
 // Get registration page content
 const registrationPageContent = {
@@ -27,20 +27,36 @@ const validateUser = (username, password) => {
 };
 
 // Function to register a new user
-const registerUser = (username, password) => {
-  // Validate input
-  validateUser(username, password);
+const registerUser = async (username, password) => {
+  try {
+    // Validate input
+    validateUser(username, password);
 
-  // Check if user already exists
-  const existingUser = users.find((user) => user.username === username);
-  if (existingUser) {
-    throw new Error("Username already exists!");
+    // Check if user already exists
+    const existingUsers = await db.query('SELECT * FROM UserCredentials WHERE username = ?', [username]);
+    if (existingUsers.length > 0) {
+      throw new Error("Username already exists!");
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Add user to the database
+    const result = await db.query(
+      'INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)',
+      [username, hashedPassword, 'volunteer']
+    );
+
+    return {
+      id: result.insertId,
+      username,
+      role: 'volunteer'
+    };
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
   }
-
-  // Add user to the mock database
-  const newUser = { id: users.length + 1, username, password };
-  users.push(newUser);
-  return newUser;
 };
 
 module.exports = {

@@ -11,7 +11,7 @@ const getRegistrationPageContent = (req, res) => {
 };
 
 // Handle user registration
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -23,12 +23,13 @@ const registerUser = (req, res) => {
     }
 
     // Register the user
-    const newUser = registrationModel.registerUser(username, password);
+    const newUser = await registrationModel.registerUser(username, password);
 
     res
       .status(201)
       .json({ message: "User registered successfully", user: newUser });
   } catch (error) {
+    console.error('Registration controller error:', error);
     res.status(400).json({ message: error.message });
   }
 };

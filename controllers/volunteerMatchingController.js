@@ -1,12 +1,12 @@
 const volunteerMatchingModel = require("../models/volunteerMatchingModel");
 
 // Validate volunteer ID
-const validateVolunteerId = (id) => {
+const validateVolunteerId = async (id) => {
   if (!id || isNaN(id)) {
     throw new Error("Invalid volunteer ID");
   }
 
-  const volunteer = volunteerMatchingModel.getVolunteerById(Number(id));
+  const volunteer = await volunteerMatchingModel.getVolunteerById(Number(id));
   if (!volunteer) {
     throw new Error("Volunteer not found");
   }
@@ -15,12 +15,12 @@ const validateVolunteerId = (id) => {
 };
 
 // Validate event ID
-const validateEventId = (id) => {
+const validateEventId = async (id) => {
   if (!id || isNaN(id)) {
     throw new Error("Invalid event ID");
   }
 
-  const event = volunteerMatchingModel.getEventById(Number(id));
+  const event = await volunteerMatchingModel.getEventById(Number(id));
   if (!event) {
     throw new Error("Event not found");
   }
@@ -29,10 +29,10 @@ const validateEventId = (id) => {
 };
 
 // Get all volunteers with filter options
-const getVolunteers = (req, res) => {
+const getVolunteers = async (req, res) => {
   try {
     const { skill, availability } = req.query;
-    let volunteers = volunteerMatchingModel.getAllVolunteers();
+    let volunteers = await volunteerMatchingModel.getAllVolunteers();
 
     // Apply filters if provided
     if (skill) {
@@ -47,15 +47,16 @@ const getVolunteers = (req, res) => {
 
     res.status(200).json(volunteers);
   } catch (error) {
+    console.error('Error getting volunteers:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get all events with filter options
-const getEvents = (req, res) => {
+const getEvents = async (req, res) => {
   try {
     const { urgency, date } = req.query;
-    let events = volunteerMatchingModel.getAllEvents();
+    let events = await volunteerMatchingModel.getAllEvents();
 
     // Apply filters if provided
     if (urgency) {
@@ -70,36 +71,39 @@ const getEvents = (req, res) => {
 
     res.status(200).json(events);
   } catch (error) {
+    console.error('Error getting events:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get a specific volunteer
-const getVolunteer = (req, res) => {
+const getVolunteer = async (req, res) => {
   try {
     const volunteerId = Number(req.params.id);
-    const volunteer = validateVolunteerId(volunteerId);
+    const volunteer = await validateVolunteerId(volunteerId);
 
     res.status(200).json(volunteer);
   } catch (error) {
+    console.error('Error getting volunteer:', error);
     res.status(404).json({ message: error.message });
   }
 };
 
 // Get a specific event
-const getEvent = (req, res) => {
+const getEvent = async (req, res) => {
   try {
     const eventId = Number(req.params.id);
-    const event = validateEventId(eventId);
+    const event = await validateEventId(eventId);
 
     res.status(200).json(event);
   } catch (error) {
+    console.error('Error getting event:', error);
     res.status(404).json({ message: error.message });
   }
 };
 
 // Create a new match
-const createMatch = (req, res) => {
+const createMatch = async (req, res) => {
   try {
     const { volunteerId, eventId } = req.body;
 
@@ -111,11 +115,15 @@ const createMatch = (req, res) => {
     }
 
     // Validate if volunteer and event exist
-    const volunteer = validateVolunteerId(Number(volunteerId));
-    const event = validateEventId(Number(eventId));
+    try {
+      await validateVolunteerId(Number(volunteerId));
+      await validateEventId(Number(eventId));
+    } catch (error) {
+      return res.status(404).json({ message: error.message });
+    }
 
     // Create the match
-    const match = volunteerMatchingModel.createMatch(
+    const match = await volunteerMatchingModel.createMatch(
       Number(volunteerId),
       Number(eventId)
     );
@@ -130,29 +138,31 @@ const createMatch = (req, res) => {
       match,
     });
   } catch (error) {
+    console.error('Error creating match:', error);
     res.status(400).json({ message: error.message });
   }
 };
 
 // Get all matches
-const getMatches = (req, res) => {
+const getMatches = async (req, res) => {
   try {
-    const matches = volunteerMatchingModel.getAllMatches();
+    const matches = await volunteerMatchingModel.getAllMatches();
     res.status(200).json(matches);
   } catch (error) {
+    console.error('Error getting matches:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get recommendations based on volunteer or event
-const getRecommendations = (req, res) => {
+const getRecommendations = async (req, res) => {
   try {
     const { volunteerId, eventId } = req.query;
 
     if (volunteerId) {
       // Get recommendations for a volunteer
-      const volunteer = validateVolunteerId(Number(volunteerId));
-      const events = volunteerMatchingModel.getAllEvents();
+      const volunteer = await validateVolunteerId(Number(volunteerId));
+      const events = await volunteerMatchingModel.getAllEvents();
 
       const recommendations = events
         .map((event) => ({
@@ -167,8 +177,8 @@ const getRecommendations = (req, res) => {
       res.status(200).json(recommendations);
     } else if (eventId) {
       // Get recommendations for an event
-      const event = validateEventId(Number(eventId));
-      const volunteers = volunteerMatchingModel.getAllVolunteers();
+      const event = await validateEventId(Number(eventId));
+      const volunteers = await volunteerMatchingModel.getAllVolunteers();
 
       const recommendations = volunteers
         .map((volunteer) => ({
@@ -187,6 +197,7 @@ const getRecommendations = (req, res) => {
         .json({ message: "Either volunteerId or eventId is required" });
     }
   } catch (error) {
+    console.error('Error getting recommendations:', error);
     res.status(404).json({ message: error.message });
   }
 };

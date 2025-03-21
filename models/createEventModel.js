@@ -1,29 +1,4 @@
-const events = [
-  {
-    id: 1,
-    eventName: "Beach Cleanup",
-    description: "Community beach cleanup event",
-    location: "Galveston Beach",
-    urgency: "High",
-    skills: ["First Aid"],
-    startTime: "09:00",
-    endTime: "12:00",
-    date: "2025-02-20",
-    createdAt: "2025-01-01T00:00:00.000Z"
-  },
-  {
-    id: 2,
-    eventName: "Library Volunteer",
-    description: "Assist with organizing and shelving books",
-    location: "Central Library",
-    urgency: "Low",
-    skills: [],
-    startTime: "13:00",
-    endTime: "16:00",
-    date: "2025-03-05",
-    createdAt: "2025-01-05T00:00:00.000Z"
-  }
-];
+const db = require('../utils/db');
 
 // Validate event data
 const validateEvent = (event) => {
@@ -66,46 +41,136 @@ const validateEvent = (event) => {
   if (!dateRegex.test(event.date)) throw new Error('Date must be in YYYY-MM-DD format');
 };
 
+// Helper function to convert database event to model event
+const mapDbEventToModelEvent = (dbEvent) => {
+  return {
+    id: dbEvent.id,
+    eventName: dbEvent.name,
+    description: dbEvent.description,
+    location: dbEvent.location,
+    urgency: dbEvent.urgency.charAt(0).toUpperCase() + dbEvent.urgency.slice(1), // Capitalize first letter
+    skills: JSON.parse(dbEvent.required_skills),
+    startTime: new Date(dbEvent.event_date).toTimeString().substring(0, 5),
+    endTime: new Date(dbEvent.event_date).toTimeString().substring(0, 5), // Assuming end time is not stored separately
+    date: new Date(dbEvent.event_date).toISOString().split('T')[0],
+    createdAt: dbEvent.created_at ? new Date(dbEvent.created_at).toISOString() : new Date().toISOString()
+  };
+};
+
 module.exports = {
-  getAllEvents: () => events,
+  getAllEvents: async () => {
+    try {
+      const events = await db.query('SELECT * FROM EventDetails');
+      return events.map(mapDbEventToModelEvent);
+    } catch (error) {
+      console.error('Error getting all events:', error);
+      throw error;
+    }
+  },
 
-  getEventById: (id) => events.find((e) => e.id === id),
+  getEventById: async (id) => {
+    try {
+      const events = await db.query('SELECT * FROM EventDetails WHERE id = ?', [id]);
+      return events.length ? mapDbEventToModelEvent(events[0]) : null;
+    } catch (error) {
+      console.error('Error getting event by ID:', error);
+      throw error;
+    }
+  },
   
-  addEvent: (event) => {
-    validateEvent(event);
-    const newEvent = {
-      id: events.length + 1,
-      ...event,
-      createdAt: new Date().toISOString()
-    };
-    events.push(newEvent);
-    return newEvent;
+  addEvent: async (event) => {
+    try {
+      validateEvent(event);
+      
+      // Combine date and start time for event_date
+      const eventDate = `${event.date} ${event.startTime}:00`;
+      
+      // Convert urgency to lowercase for database
+      const urgency = event.urgency.toLowerCase();
+      
+      const result = await db.query(
+        `INSERT INTO EventDetails 
+         (name, description, location, required_skills, urgency, event_date) 
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          event.eventName,
+          event.description,
+          event.location,
+          JSON.stringify(event.skills || []),
+          urgency,
+          eventDate
+        ]
+      );
+      
+      return {
+        id: result.insertId,
+        ...event,
+        createdAt: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error adding event:', error);
+      throw error;
+    }
   },
 
-  updateEvent: (id, updatedFields) => {
-    const index = events.findIndex((e) => e.id === id);
-    if (index === -1) {
-      return null;
+  updateEvent: async (id, updatedFields) => {
+    try {
+      // First get the current event
+      const currentEvent = await module.exports.getEventById(id);
+      if (!currentEvent) {
+        return null;
+      }
+      
+      // Merge current event with updated fields
+      const updatedEvent = {
+        ...currentEvent,
+        ...updatedFields
+      };
+      
+      // Validate the updated event
+      validateEvent(updatedEvent);
+      
+      // Combine date and start time for event_date
+      const eventDate = `${updatedEvent.date} ${updatedEvent.startTime}:00`;
+      
+      // Convert urgency to lowercase for database
+      const urgency = updatedEvent.urgency.toLowerCase();
+      
+      // Update in database
+      await db.query(
+        `UPDATE EventDetails 
+         SET name = ?, description = ?, location = ?, required_skills = ?, 
+             urgency = ?, event_date = ? 
+         WHERE id = ?`,
+        [
+          updatedEvent.eventName,
+          updatedEvent.description,
+          updatedEvent.location,
+          JSON.stringify(updatedEvent.skills),
+          urgency,
+          eventDate,
+          id
+        ]
+      );
+      
+      return {
+        ...updatedEvent,
+        updatedAt: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error updating event:', error);
+      throw error;
     }
-    const updatedEvent = {
-      ...events[index],
-      ...updatedFields
-    };
-    validateEvent(updatedEvent);
-    events[index] = {
-      ...updatedEvent,
-      updatedAt: new Date().toISOString()
-    };
-    return events[index];
   },
 
-  deleteEvent: (id) => {
-    const index = events.findIndex((e) => e.id === id);
-    if (index === -1) {
-      return false;
+  deleteEvent: async (id) => {
+    try {
+      const result = await db.query('DELETE FROM EventDetails WHERE id = ?', [id]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      throw error;
     }
-    events.splice(index, 1);
-    return true;
   },
 
   validateEvent // Export for testing

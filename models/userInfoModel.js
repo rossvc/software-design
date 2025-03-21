@@ -1,5 +1,4 @@
-// Mock user profiles database
-const userProfiles = [];
+const db = require("../utils/db");
 
 // Validate user profile data
 const validateUserProfile = (profile) => {
@@ -52,26 +51,103 @@ const validateUserProfile = (profile) => {
 };
 
 // Create or update user profile
-const updateUserProfile = (userId, profileData) => {
-  validateUserProfile(profileData);
+const updateUserProfile = async (userId, profileData) => {
+  try {
+    validateUserProfile(profileData);
 
-  const existingProfileIndex = userProfiles.findIndex(
-    (p) => p.userId === userId
-  );
-  const profile = { userId, ...profileData };
+    // Check if profile exists
+    const profiles = await db.query(
+      "SELECT * FROM UserProfile WHERE user_id = ?",
+      [userId]
+    );
 
-  if (existingProfileIndex >= 0) {
-    userProfiles[existingProfileIndex] = profile;
-  } else {
-    userProfiles.push(profile);
+    const fullName = `${profileData.name} ${profileData.lastName}`;
+    const skills = JSON.stringify(profileData.skills);
+    const preferences = JSON.stringify(profileData.preferences || {});
+    const availability = profileData.availability ? 1 : 0;
+
+    if (profiles.length > 0) {
+      // Update existing profile
+      await db.query(
+        `UPDATE UserProfile 
+         SET full_name = ?, address = ?, city = ?, state = ?, 
+             zip_code = ?, skills = ?, preferences = ?, availability = ? 
+         WHERE user_id = ?`,
+        [
+          fullName,
+          profileData.address,
+          profileData.city,
+          profileData.state,
+          profileData.zipCode,
+          skills,
+          preferences,
+          availability,
+          userId,
+        ]
+      );
+    } else {
+      // Create new profile
+      await db.query(
+        `INSERT INTO UserProfile 
+         (user_id, full_name, address, city, state, zip_code, skills, preferences, availability) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          userId,
+          fullName,
+          profileData.address,
+          profileData.city,
+          profileData.state,
+          profileData.zipCode,
+          skills,
+          preferences,
+          availability,
+        ]
+      );
+    }
+
+    return {
+      userId,
+      ...profileData,
+    };
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
   }
-
-  return profile;
 };
 
 // Get user profile
-const getUserProfile = (userId) => {
-  return userProfiles.find((p) => p.userId === userId);
+const getUserProfile = async (userId) => {
+  try {
+    const profiles = await db.query(
+      "SELECT * FROM UserProfile WHERE user_id = ?",
+      [userId]
+    );
+
+    if (profiles.length === 0) {
+      return null;
+    }
+
+    const profile = profiles[0];
+    const fullNameParts = profile.full_name.split(" ");
+    const lastName = fullNameParts.pop();
+    const name = fullNameParts.join(" ");
+
+    return {
+      userId: profile.user_id,
+      name,
+      lastName,
+      address: profile.address,
+      city: profile.city,
+      state: profile.state,
+      zipCode: profile.zip_code,
+      skills: profile.skills,
+      preferences: profile.preferences,
+      availability: profile.availability === 1,
+    };
+  } catch (error) {
+    console.error("Error getting user profile:", error);
+    throw error;
+  }
 };
 
 module.exports = {

@@ -1,12 +1,12 @@
 const volunteerHistoryModel = require("../models/volunteerHistoryModel");
 
 // Validate history ID
-const validateHistoryId = (id) => {
+const validateHistoryId = async (id) => {
   if (!id || isNaN(id)) {
     throw new Error("Invalid history ID");
   }
 
-  const history = volunteerHistoryModel.getHistoryById(Number(id));
+  const history = await volunteerHistoryModel.getHistoryById(Number(id));
   if (!history) {
     throw new Error("History record not found");
   }
@@ -15,17 +15,18 @@ const validateHistoryId = (id) => {
 };
 
 // Get all volunteer history
-const getAllHistory = (req, res) => {
+const getAllHistory = async (req, res) => {
   try {
-    const history = volunteerHistoryModel.getAllHistory();
+    const history = await volunteerHistoryModel.getAllHistory();
     res.status(200).json(history);
   } catch (error) {
+    console.error('Error getting all history:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get history for the current user
-const getCurrentUserHistory = (req, res) => {
+const getCurrentUserHistory = async (req, res) => {
   try {
     // Get the current user from the session
     const user = req.session.user;
@@ -34,15 +35,16 @@ const getCurrentUserHistory = (req, res) => {
     }
 
     // Get the history for the current user
-    const history = volunteerHistoryModel.getHistoryByVolunteerId(user.id);
+    const history = await volunteerHistoryModel.getHistoryByVolunteerId(user.id);
     res.status(200).json(history);
   } catch (error) {
+    console.error('Error getting current user history:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get history for a specific volunteer
-const getVolunteerHistory = (req, res) => {
+const getVolunteerHistory = async (req, res) => {
   try {
     const volunteerId = Number(req.params.volunteerId);
 
@@ -50,15 +52,16 @@ const getVolunteerHistory = (req, res) => {
       return res.status(400).json({ message: "Invalid volunteer ID" });
     }
 
-    const history = volunteerHistoryModel.getHistoryByVolunteerId(volunteerId);
+    const history = await volunteerHistoryModel.getHistoryByVolunteerId(volunteerId);
     res.status(200).json(history);
   } catch (error) {
+    console.error('Error getting volunteer history:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Get history for a specific event
-const getEventHistory = (req, res) => {
+const getEventHistory = async (req, res) => {
   try {
     const eventId = Number(req.params.eventId);
 
@@ -66,38 +69,27 @@ const getEventHistory = (req, res) => {
       return res.status(400).json({ message: "Invalid event ID" });
     }
 
-    const history = volunteerHistoryModel.getHistoryByEventId(eventId);
+    const history = await volunteerHistoryModel.getHistoryByEventId(eventId);
     res.status(200).json(history);
   } catch (error) {
+    console.error('Error getting event history:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Add a new history record
-const addHistory = (req, res) => {
+const addHistory = async (req, res) => {
   try {
     const {
       volunteerId,
       eventId,
-      eventName,
-      eventDescription,
-      eventLocation,
-      requiredSkills,
-      urgency,
       eventDate,
       status,
       hoursServed,
     } = req.body;
 
     // Validate required fields
-    if (
-      !volunteerId ||
-      !eventId ||
-      !eventName ||
-      !eventLocation ||
-      !eventDate ||
-      !status
-    ) {
+    if (!volunteerId || !eventId || !eventDate) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -108,12 +100,14 @@ const addHistory = (req, res) => {
         .json({ message: "Volunteer ID and Event ID must be numbers" });
     }
 
-    // Validate status
-    const validStatuses = ["Upcoming", "Completed", "Cancelled"];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        message: "Invalid status. Must be Upcoming, Completed, or Cancelled",
-      });
+    // Validate status if provided
+    if (status) {
+      const validStatuses = ["Upcoming", "Completed", "Cancelled", "In Progress"];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          message: "Invalid status. Must be Upcoming, Completed, Cancelled, or In Progress",
+        });
+      }
     }
 
     // Validate hoursServed
@@ -124,16 +118,11 @@ const addHistory = (req, res) => {
     }
 
     // Create the history record
-    const newHistory = volunteerHistoryModel.addHistory({
+    const newHistory = await volunteerHistoryModel.addHistory({
       volunteerId: Number(volunteerId),
       eventId: Number(eventId),
-      eventName,
-      eventDescription: eventDescription || "",
-      eventLocation,
-      requiredSkills: requiredSkills || [],
-      urgency: urgency || "Medium",
       eventDate,
-      status,
+      status: status || "Upcoming",
       hoursServed: Number(hoursServed) || 0,
     });
 
@@ -142,54 +131,52 @@ const addHistory = (req, res) => {
       history: newHistory,
     });
   } catch (error) {
+    console.error('Error adding history:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Update history status
-const updateStatus = (req, res) => {
+const updateStatus = async (req, res) => {
   try {
     const historyId = Number(req.params.id);
     const { status } = req.body;
 
-    // Validate history ID
-    validateHistoryId(historyId);
-
     // Validate status
-    const validStatuses = ["Upcoming", "Completed", "Cancelled"];
+    const validStatuses = ["Upcoming", "Completed", "Cancelled", "In Progress"];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({
-        message: "Invalid status. Must be Upcoming, Completed, or Cancelled",
+        message: "Invalid status. Must be Upcoming, Completed, Cancelled, or In Progress",
       });
     }
 
-    // Update the status
-    const updatedHistory = volunteerHistoryModel.updateHistoryStatus(
-      historyId,
-      status
-    );
+    // Validate history ID and update the status
+    try {
+      await validateHistoryId(historyId);
+      const updatedHistory = await volunteerHistoryModel.updateHistoryStatus(historyId, status);
 
-    if (!updatedHistory) {
-      return res.status(404).json({ message: "History record not found" });
+      if (!updatedHistory) {
+        return res.status(404).json({ message: "History record not found" });
+      }
+
+      res.status(200).json({
+        message: "Status updated successfully",
+        history: updatedHistory,
+      });
+    } catch (error) {
+      return res.status(404).json({ message: error.message });
     }
-
-    res.status(200).json({
-      message: "Status updated successfully",
-      history: updatedHistory,
-    });
   } catch (error) {
+    console.error('Error updating status:', error);
     res.status(400).json({ message: error.message });
   }
 };
 
 // Update hours served
-const updateHours = (req, res) => {
+const updateHours = async (req, res) => {
   try {
     const historyId = Number(req.params.id);
     const { hours } = req.body;
-
-    // Validate history ID
-    validateHistoryId(historyId);
 
     // Validate hours
     if (!hours || isNaN(hours) || Number(hours) < 0) {
@@ -198,27 +185,33 @@ const updateHours = (req, res) => {
         .json({ message: "Hours must be a positive number" });
     }
 
-    // Update the hours
-    const updatedHistory = volunteerHistoryModel.updateHoursServed(
-      historyId,
-      Number(hours)
-    );
+    // Validate history ID and update the hours
+    try {
+      await validateHistoryId(historyId);
+      const updatedHistory = await volunteerHistoryModel.updateHoursServed(
+        historyId,
+        Number(hours)
+      );
 
-    if (!updatedHistory) {
-      return res.status(404).json({ message: "History record not found" });
+      if (!updatedHistory) {
+        return res.status(404).json({ message: "History record not found" });
+      }
+
+      res.status(200).json({
+        message: "Hours updated successfully",
+        history: updatedHistory,
+      });
+    } catch (error) {
+      return res.status(404).json({ message: error.message });
     }
-
-    res.status(200).json({
-      message: "Hours updated successfully",
-      history: updatedHistory,
-    });
   } catch (error) {
+    console.error('Error updating hours:', error);
     res.status(400).json({ message: error.message });
   }
 };
 
 // Get volunteer statistics
-const getVolunteerStats = (req, res) => {
+const getVolunteerStats = async (req, res) => {
   try {
     const volunteerId = Number(req.params.volunteerId);
 
@@ -226,15 +219,16 @@ const getVolunteerStats = (req, res) => {
       return res.status(400).json({ message: "Invalid volunteer ID" });
     }
 
-    const stats = volunteerHistoryModel.getVolunteerStats(volunteerId);
+    const stats = await volunteerHistoryModel.getVolunteerStats(volunteerId);
     res.status(200).json(stats);
   } catch (error) {
+    console.error('Error getting volunteer stats:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 // Export CSV of volunteer history
-const exportHistory = (req, res) => {
+const exportHistory = async (req, res) => {
   try {
     const volunteerId = req.query.volunteerId
       ? Number(req.query.volunteerId)
@@ -242,9 +236,9 @@ const exportHistory = (req, res) => {
 
     let historyData;
     if (volunteerId) {
-      historyData = volunteerHistoryModel.getHistoryByVolunteerId(volunteerId);
+      historyData = await volunteerHistoryModel.getHistoryByVolunteerId(volunteerId);
     } else {
-      historyData = volunteerHistoryModel.getAllHistory();
+      historyData = await volunteerHistoryModel.getAllHistory();
     }
 
     // Convert to CSV format
@@ -289,6 +283,7 @@ const exportHistory = (req, res) => {
 
     res.status(200).send(csv);
   } catch (error) {
+    console.error('Error exporting history:', error);
     res.status(500).json({ message: error.message });
   }
 };

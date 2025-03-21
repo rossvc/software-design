@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const eventController = require("../controllers/CreateEventController");
+const eventController = require("../controllers/createEventController");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // Get all events

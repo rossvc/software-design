@@ -36,18 +36,19 @@ document.addEventListener("DOMContentLoaded", function () {
       if (fullName && lastName && address && city && state && zip && skills) {
         // Prepare profile data
         const profileData = {
-          name: `${fullName} ${lastName}`,
-          email: `${username || 'user'}@example.com`, // Placeholder email
-          location: `${city}, ${state} ${zip}`,
+          name: fullName,
+          lastName: lastName,
           address: address,
-          address2: address2,
+          city: city,
+          state: state,
+          zipCode: zip,
           skills: [skills],
           preferences: preferences,
           availability: availability ? [availability] : []
         };
 
-        // Call the API to update user profile
-        fetch(`/api/users/profile/${userId || 'new'}`, {
+        // Call the API to update user profile with the correct endpoint
+        fetch(`/api/userinfo`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
