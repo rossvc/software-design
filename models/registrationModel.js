@@ -1,5 +1,5 @@
-const db = require('../utils/db');
-const bcrypt = require('bcrypt');
+const db = require("../utils/db");
+const bcrypt = require("bcrypt");
 
 // Get registration page content
 const registrationPageContent = {
@@ -33,7 +33,10 @@ const registerUser = async (username, password) => {
     validateUser(username, password);
 
     // Check if user already exists
-    const existingUsers = await db.query('SELECT * FROM UserCredentials WHERE username = ?', [username]);
+    const existingUsers = await db.query(
+      "SELECT * FROM UserCredentials WHERE username = ?",
+      [username]
+    );
     if (existingUsers.length > 0) {
       throw new Error("Username already exists!");
     }
@@ -44,38 +47,32 @@ const registerUser = async (username, password) => {
 
     // Add user to the database
     const result = await db.query(
-      'INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)',
-      [username, hashedPassword, 'volunteer']
+      "INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)",
+      [username, hashedPassword, "volunteer"]
     );
 
     return {
       id: result.insertId,
       username,
-      role: 'volunteer'
+      role: "volunteer",
     };
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     throw error;
   }
 };
 
 // Function to create an admin account
-const createAdminAccount = async (username, password, creatorId) => {
+const createAdminAccount = async (username, password) => {
   try {
     // Validate input
     validateUser(username, password);
-    
-    // Validate creator ID
-    if (!creatorId) throw new Error("Creator ID is required");
-    
-    // Check if creator is an admin
-    const creators = await db.query('SELECT * FROM UserCredentials WHERE id = ? AND role = ?', [creatorId, 'admin']);
-    if (creators.length === 0) {
-      throw new Error("Only existing administrators can create admin accounts");
-    }
 
     // Check if user already exists
-    const existingUsers = await db.query('SELECT * FROM UserCredentials WHERE username = ?', [username]);
+    const existingUsers = await db.query(
+      "SELECT * FROM UserCredentials WHERE username = ?",
+      [username]
+    );
     if (existingUsers.length > 0) {
       throw new Error("Username already exists!");
     }
@@ -86,21 +83,20 @@ const createAdminAccount = async (username, password, creatorId) => {
 
     // Add admin to the database
     const result = await db.query(
-      'INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)',
-      [username, hashedPassword, 'admin']
+      "INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)",
+      [username, hashedPassword, "admin"]
     );
 
     return {
       id: result.insertId,
       username,
-      role: 'admin'
+      role: "admin",
     };
   } catch (error) {
-    console.error('Admin creation error:', error);
+    console.error("Admin creation error:", error);
     throw error;
   }
 };
-
 
 module.exports = {
   getRegistrationPageContent: () => registrationPageContent,

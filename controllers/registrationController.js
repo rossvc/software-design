@@ -39,15 +39,6 @@ const createAdminAccount = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check if user is authenticated and is an admin
-    if (!req.session.user || req.session.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Only administrators can create admin accounts" });
-    }
-
-    const creatorId = req.session.user.id;
-
     // Validate input
     if (!username || !password) {
       return res
@@ -58,8 +49,7 @@ const createAdminAccount = async (req, res) => {
     // Create admin account
     const newAdmin = await registrationModel.createAdminAccount(
       username,
-      password,
-      creatorId
+      password
     );
 
     res

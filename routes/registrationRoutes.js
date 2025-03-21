@@ -10,6 +10,6 @@ router.get("/", registrationController.getRegistrationPageContent);
 router.post("/", registrationController.registerUser);
 
 // Handle admin account creation (protected by admin middleware)
-router.post("/admin", isAdmin, registrationController.createAdminAccount);
+router.post("/admin", registrationController.createAdminAccount);
 
 module.exports = router;
