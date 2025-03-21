@@ -84,12 +84,16 @@
       // Check if user is admin and show admin-only links
       document.addEventListener("DOMContentLoaded", function() {
         const userJson = sessionStorage.getItem('user');
-        if (userJson) {
-          const user = JSON.parse(userJson);
-          if (user.role === 'admin') {
-            // Show admin-only links
-            document.getElementById('volunteer-matching-link').style.display = 'block';
-          }
+        if (!userJson) {
+          // Redirect to login if not logged in
+          window.location.href = 'Signin.html';
+          return;
+        }
+        
+        const user = JSON.parse(userJson);
+        if (user.role === 'admin') {
+          // Show admin-only links
+          document.getElementById('volunteer-matching-link').style.display = 'block';
         }
       });
     </script>
