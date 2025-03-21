@@ -146,7 +146,7 @@
       let isEditMode = false;
       let eventId = null;
       
-      // Check if user is logged in
+      // Check if user is logged in and is admin
       document.addEventListener("DOMContentLoaded", function() {
         const userJson = sessionStorage.getItem('user');
         if (!userJson) {
@@ -157,7 +157,7 @@
 
         const user = JSON.parse(userJson);
         if (user.role !== 'admin') {
-          // Redirect if not an admin
+          // Redirect to volunteer events if not admin
           window.location.href = "VolunteerEvents.html";
           return;
         }
