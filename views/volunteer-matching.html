@@ -352,6 +352,28 @@
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
     <script>
+      // Check if user is logged in
+      document.addEventListener("DOMContentLoaded", function() {
+        const userJson = sessionStorage.getItem('user');
+        if (!userJson) {
+          // Redirect to login if not logged in
+          alert('Please log in to access this page');
+          window.location.href = 'Signin.html';
+          return;
+        }
+
+        const user = JSON.parse(userJson);
+        if (user.role !== 'admin') {
+          // Redirect if not an admin
+          alert('You do not have permission to access this page');
+          window.location.href = 'VolunteerEvents.html';
+          return;
+        }
+
+        // Initialize the page for admin
+        // Add code here to fetch volunteers and events from API
+      });
+
       // Add dropdown toggle function
       function toggleDropdown() {
         document.getElementById("dropdownMenu").classList.toggle("show");

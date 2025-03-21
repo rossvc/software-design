@@ -59,8 +59,52 @@ const registerUser = async (username, password) => {
   }
 };
 
+// Function to create an admin account
+const createAdminAccount = async (username, password, creatorId) => {
+  try {
+    // Validate input
+    validateUser(username, password);
+    
+    // Validate creator ID
+    if (!creatorId) throw new Error("Creator ID is required");
+    
+    // Check if creator is an admin
+    const creators = await db.query('SELECT * FROM UserCredentials WHERE id = ? AND role = ?', [creatorId, 'admin']);
+    if (creators.length === 0) {
+      throw new Error("Only existing administrators can create admin accounts");
+    }
+
+    // Check if user already exists
+    const existingUsers = await db.query('SELECT * FROM UserCredentials WHERE username = ?', [username]);
+    if (existingUsers.length > 0) {
+      throw new Error("Username already exists!");
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Add admin to the database
+    const result = await db.query(
+      'INSERT INTO UserCredentials (username, password, role) VALUES (?, ?, ?)',
+      [username, hashedPassword, 'admin']
+    );
+
+    return {
+      id: result.insertId,
+      username,
+      role: 'admin'
+    };
+  } catch (error) {
+    console.error('Admin creation error:', error);
+    throw error;
+  }
+};
+
+
 module.exports = {
   getRegistrationPageContent: () => registrationPageContent,
   registerUser,
-  validateUser, // Exported for testing
+  createAdminAccount,
+  validateUser,
 };

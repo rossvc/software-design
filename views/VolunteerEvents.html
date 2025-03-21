@@ -62,7 +62,7 @@
         <div class="dropdown-content">
           <a href="Homepage.html">Home</a>
           <a href="UserInfo.html">Your Profile</a>
-          <a href="volunteer-matching.html">Volunteer Matching</a>
+          <a href="volunteer-matching.html" id="volunteer-matching-link" style="display: none;">Volunteer Matching</a>
           <a href="volunteer-history.html">Volunteer History</a>
           <a href="notifications.html">Notifications</a>
         </div>
@@ -76,6 +76,18 @@
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
     <script>
+      // Check if user is admin and show admin-only links
+      document.addEventListener("DOMContentLoaded", function() {
+        const userJson = sessionStorage.getItem('user');
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          if (user.role === 'admin') {
+            // Show admin-only links
+            document.getElementById('volunteer-matching-link').style.display = 'block';
+          }
+        }
+      });
+
       // Add dropdown toggle function
       function toggleDropdown() {
         document.getElementById("dropdownMenu").classList.toggle("show");

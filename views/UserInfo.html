@@ -24,7 +24,8 @@
             <div class="dropdown-content">
               <a href="Homepage.html">Home</a>
               <a href="VolunteerEvents.html">Volunteer Events</a>
-              <a href="volunteer-matching.html">Volunteer Matching</a>
+              <a href="UserInfo.html">Your Profile</a>
+              <a href="volunteer-matching.html" id="volunteer-matching-link" style="display: none;">Volunteer Matching</a>
               <a href="volunteer-history.html">Volunteer History</a>
             </div>
           </div>
@@ -79,5 +80,18 @@
 
     <!-- External JavaScript -->
     <script src="UserInfo.js"></script>
+    <script>
+      // Check if user is admin and show admin-only links
+      document.addEventListener("DOMContentLoaded", function() {
+        const userJson = sessionStorage.getItem('user');
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          if (user.role === 'admin') {
+            // Show admin-only links
+            document.getElementById('volunteer-matching-link').style.display = 'block';
+          }
+        }
+      });
+    </script>
   </body>
 </html>
