@@ -46,8 +46,8 @@ body {
 
 .container {
   background-color: whitesmoke;
-  width: 400px;
-  margin: 80px auto 40px 20px;
+  width: 500px; 
+  margin: 80px auto 40px 0px; 
   padding: 20px;
   border-radius: 8px;
   overflow: visible;
@@ -86,7 +86,8 @@ input,
 textarea,
 select {
   border: 2px solid black;
-  width: 100%;
+  width: 120%;
+  max-width: 100%;
   padding: 8px;
   border-radius: 4px;
   font-size: 14px;
