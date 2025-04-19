@@ -1,9 +1,8 @@
-const signInModel = require('../models/signInModel');
+const signInModel = require("../models/signInModel");
 
 exports.signIn = async (req, res) => {
   try {
     const { username, password } = req.body;
-
     const user = await signInModel.findUser(username, password);
 
     if (user) {
@@ -25,7 +24,7 @@ exports.signIn = async (req, res) => {
       res.status(401).json({ message: "Invalid username or password" });
     }
   } catch (error) {
-    console.error('Sign in error:', error);
+    console.error("Sign in error:", error);
     res.status(500).json({ message: "An error occurred during sign in" });
   }
 };

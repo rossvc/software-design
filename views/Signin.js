@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = document.getElementById("password").value;
 
       // Call the login API with the correct endpoint
-      fetch("/api/users/login", {
+      fetch("/api/signin/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
