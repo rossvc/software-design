@@ -27,6 +27,7 @@ function setupNavbarLinks() {
       links += '<a href="Homepage.html">Home</a>';
       links += '<a href="AdminEventsDashboard.html">Admin Dashboard</a>';
       links += '<a href="volunteer-matching.html">Volunteer Matching</a>';
+      links += '<a href="Reporting.html">Reports</a>';
       links += '<a href="notifications.html">Notifications</a>';
     } else {
       links += '<a href="Homepage.html">Home</a>';

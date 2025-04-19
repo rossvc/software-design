@@ -47,6 +47,7 @@ try {
   const homePageRoutes = require("./routes/HomePageRoutes");
   const userInfoRoutes = require("./routes/userInfoRoutes");
   const signInRoutes = require("./routes/signInRoutes");
+  const reportRoutes = require("./routes/reportRoutes");
   console.log("Routes imported successfully");
 
   // Use routes
@@ -59,17 +60,13 @@ try {
   app.use("/api/registration", registrationRoutes);
   app.use("/api/homepage", homePageRoutes);
   app.use("/api/userinfo", userInfoRoutes);
+  app.use("/api/reports", reportRoutes);
   app.use("/api/signin", signInRoutes);
   console.log("Routes set up successfully");
 } catch (error) {
   console.error("Error setting up routes:", error);
   process.exit(1);
 }
-
-// Serve the frontend - Always return the main page for client-side routing
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "Homepage.html"));
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -100,10 +97,9 @@ process.on("uncaughtException", (error) => {
   process.exit(1);
 });
 
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled promise rejection:", reason);
-  process.exit(1);
+// Serve the frontend - Always return the main page for client-side routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "Homepage.html"));
 });
 
 module.exports = app; // For testing purposes

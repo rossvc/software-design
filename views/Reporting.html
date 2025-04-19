@@ -1,0 +1,27 @@
+<!-- views/Reporting.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Reports</title>
+  <script defer src="reporting.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+  <main>
+    <h1>Generate Reports</h1>
+    <section>
+      <h2>Volunteer Participation</h2>
+      <button onclick="generateReport('volunteers', 'pdf')">Download PDF</button>
+      <button onclick="generateReport('volunteers', 'csv')">Download CSV</button>
+    </section>
+    <section>
+      <h2>Event Details & Assignments</h2>
+      <button onclick="generateReport('events', 'pdf')">Download PDF</button>
+      <button onclick="generateReport('events', 'csv')">Download CSV</button>
+    </section>
+    <div id="report-message"></div>
+  </main>
+</body>
+</html>
