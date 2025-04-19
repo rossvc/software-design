@@ -47,41 +47,9 @@
     </style>
   </head>
   <body>
-    <div class="header">
-      <div class="logo">
-        <img
-          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
-          alt="logo"
-        />
-      </div>
-      <div class="title">Homepage</div>
-      <div class="menu-icon" onclick="toggleDropdown()">
-        <i
-          class="bx bx-menu"
-          id="menuIcon"
-          style="color: white; font-size: 30px"
-        ></i>
-      </div>
-      <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-content" id="not-logged-in-menu">
-          <a href="Signin.html">Sign In</a>
-          <a href="Registration.html">Register</a>
-        </div>
-        <div class="dropdown-content" id="user-menu" style="display: none;">
-          <a href="Homepage.html">Home</a>
-          <a href="UserInfo.html">Your Profile</a>
-          <a href="VolunteerEvents.html">Volunteer Events</a>
-          <a href="volunteer-history.html">Volunteer History</a>
-          <a href="notifications.html">Notifications</a>
-        </div>
-        <div class="dropdown-content" id="admin-menu" style="display: none;">
-          <a href="Homepage.html">Home</a>
-          <a href="AdminEventsDashboard.html">Admin Dashboard</a>
-          <a href="volunteer-matching.html">Volunteer Matching</a>
-          <a href="notifications.html">Notifications</a>
-        </div>
-      </div>
-    </div>
+    <div id="navbar-container"></div>
+    <script src="navbar.js"></script>
+    <script>loadNavbar('Homepage');</script>
 
     <div class="main-content">
       <div class="main-logo">

@@ -264,29 +264,9 @@
     </style>
   </head>
   <body>
-    <div class="header">
-      <div class="logo">
-        <img
-          src="https://i.postimg.cc/mDZ6xwry/Untitled-Artwork.png"
-          alt="logo"
-        />
-      </div>
-      <div class="title">Volunteer History</div>
-      <div class="menu-icon" onclick="toggleDropdown()">
-        <i class="bx bx-menu" style="color: white; font-size: 30px"></i>
-      </div>
-      <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-content">
-          <a href="Homepage.html">Home</a>
-          <a href="UserInfo.html">Your Profile</a>
-          <a href="VolunteerEvents.html">Volunteer Events</a>
-          <a href="volunteer-history.html">Volunteer History</a>
-          <a href="notifications.html">Notifications</a>
-          <a href="AdminEventsDashboard.html" id="admin-dashboard-link" style="display: none;">Admin Dashboard</a>
-          <a href="volunteer-matching.html" id="volunteer-matching-link" style="display: none;">Volunteer Matching</a>
-        </div>
-      </div>
-    </div>
+    <div id="navbar-container"></div>
+    <script src="navbar.js"></script>
+    <script>loadNavbar('Volunteer History');</script>
 
     <div class="container">
       <div class="filters">
