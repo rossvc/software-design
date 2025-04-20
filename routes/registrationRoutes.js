@@ -11,5 +11,9 @@ router.post("/", registrationController.registerUser);
 
 // Handle admin account creation (protected by admin middleware)
 router.post("/admin", registrationController.createAdminAccount);
+// Serve the RegistrationForm.html file
+router.get("/form", (req, res) => {
+  res.sendFile("RegistrationForm.html", { root: "./public" });
+});
 
 module.exports = router;

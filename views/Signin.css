@@ -14,6 +14,7 @@ body {
   height: 100vh;
 }
 
+/* Header/NavBar */
 .header {
   background-color: #0951bd;
   color: whitesmoke;
@@ -42,17 +43,56 @@ body {
   color: whitesmoke;
 }
 
+/* Dropdown Menu Styles */
+.menu-icon {
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.dropdown {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: #0951bd; /* Blue dropdown like the navbar */
+  border: none;
+  display: none;
+  z-index: 1001;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-content a {
+  padding: 12px 18px;
+  color: white; /* White text */
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #073a8d; /* Darker blue on hover */
+}
+
+.dropdown-content a:last-child {
+  border-bottom: none;
+}
+
 /* Bigger & Centered Login Box */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 500px; /* Increased width */
+  width: 500px;
   background: white;
-  padding: 50px; /* More padding */
-  border-radius: 12px; /* Slightly rounded corners */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  padding: 50px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
   position: absolute;
   top: 50%;
@@ -78,7 +118,7 @@ body {
 
 .form-container input {
   width: 100%;
-  padding: 12px; /* Larger input boxes */
+  padding: 12px;
   margin: 12px 0;
   border: 1.5px solid #ccc;
   border-radius: 6px;
@@ -86,7 +126,6 @@ body {
   transition: 0.3s;
 }
 
-/* Focus effect */
 .form-container input:focus {
   border-color: #0951bd;
   box-shadow: 0px 0px 5px rgba(9, 81, 189, 0.3);
@@ -100,7 +139,7 @@ body {
 .form-container .buttons button {
   background-color: #0951bd;
   color: white;
-  padding: 12px 24px; /* Larger button */
+  padding: 12px 24px;
   border-radius: 6px;
   font-size: 16px;
   border: none;
