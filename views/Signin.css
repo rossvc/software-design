@@ -158,6 +158,15 @@ body {
   margin-bottom: 10px;
 }
 
+.back-link a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.back-link a:hover {
+  text-decoration: underline;
+}
+
 .footer {
   background-color: #0951bd;
   color: white;
