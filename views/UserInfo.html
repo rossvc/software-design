@@ -5,16 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile Page</title>
     <link rel="stylesheet" href="UserInfo.css" />
+    <script defer src="UserInfo.js"></script>
   </head>
   <body>
     <div class="container">
-      <!-- Header Section -->
-      <div class="header">
-        <h1>User Profile Page</h1>
-        <div id="navbar-container"></div>
+      <!-- Header with logo and dropdown -->
+      <div class="nav-header">
+        <div class="nav-title">
+          <img src="logo.png" alt="Logo" class="logo-img" />
+          <h1>User Profile Page</h1>
+        </div>
+        <div class="dropdown" id="navDropdown">
+          <button class="dropbtn" onclick="toggleDropdown()">☰</button>
+          <div class="dropdown-content">
+            <a href="Homepage.html">Home</a>
+            <a href="UserInfo.html">Your Profile</a>
+            <a href="VolunteerEvents.html">Volunteer Events</a>
+            <a href="volunteer-history.html">Volunteer History</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="#" onclick="logout()">Log Out</a>
+          </div>
+        </div>
       </div>
-      <script src="navbar.js"></script>
-      <script>loadNavbar('User Info');</script>
 
       <div class="content">
         <!-- User Info Section -->
@@ -54,38 +66,12 @@
             <p>Join us for a beach cleanup event to protect marine life.</p>
           </div>
           <div id="notificationSection"></div>
-          <!-- Separate section for notifications -->
         </div>
       </div>
     </div>
+
     <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
-    <!-- External JavaScript -->
-    <script src="UserInfo.js"></script>
-    <script>
-      // Check if user is logged in and show admin links if admin
-      document.addEventListener("DOMContentLoaded", function() {
-        const userJson = sessionStorage.getItem('user');
-        if (!userJson) {
-          // Redirect to login if not logged in
-          window.location.href = "Signin.html";
-          return;
-        }
-        
-        const user = JSON.parse(userJson);
-        if (user.role === 'admin') {
-          // Show admin-only links
-          document.getElementById('admin-dashboard-link').style.display = 'block';
-          document.getElementById('volunteer-matching-link').style.display = 'block';
-        }
-        
-        // Load user information
-        // Add code here to load user information from API
-      });
-
-      // Add dropdown toggle function
-    </script>
   </body>
 </html>
