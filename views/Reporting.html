@@ -1,27 +1,58 @@
 <!-- views/Reporting.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Reports</title>
-  <script defer src="reporting.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="navbar"></div>
-  <main>
-    <h1>Generate Reports</h1>
-    <section>
-      <h2>Volunteer Participation</h2>
-      <button onclick="generateReport('volunteers', 'pdf')">Download PDF</button>
-      <button onclick="generateReport('volunteers', 'csv')">Download CSV</button>
-    </section>
-    <section>
-      <h2>Event Details & Assignments</h2>
-      <button onclick="generateReport('events', 'pdf')">Download PDF</button>
-      <button onclick="generateReport('events', 'csv')">Download CSV</button>
-    </section>
-    <div id="report-message"></div>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Reports</title>
+    <script defer src="reporting.js"></script>
+    <link rel="stylesheet" href="Reporting.css" />
+  </head>
+  <body>
+    <!-- Navbar (embedded directly) -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <img src="logo.png" alt="Logo" class="nav-logo" />
+      </div>
+      <div class="nav-title">Volunteer Center</div>
+      <div class="nav-right">
+        <div class="dropdown">
+          <button class="dropbtn">☰</button>
+          <div class="dropdown-content">
+            <a href="Homepage.html">Home</a>
+            <a href="Reporting.html">Reports</a>
+            <a href="UserInfo.html">Profile</a>
+            <a href="Homepage.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Logo header -->
+    <header class="report-header">
+      <img src="logo.png" alt="Volunteer Logo" class="report-logo" />
+    </header>
+
+    <!-- Main report content -->
+    <main class="report-card">
+      <h1>Generate Reports</h1>
+
+      <section>
+        <h2>Volunteer Participation</h2>
+        <button onclick="generateReport('volunteers', 'pdf')">
+          Download PDF
+        </button>
+        <button onclick="generateReport('volunteers', 'csv')">
+          Download CSV
+        </button>
+      </section>
+
+      <section>
+        <h2>Event Details & Assignments</h2>
+        <button onclick="generateReport('events', 'pdf')">Download PDF</button>
+        <button onclick="generateReport('events', 'csv')">Download CSV</button>
+      </section>
+
+      <div id="report-message"></div>
+    </main>
+  </body>
 </html>

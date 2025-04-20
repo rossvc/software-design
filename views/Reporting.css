@@ -1,0 +1,154 @@
+/* ---------- Global Styles ---------- */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fc;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  background-color: #015fc9;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  height: 30px;
+  margin-right: 1rem;
+}
+
+.nav-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.nav-right {
+  position: relative;
+}
+
+/* ---------- Dropdown Menu ---------- */
+.dropdown {
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: #015fc9;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #015fc9;
+  min-width: 150px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+}
+
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  border-radius: 6px;
+}
+
+.dropdown-content a:hover {
+  background-color: #0144a0;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* ---------- Header Section ---------- */
+.report-header {
+  background-color: #f4f7fc;
+  color: white;
+  text-align: center;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.report-logo {
+  width: 120px;
+  max-width: 80%;
+  height: auto;
+  display: block;
+}
+
+.report-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+/* ---------- Main Report Card ---------- */
+.report-card {
+  background-color: white;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.report-card h1 {
+  margin-bottom: 1.5rem;
+  color: #015fc9;
+}
+
+.report-card section {
+  margin-bottom: 2rem;
+}
+
+.report-card h2 {
+  color: #003366;
+  margin-bottom: 0.8rem;
+}
+
+/* ---------- Buttons ---------- */
+button {
+  background-color: #015fc9;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0144a0;
+}
+
+/* ---------- Report Message ---------- */
+#report-message {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #006600;
+}
