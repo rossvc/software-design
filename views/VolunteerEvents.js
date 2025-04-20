@@ -2,13 +2,33 @@ document.addEventListener("DOMContentLoaded", function () {
   // Check if user is logged in
   const userJson = sessionStorage.getItem("user");
   if (!userJson) {
-    // Redirect to login if not logged in
     alert("Please log in to view events");
     window.location.href = "Signin.html";
     return;
   }
 
   const user = JSON.parse(userJson);
+
+  // Inject navbar with dropdown
+  const navbarContainer = document.getElementById("navbar-container");
+  navbarContainer.innerHTML = `
+    <nav style="display: flex; justify-content: space-between; align-items: center; background-color: #0951bd; padding: 10px 20px; color: white;">
+      <h2 style="margin: 0;">Volunteer Center</h2>
+      <div style="position: relative;">
+        <i class='bx bx-menu menu-icon' onclick="toggleDropdown()" style="font-size: 24px; cursor: pointer;"></i>
+        <div id="dropdownMenu" class="dropdown">
+          <div class="dropdown-content">
+            <a href="Homepage.html">Home</a>
+            <a href="UserProfile.html">Your Profile</a>
+            <a href="VolunteerEvents.html">Volunteer Events</a>
+            <a href="volunteer-history.html">Volunteer History</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="Signin.html">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  `;
 
   // Function to toggle dropdown menu
   window.toggleDropdown = function () {
@@ -45,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.register = function (modalId, eventId) {
-    // Show loading state
     const registerButton = document.querySelector(
       `#${modalId} button:last-of-type`
     );
@@ -53,14 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
     registerButton.textContent = "Registering...";
     registerButton.disabled = true;
 
-    // Call the API to register for the event with the correct endpoint
     fetch("/api/matching/matches", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        volunteerId: user.id || 1, // Fallback to 1 if no ID
+        volunteerId: user.id || 1,
         eventId: eventId,
       }),
       credentials: "include",
@@ -73,14 +91,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return response.json();
       })
-      .then((data) => {
-        // Show success message
+      .then(() => {
         const message = document.getElementById(`message-${modalId}`);
         if (message) {
           message.style.display = "block";
         }
 
-        // Update UI to show registered status
         const cardButton = document
           .querySelector(`#${modalId}`)
           .parentNode.querySelector("button");
@@ -96,13 +112,12 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       })
       .finally(() => {
-        // Reset button state
         registerButton.textContent = originalButtonText;
         registerButton.disabled = false;
       });
   };
 
-  // Fetch events from the API with the correct endpoint
+  // Fetch events from API
   fetch("/api/createevents", {
     method: "GET",
     headers: {
@@ -119,50 +134,43 @@ document.addEventListener("DOMContentLoaded", function () {
       return response.json();
     })
     .then((events) => {
-      // Clear existing event cards
       const container = document.querySelector(".container");
       container.innerHTML = "";
 
-      // Create event cards dynamically
       events.forEach((event, index) => {
         const modalId = `modal${index + 1}`;
-
-        // Create card HTML
         const cardHtml = `
-        <div class="card">
-          <h3>${event.eventName}</h3>
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop" alt="${
-            event.eventName
-          }" />
-          <p>${event.description || "No description available"}</p>
-          <button onclick="showModal('${modalId}')">Register</button>
-          <div id="${modalId}" class="modal">
+          <div class="card">
             <h3>${event.eventName}</h3>
-            <p>
-              Location: ${event.location}<br />
-              Urgency: ${event.urgency} <br />
-              Skills required: ${
-                event.skills ? event.skills.join(", ") : "None"
-              } <br />
-              Date: ${event.date} <br />
-              Time: ${event.startTime} - ${event.endTime}
-            </p>
-            <button onclick="closeModal('${modalId}')">Close</button>
-            <button onclick="register('${modalId}', ${
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop" alt="${
+              event.eventName
+            }" />
+            <p>${event.description || "No description available"}</p>
+            <button onclick="showModal('${modalId}')">Register</button>
+            <div id="${modalId}" class="modal">
+              <h3>${event.eventName}</h3>
+              <p>
+                Location: ${event.location}<br />
+                Urgency: ${event.urgency} <br />
+                Skills required: ${
+                  event.skills ? event.skills.join(", ") : "None"
+                } <br />
+                Date: ${event.date} <br />
+                Time: ${event.startTime} - ${event.endTime}
+              </p>
+              <button onclick="closeModal('${modalId}')">Close</button>
+              <button onclick="register('${modalId}', ${
           event.id
         })">Register</button>
-            <div id="message-${modalId}" class="registered-message">
-              Congratulations! Registered
+              <div id="message-${modalId}" class="registered-message">
+                Congratulations! Registered
+              </div>
             </div>
           </div>
-        </div>
-      `;
-
-        // Add card to container
+        `;
         container.innerHTML += cardHtml;
       });
 
-      // If no events, show a message
       if (events.length === 0) {
         container.innerHTML =
           '<p class="no-events">No events available at this time.</p>';
