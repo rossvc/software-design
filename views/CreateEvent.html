@@ -116,7 +116,9 @@
         <input type="date" id="date" name="date" required />
 
         <div class="button-container">
-          <button type="button" class="button button-upload">
+          <input type="file" id="imageUpload" name="image" accept="image/*" style="display: none;" />
+
+          <button type="button" class="button button-upload" onclick="document.getElementById('imageUpload').click();">
             Upload Image
           </button>
           <button type="submit" class="button" id="submit-button">Create Event</button>
