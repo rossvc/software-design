@@ -9,7 +9,8 @@ const getUserProfile = async (req, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const userId = req.query.id;
+    const userId = req.session.user.id; // ✅ FIXED: Get user ID from session
+
     const userProfile = await userInfoModel.getUserProfile(userId);
 
     if (!userProfile) {
@@ -26,11 +27,6 @@ const getUserProfile = async (req, res) => {
 // Update user profile
 const updateUserProfile = async (req, res) => {
   try {
-    // Check if user is authenticated
-    // if (!req.session || !req.session.user) {
-    //   return res.status(401).json({ message: "Not authenticated" });
-    // }
-
     const userId = req.body.userId;
     const profileData = req.body.profileData;
 
@@ -51,14 +47,12 @@ const updateUserProfile = async (req, res) => {
 // Get user notifications
 const getUserNotifications = async (req, res) => {
   try {
-    // Check if user is authenticated
     if (!req.session || !req.session.user) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
     const userId = req.session.user.id;
 
-    // Assuming notificationModel has a method to get notifications by user ID
     const notifications = await notificationModel.getNotificationsByUserId(
       userId
     );
@@ -74,3 +68,4 @@ module.exports = {
   updateUserProfile,
   getUserNotifications,
 };
+

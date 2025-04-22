@@ -8,8 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const user = JSON.parse(userJson);
-  // Fetch user profile data
-  fetch(`/api/userinfo?id=${user.id}`, {
+
+  // ✅ FIXED: No query parameter needed here!
+  fetch(`/api/userinfo`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -32,17 +33,16 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("userCity").innerText =
         data.city || "Not provided";
       document.getElementById("userState").innerText =
-        data.state || "Not provided";
+        data.state || "Not provided"; // Full state name
       document.getElementById("userZip").innerText =
         data.zipCode || "Not provided";
       document.getElementById("userSkills").innerText = data.skills
         ? data.skills.join(", ")
         : "None";
       document.getElementById("userRole").innerText = user.role || "User";
-      document.getElementById("userAvailability").innerText =
-        data.availability && data.availability.length > 0
-          ? data.availability.join(", ")
-          : "Not specified";
+      document.getElementById("userAvailability").innerText = data.availability
+        ? "Available"
+        : "Not Available"; // ✅ FIXED!
     })
     .catch((error) => {
       console.error("Error fetching user profile:", error);
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   // Fetch notifications
-  fetch(`/api/notifications`, {
+  fetch(`/api/userinfo/notifications`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   window.closeNotification = function (notificationId) {
-    fetch(`/api/notifications/${notificationId}`, {
+    fetch(`/api/userinfo/notifications/${notificationId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ read: true }),
@@ -149,13 +149,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
-  // Dropdown toggle for new custom navbar
+  // Dropdown toggle for navbar
   const dropdown = document.getElementById("navDropdown");
   const button = dropdown?.querySelector(".dropbtn");
 
   if (button) {
     button.addEventListener("click", function (e) {
-      e.stopPropagation(); // prevent window click from immediately closing it
+      e.stopPropagation();
       dropdown.classList.toggle("show");
     });
 
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Logout function for dropdown menu
+// Logout function
 function logout() {
   sessionStorage.removeItem("user");
   window.location.href = "Homepage.html";
