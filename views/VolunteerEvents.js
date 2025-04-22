@@ -140,7 +140,12 @@ document.addEventListener("DOMContentLoaded", function () {
       events.forEach((event, index) => {
         const modalId = `modal${index + 1}`;
         const cardHtml = `
-          <div class="card">
+        <div class="card">
+          <h3>${event.eventName}</h3>
+          <img src=${event.image} alt="${event.eventName}" />
+          <p>${event.description || "No description available"}</p>
+          <button onclick="showModal('${modalId}')">Register</button>
+          <div id="${modalId}" class="modal">
             <h3>${event.eventName}</h3>
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop" alt="${
               event.eventName
