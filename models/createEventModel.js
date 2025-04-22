@@ -69,11 +69,11 @@ const mapDbEventToModelEvent = (dbEvent) => {
     description: dbEvent.description,
     location: dbEvent.location,
     urgency: dbEvent.urgency.charAt(0).toUpperCase() + dbEvent.urgency.slice(1), // Capitalize first letter
-    skills: JSON.parse(dbEvent.required_skills),
+    skills: dbEvent.required_skills ? JSON.parse(dbEvent.required_skills) : [],  // Handle null or invalid JSON
     image: dbEvent.image_url,
-    startTime: new Date(dbEvent.event_date).toTimeString().substring(0, 5),
-    endTime: new Date(dbEvent.event_date).toTimeString().substring(0, 5), // Assuming end time is not stored separately
-    date: new Date(dbEvent.event_date).toISOString().split("T")[0],
+    startTime: dbEvent.event_date ? new Date(dbEvent.event_date).toTimeString().substring(0, 5) : null,
+    endTime: dbEvent.event_date ? new Date(dbEvent.event_date).toTimeString().substring(0, 5) : null, // Assuming end time is not stored separately
+    date: dbEvent.event_date ? new Date(dbEvent.event_date).toISOString().split("T")[0] : null,
     createdAt: dbEvent.created_at
       ? new Date(dbEvent.created_at).toISOString()
       : new Date().toISOString(),
@@ -112,6 +112,7 @@ module.exports = {
 
       // Convert urgency to lowercase for database
       const urgency = event.urgency.toLowerCase();
+      const skillsToStore = Array.isArray(event.skills) ? event.skills : [];
 
       const result = await db.query(
         `INSERT INTO EventDetails 
@@ -121,7 +122,7 @@ module.exports = {
           event.eventName,
           event.description,
           event.location,
-          JSON.stringify(event.skills || []),
+          JSON.stringify(skillsToStore), // Ensure skills is always a JSON string
           urgency,
           eventDate,
         ]
@@ -160,6 +161,7 @@ module.exports = {
 
       // Convert urgency to lowercase for database
       const urgency = updatedEvent.urgency.toLowerCase();
+      const skillsToStore = Array.isArray(updatedEvent.skills) ? updatedEvent.skills : [];
 
       // Update in database
       await db.query(
@@ -171,7 +173,7 @@ module.exports = {
           updatedEvent.eventName,
           updatedEvent.description,
           updatedEvent.location,
-          JSON.stringify(updatedEvent.skills),
+          JSON.stringify(skillsToStore), // Ensure skills is always a JSON string
           urgency,
           eventDate,
           id,
