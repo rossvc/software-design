@@ -10,6 +10,40 @@
       rel="stylesheet"
     />
     <style>
+      /* Add dropdown styles */
+      .dropdown {
+        position: absolute;
+        top: 60px;
+        right: 25px;
+        background-color: #0951bd;
+        padding: 10px;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .dropdown-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+      }
+
+      .dropdown-content a {
+        color: whitesmoke;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        display: block;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #2563eb;
+      }
+
+      .show {
+        display: block;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -255,7 +289,9 @@
   <body>
     <div id="navbar-container"></div>
     <script src="navbar.js"></script>
-    <script>loadNavbar('Admin Events Dashboard');</script>
+    <script>
+      loadNavbar("Admin Events Dashboard");
+    </script>
 
     <div class="dashboard-container">
       <div class="dashboard-header">
@@ -288,7 +324,6 @@
       </div>
 
       <div class="events-grid" id="eventsGrid">
-        <!-- Event cards will be loaded here dynamically -->
         <div class="loading-message">Loading events...</div>
       </div>
     </div>
@@ -307,162 +342,192 @@
     >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-
     <script>
       // Check if user is logged in and is admin
-      document.addEventListener("DOMContentLoaded", function() {
-        const userJson = sessionStorage.getItem('user');
+      document.addEventListener("DOMContentLoaded", function () {
+        const userJson = sessionStorage.getItem("user");
         if (!userJson) {
           // Redirect to login if not logged in
           window.location.href = "Signin.html";
           return;
         }
-        
+
         const user = JSON.parse(userJson);
-        if (user.role !== 'admin') {
+        if (user.role !== "admin") {
           // Redirect to volunteer events if not admin
           window.location.href = "VolunteerEvents.html";
           return;
         }
-        
+
         // Continue with the rest of the script
         fetchEvents();
       });
 
       function fetchEvents() {
-        const eventsGrid = document.getElementById('eventsGrid');
-        eventsGrid.innerHTML = '<div class="loading-message">Loading events...</div>';
+        const eventsGrid = document.getElementById("eventsGrid");
+        eventsGrid.innerHTML =
+          '<div class="loading-message">Loading events...</div>';
 
-        fetch('/api/createevents', {
-          method: 'GET',
+        fetch("/api/createevents", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include'
+          credentials: "include",
         })
-        .then(response => {
-          if (!response.ok) {
-            return response.json().then(data => {
-              throw new Error(data.message || 'Failed to fetch events');
-            });
-          }
-          return response.json();
-        })
-        .then(events => {
-          if (events.length === 0) {
-            eventsGrid.innerHTML = '<div class="no-events">No events found</div>';
-            return;
-          }
-
-          // Clear loading message
-          eventsGrid.innerHTML = '';
-
-          // Populate events
-          events.forEach(event => {
-            const eventDate = new Date(event.date);
-            const formattedDate = eventDate.toLocaleDateString('en-US', { 
-              month: 'long', 
-              day: 'numeric', 
-              year: 'numeric' 
-            });
-
-            // Determine status class
-            let statusClass = 'status-active';
-            if (event.status === 'completed') {
-              statusClass = 'status-completed';
-            } else if (event.status === 'pending') {
-              statusClass = 'status-pending';
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(data.message || "Failed to fetch events");
+              });
+            }
+            return response.json();
+          })
+          .then((events) => {
+            if (events.length === 0) {
+              eventsGrid.innerHTML =
+                '<div class="no-events">No events found</div>';
+              return;
             }
 
-            // Create event card
-            const card = document.createElement('div');
-            card.className = 'event-card';
-            card.dataset.id = event.id;
-            card.dataset.status = event.status || 'active';
-            card.dataset.skills = event.skills ? event.skills.join(',') : '';
+            // Clear loading message
+            eventsGrid.innerHTML = "";
 
-            card.innerHTML = `
-              <span class="event-status ${statusClass}">${event.status ? event.status.charAt(0).toUpperCase() + event.status.slice(1) : 'Active'}</span>
-              <h3>${event.eventName}</h3>
-              <img
-                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop"
-                alt="${event.eventName}"
-                style="
-                  width: 100%;
-                  height: 200px;
-                  object-fit: cover;
-                  border-radius: 4px;
-                "
-              />
-              <p><strong>Date:</strong> ${formattedDate}</p>
-              <p><strong>Location:</strong> ${event.location}</p>
-              <p class="event-skills"><strong>Required Skills:</strong> ${event.skills ? event.skills.join(', ') : 'None'}</p>
-              <p><strong>Volunteers Needed:</strong> ${event.volunteersAssigned || 0}/${event.volunteersNeeded || 0}</p>
+            // Populate events
+            events.forEach((event) => {
+              let skillsArray = [];
+              try {
+                skillsArray = Array.isArray(event.skills) ? event.skills : [];
+              } catch (error) {
+                console.error("Error parsing skills:", error, event);
+                skillsArray = [];
+              }
 
-              <div class="volunteer-list">
-                <h4>Assigned Volunteers</h4>
-                <ul id="volunteerList-${event.id}">
-                  <li>Loading volunteers...</li>
-                </ul>
-              </div>
+              const eventDate = new Date(event.date);
+              const formattedDate = eventDate.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
 
-              <div class="action-buttons">
-                <button onclick="editEvent(${event.id})"><i class="bx bx-edit"></i> Edit Event</button>
-                <button onclick="manageVolunteers(${event.id})"><i class="bx bx-group"></i> Manage Volunteers</button>
-              </div>
-            `;
+              // Determine status class
+              let statusClass = "status-active";
+              if (event.status === "completed") {
+                statusClass = "status-completed";
+              } else if (event.status === "pending") {
+                statusClass = "status-pending";
+              }
 
-            eventsGrid.appendChild(card);
+              // Create event card
+              const card = document.createElement("div");
+              card.className = "event-card";
+              card.dataset.id = event.id;
+              card.dataset.status = event.status || "active";
+              card.dataset.skills = skillsArray.join(",");
 
-            // Fetch volunteers for this event
-            fetchVolunteersForEvent(event.id);
+              card.innerHTML = `
+                <span class="event-status ${statusClass}">${
+                event.status
+                  ? event.status.charAt(0).toUpperCase() + event.status.slice(1)
+                  : "Active"
+              }</span>
+                <h3>${event.eventName}</h3>
+                <img
+                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop"
+                  alt="${event.eventName}"
+                  style="
+                    width: 100%;
+                    height: 200px;
+                    object-fit: cover;
+                    border-radius: 4px;
+                  "
+                />
+                <p><strong>Date:</strong> ${formattedDate}</p>
+                <p><strong>Location:</strong> ${event.location}</p>
+                <p class="event-skills">
+                  <strong>Required Skills:</strong> ${
+                    skillsArray.length > 0 ? skillsArray.join(", ") : "None"
+                  }
+                </p>
+                <p><strong>Volunteers Needed:</strong> ${
+                  event.volunteersAssigned || 0
+                }/${event.volunteersNeeded || 0}</p>
+
+                <div class="volunteer-list">
+                  <h4>Assigned Volunteers</h4>
+                  <ul id="volunteerList-${event.id}">
+                    <li>Loading volunteers...</li>
+                  </ul>
+                </div>
+
+                <div class="action-buttons">
+                  <button onclick="editEvent(${event.id})" class="edit-button">
+                    <i class="bx bx-edit"></i> Edit Event
+                  </button>
+                  <button onclick="manageVolunteers(${event.id})" class="manage-volunteers-button">
+                    <i class="bx bx-group"></i> Manage Volunteers
+                  </button>
+                  <button onclick="deleteEvent(${event.id})" class="delete-button">
+                    <i class="bx bx-trash"></i> Delete
+                  </button>
+                </div>
+              `;
+
+              eventsGrid.appendChild(card);
+
+              // Fetch volunteers for this event
+              fetchVolunteersForEvent(event.id);
+            });
+
+            // Apply filters
+            filterEvents();
+          })
+          .catch((error) => {
+            console.error("Error fetching events:", error);
+            eventsGrid.innerHTML = `<div class="error-message">Error loading events: ${error.message}</div>`;
           });
-
-          // Apply filters
-          filterEvents();
-        })
-        .catch(error => {
-          console.error('Error fetching events:', error);
-          eventsGrid.innerHTML = `<div class="error-message">Error loading events: ${error.message}</div>`;
-        });
       }
 
       function fetchVolunteersForEvent(eventId) {
-        const volunteersList = document.getElementById(`volunteerList-${eventId}`);
-        
+        const volunteersList = document.getElementById(
+          `volunteerList-${eventId}`
+        );
+
         // Use the appropriate API endpoint to get volunteers for this event
         fetch(`/api/matching/matches?eventId=${eventId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include'
+          credentials: "include",
         })
-        .then(response => {
-          if (!response.ok) {
-            return response.json().then(data => {
-              throw new Error(data.message || 'Failed to fetch volunteers');
-            });
-          }
-          return response.json();
-        })
-        .then(matches => {
-          if (matches.length === 0) {
-            volunteersList.innerHTML = '<li>No volunteers assigned yet</li>';
-            return;
-          }
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(data.message || "Failed to fetch volunteers");
+              });
+            }
+            return response.json();
+          })
+          .then((matches) => {
+            if (matches.length === 0) {
+              volunteersList.innerHTML = "<li>No volunteers assigned yet</li>";
+              return;
+            }
 
-          volunteersList.innerHTML = '';
-          matches.forEach(match => {
-            const li = document.createElement('li');
-            li.textContent = `${match.volunteerName} - ${match.status || 'Pending'}`;
-            volunteersList.appendChild(li);
+            volunteersList.innerHTML = "";
+            matches.forEach((match) => {
+              const li = document.createElement("li");
+              li.textContent = `${match.volunteerName} - ${
+                match.status || "Pending"
+              }`;
+              volunteersList.appendChild(li);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching volunteers:", error);
+            volunteersList.innerHTML = "<li>Error loading volunteers</li>";
           });
-        })
-        .catch(error => {
-          console.error('Error fetching volunteers:', error);
-          volunteersList.innerHTML = '<li>Error loading volunteers</li>';
-        });
       }
 
       function editEvent(eventId) {
@@ -475,6 +540,42 @@
         window.location.href = `volunteer-matching.html?eventId=${eventId}`;
       }
 
+      function deleteEvent(eventId) {
+        if (confirm("Are you sure you want to delete this event?")) {
+          fetch(`/api/createevents/${eventId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          })
+            .then((response) => {
+              if (!response.ok) {
+                return response.json().then((data) => {
+                  throw new Error(
+                    data.message || "Failed to delete the event"
+                  );
+                });
+              }
+              return response.json();
+            })
+            .then(() => {
+              alert("Event deleted successfully!");
+              // Remove the event card from the UI
+              const card = document.querySelector(`[data-id="${eventId}"]`);
+              if (card) {
+                card.remove();
+              }
+              // Refresh the events list after deletion
+              fetchEvents();
+            })
+            .catch((error) => {
+              console.error("Error deleting event:", error);
+              alert("Failed to delete event: " + error.message);
+            });
+        }
+      }
+
       function filterEvents() {
         const searchInput = document.querySelector(".search-box");
         const statusSelect = document.querySelector('select[name="status"]');
@@ -485,9 +586,7 @@
           const status = event
             .querySelector(".event-status")
             .textContent.toLowerCase();
-          const skills = event
-            .querySelector(".event-skills")
-            .textContent.toLowerCase();
+          const skills = event.dataset.skills.toLowerCase();
           const title = event.querySelector("h3").textContent.toLowerCase();
           const statusMatch =
             statusSelect.value === "all" ||
@@ -510,14 +609,17 @@
       }
 
       // Close dropdown when clicking outside
-      window.onclick = function(event) {
-        if (!event.target.matches('.bx-menu') && !event.target.matches('.menu-icon')) {
+      window.onclick = function (event) {
+        if (
+          !event.target.matches(".bx-menu") &&
+          !event.target.matches(".menu-icon")
+        ) {
           const dropdown = document.getElementById("dropdownMenu");
-          if (dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
           }
         }
-      }
+      };
     </script>
   </body>
 </html>
