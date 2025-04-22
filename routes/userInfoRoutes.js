@@ -7,7 +7,7 @@ const { isAuthenticated } = require("../middleware/auth");
 router.get("/", isAuthenticated, userInfoController.getUserProfile);
 
 // Update user profile - Requires authentication
-router.put("/", isAuthenticated, userInfoController.updateUserProfile);
+router.put("/", userInfoController.updateUserProfile);
 
 // Get user notifications - Requires authentication
 router.get(

@@ -9,7 +9,7 @@ const getUserProfile = async (req, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const userId = req.session.user.id;
+    const userId = req.query.id;
     const userProfile = await userInfoModel.getUserProfile(userId);
 
     if (!userProfile) {
@@ -18,7 +18,7 @@ const getUserProfile = async (req, res) => {
 
     res.status(200).json(userProfile);
   } catch (error) {
-    console.error('Error getting user profile:', error);
+    console.error("Error getting user profile:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -27,20 +27,23 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     // Check if user is authenticated
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    // if (!req.session || !req.session.user) {
+    //   return res.status(401).json({ message: "Not authenticated" });
+    // }
 
-    const userId = req.session.user.id;
-    const profileData = req.body;
+    const userId = req.body.userId;
+    const profileData = req.body.profileData;
 
-    const updatedProfile = await userInfoModel.updateUserProfile(userId, profileData);
-    res.status(200).json({ 
-      message: "Profile updated successfully", 
-      profile: updatedProfile 
+    const updatedProfile = await userInfoModel.updateUserProfile(
+      userId,
+      profileData
+    );
+    res.status(200).json({
+      message: "Profile updated successfully",
+      profile: updatedProfile,
     });
   } catch (error) {
-    console.error('Error updating user profile:', error);
+    console.error("Error updating user profile:", error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -54,12 +57,14 @@ const getUserNotifications = async (req, res) => {
     }
 
     const userId = req.session.user.id;
-    
+
     // Assuming notificationModel has a method to get notifications by user ID
-    const notifications = await notificationModel.getNotificationsByUserId(userId);
+    const notifications = await notificationModel.getNotificationsByUserId(
+      userId
+    );
     res.status(200).json(notifications);
   } catch (error) {
-    console.error('Error getting user notifications:', error);
+    console.error("Error getting user notifications:", error);
     res.status(500).json({ message: error.message });
   }
 };

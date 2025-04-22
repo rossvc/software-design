@@ -1,81 +1,94 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Check if user is logged in
-  const userJson = sessionStorage.getItem('user');
+  const userJson = sessionStorage.getItem("user");
   if (!userJson) {
-    alert('Please log in to view your profile');
-    window.location.href = 'Signin.html';
+    alert("Please log in to view your profile");
+    window.location.href = "Signin.html";
     return;
   }
 
   const user = JSON.parse(userJson);
-
   // Fetch user profile data
-  fetch(`/api/userinfo`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include'
+  fetch(`/api/userinfo?id=${user.id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to fetch profile data');
+        return response.json().then((data) => {
+          throw new Error(data.message || "Failed to fetch profile data");
         });
       }
       return response.json();
     })
-    .then(data => {
-      document.getElementById("userName").innerText = data.name || 'Not provided';
-      document.getElementById("userLastName").innerText = data.lastName || 'Not provided';
-      document.getElementById("userAddress").innerText = data.address || 'Not provided';
-      document.getElementById("userCity").innerText = data.city || 'Not provided';
-      document.getElementById("userState").innerText = data.state || 'Not provided';
-      document.getElementById("userZip").innerText = data.zipCode || 'Not provided';
-      document.getElementById("userSkills").innerText = data.skills ? data.skills.join(', ') : 'None';
-      document.getElementById("userRole").innerText = user.role || 'User';
+    .then((data) => {
+      document.getElementById("userName").innerText =
+        data.name || "Not provided";
+      document.getElementById("userLastName").innerText =
+        data.lastName || "Not provided";
+      document.getElementById("userAddress").innerText =
+        data.address || "Not provided";
+      document.getElementById("userCity").innerText =
+        data.city || "Not provided";
+      document.getElementById("userState").innerText =
+        data.state || "Not provided";
+      document.getElementById("userZip").innerText =
+        data.zipCode || "Not provided";
+      document.getElementById("userSkills").innerText = data.skills
+        ? data.skills.join(", ")
+        : "None";
+      document.getElementById("userRole").innerText = user.role || "User";
       document.getElementById("userAvailability").innerText =
-        data.availability && data.availability.length > 0 ? data.availability.join(', ') : 'Not specified';
+        data.availability && data.availability.length > 0
+          ? data.availability.join(", ")
+          : "Not specified";
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error fetching user profile:", error);
-      document.getElementById("userName").innerText = 'Error loading data';
-      document.getElementById("userLastName").innerText = 'Error loading data';
-      document.getElementById("userAddress").innerText = 'Error loading data';
-      document.getElementById("userCity").innerText = 'Error loading data';
-      document.getElementById("userState").innerText = 'Error loading data';
-      document.getElementById("userZip").innerText = 'Error loading data';
-      document.getElementById("userSkills").innerText = 'Error loading data';
-      document.getElementById("userRole").innerText = user.role || 'User';
-      document.getElementById("userAvailability").innerText = 'Error loading data';
+      document.getElementById("userName").innerText = "Error loading data";
+      document.getElementById("userLastName").innerText = "Error loading data";
+      document.getElementById("userAddress").innerText = "Error loading data";
+      document.getElementById("userCity").innerText = "Error loading data";
+      document.getElementById("userState").innerText = "Error loading data";
+      document.getElementById("userZip").innerText = "Error loading data";
+      document.getElementById("userSkills").innerText = "Error loading data";
+      document.getElementById("userRole").innerText = user.role || "User";
+      document.getElementById("userAvailability").innerText =
+        "Error loading data";
     });
 
   // Fetch notifications
   fetch(`/api/notifications`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include'
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to fetch notifications');
+        return response.json().then((data) => {
+          throw new Error(data.message || "Failed to fetch notifications");
         });
       }
       return response.json();
     })
-    .then(data => {
-      const unreadNotifications = data.filter(notification => !notification.read);
+    .then((data) => {
+      const unreadNotifications = data.filter(
+        (notification) => !notification.read
+      );
       updateNotifications(unreadNotifications);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error fetching notifications:", error);
       const mockNotifications = [
         {
           id: 1,
           type: "reminder",
           title: "Event Reminder",
-          message: "Beach Cleanup starts in 3 days! Don't forget to bring gloves and water.",
-          read: false
-        }
+          message:
+            "Beach Cleanup starts in 3 days! Don't forget to bring gloves and water.",
+          read: false,
+        },
       ];
       updateNotifications(mockNotifications);
     });
@@ -97,8 +110,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const notificationDiv = document.createElement("div");
       notificationDiv.classList.add("notification");
       notificationDiv.innerHTML = `
-        <button class="close-btn" onclick="closeNotification(${notification.id})">×</button>
-        <h3>${notification.title || 'Notification'}</h3>
+        <button class="close-btn" onclick="closeNotification(${
+          notification.id
+        })">×</button>
+        <h3>${notification.title || "Notification"}</h3>
         <p>${notification.message}</p>
       `;
       notificationSection.appendChild(notificationDiv);
@@ -107,15 +122,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.closeNotification = function (notificationId) {
     fetch(`/api/notifications/${notificationId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ read: true }),
-      credentials: 'include'
+      credentials: "include",
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || 'Failed to update notification');
+          return response.json().then((data) => {
+            throw new Error(data.message || "Failed to update notification");
           });
         }
         return response.json();
@@ -126,10 +141,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const badge = document.getElementById("notificationBadge");
         let count = parseInt(badge.innerText) - 1;
-        badge.innerText = count > 0 ? count : '';
+        badge.innerText = count > 0 ? count : "";
         badge.style.display = count > 0 ? "inline-block" : "none";
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error marking notification as read:", error);
       });
   };
