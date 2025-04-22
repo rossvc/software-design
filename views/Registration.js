@@ -56,63 +56,64 @@ document.addEventListener("DOMContentLoaded", function () {
   if (registrationForm) {
     registrationForm.addEventListener("submit", function (event) {
       event.preventDefault();
-      
+
       // Get form data
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      
+
       // Show loading state
       const submitButton = document.getElementById("submitBtn");
       const originalButtonText = submitButton.textContent;
       submitButton.textContent = "Registering...";
       submitButton.disabled = true;
-      
+
       // Call the registration API
-      fetch('/api/users/register', {
-        method: 'POST',
+      fetch("/api/users/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-        credentials: 'include' // Important for session cookies
+        credentials: "include", // Important for session cookies
       })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || 'Registration failed');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Store user ID for the next step
-        sessionStorage.setItem('registeredUserId', data.user.id);
-        sessionStorage.setItem('registeredUsername', data.user.username);
-        
-        // Show success message and redirect
-        const errorMessage = document.getElementById("passwordError");
-        if (errorMessage) {
-          errorMessage.textContent = "Registration successful!";
-          errorMessage.style.color = "green";
-        }
-        
-        setTimeout(() => {
-          window.location.href = "RegistrationForm.html";
-        }, 1500);
-      })
-      .catch(error => {
-        // Show error message
-        const errorMessage = document.getElementById("passwordError");
-        if (errorMessage) {
-          errorMessage.textContent = error.message || "Registration failed. Please try again.";
-          errorMessage.style.color = "red";
-        }
-      })
-      .finally(() => {
-        // Reset button state
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.message || "Registration failed");
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Store user ID for the next step
+          sessionStorage.setItem("registeredUserId", data.user.id);
+          sessionStorage.setItem("registeredUsername", data.user.username);
+
+          // Show success message and redirect
+          const errorMessage = document.getElementById("passwordError");
+          if (errorMessage) {
+            errorMessage.textContent = "Registration successful!";
+            errorMessage.style.color = "green";
+          }
+
+          setTimeout(() => {
+            window.location.href = "RegistrationForm.html";
+          }, 250);
+        })
+        .catch((error) => {
+          // Show error message
+          const errorMessage = document.getElementById("passwordError");
+          if (errorMessage) {
+            errorMessage.textContent =
+              error.message || "Registration failed. Please try again.";
+            errorMessage.style.color = "red";
+          }
+        })
+        .finally(() => {
+          // Reset button state
+          submitButton.textContent = originalButtonText;
+          submitButton.disabled = false;
+        });
     });
   }
 });

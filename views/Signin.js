@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
               data.user.role === "admin"
                 ? "AdminEventsDashboard.html"
                 : "VolunteerEvents.html";
-          }, 1500);
+          }, 250);
         })
         .catch((error) => {
           showAlert(
