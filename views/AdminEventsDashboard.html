@@ -433,7 +433,7 @@
               }</span>
                 <h3>${event.eventName}</h3>
                 <img
-                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop"
+                  src="${event.image}"
                   alt="${event.eventName}"
                   style="
                     width: 100%;
@@ -464,10 +464,14 @@
                   <button onclick="editEvent(${event.id})" class="edit-button">
                     <i class="bx bx-edit"></i> Edit Event
                   </button>
-                  <button onclick="manageVolunteers(${event.id})" class="manage-volunteers-button">
+                  <button onclick="manageVolunteers(${
+                    event.id
+                  })" class="manage-volunteers-button">
                     <i class="bx bx-group"></i> Manage Volunteers
                   </button>
-                  <button onclick="deleteEvent(${event.id})" class="delete-button">
+                  <button onclick="deleteEvent(${
+                    event.id
+                  })" class="delete-button">
                     <i class="bx bx-trash"></i> Delete
                   </button>
                 </div>
@@ -552,9 +556,7 @@
             .then((response) => {
               if (!response.ok) {
                 return response.json().then((data) => {
-                  throw new Error(
-                    data.message || "Failed to delete the event"
-                  );
+                  throw new Error(data.message || "Failed to delete the event");
                 });
               }
               return response.json();
