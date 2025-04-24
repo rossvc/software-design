@@ -43,6 +43,44 @@
       .show {
         display: block;
       }
+      
+      /* Styles for multiple date selection */
+      #availability-container {
+        width: 100%;
+      }
+      
+      .date-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      
+      .availability-date {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      
+      .add-date-btn,
+      .remove-date-btn {
+        margin-left: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      
+      .add-date-btn {
+        background-color: #4CAF50;
+      }
+      
+      .remove-date-btn {
+        background-color: #f44336;
+      }
     </style>
   </head>
   <body>
@@ -161,8 +199,13 @@
         </div>
 
         <div class="form-group">
-          <label for="availability">Availability</label>
-          <input type="date" id="availability" />
+          <label for="availability">Availability (Select Multiple Dates)</label>
+          <div id="availability-container">
+            <div class="date-row">
+              <input type="date" class="availability-date" />
+              <button type="button" class="add-date-btn">+</button>
+            </div>
+          </div>
         </div>
         <div class="buttons">
           <button type="submit">Apply Changes</button>
@@ -176,6 +219,30 @@
 
     <script src="UserProfile.js"></script>
     <script>
+      // Handle adding and removing dates for availability
+      document.addEventListener("DOMContentLoaded", function() {
+        const availabilityContainer = document.getElementById("availability-container");
+        
+        // Function to add a new date input row
+        function addDateRow() {
+          const newRow = document.createElement("div");
+          newRow.className = "date-row";
+          newRow.innerHTML = `
+            <input type="date" class="availability-date" />
+            <button type="button" class="remove-date-btn">-</button>
+          `;
+          availabilityContainer.appendChild(newRow);
+          
+          // Add event listener to the remove button
+          newRow.querySelector(".remove-date-btn").addEventListener("click", function() {
+            availabilityContainer.removeChild(newRow);
+          });
+        }
+        
+        // Add event listener to the add date button
+        availabilityContainer.querySelector(".add-date-btn").addEventListener("click", addDateRow);
+      });
+      
       // Add dropdown toggle function
       function toggleDropdown() {
         document.getElementById("dropdownMenu").classList.toggle("show");

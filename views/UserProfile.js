@@ -53,8 +53,26 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("preferences").value = data.preferences;
         }
 
-        if (data.availability && data.availability.length > 0) {
-          document.getElementById("availability").value = data.availability[0];
+        if (data.availability && Array.isArray(data.availability) && data.availability.length > 0) {
+          // Set the first date in the existing input
+          document.querySelector(".availability-date").value = data.availability[0];
+          
+          // Add additional rows for the rest of the dates
+          const availabilityContainer = document.getElementById("availability-container");
+          for (let i = 1; i < data.availability.length; i++) {
+            const newRow = document.createElement("div");
+            newRow.className = "date-row";
+            newRow.innerHTML = `
+              <input type="date" class="availability-date" value="${data.availability[i]}" />
+              <button type="button" class="remove-date-btn">-</button>
+            `;
+            availabilityContainer.appendChild(newRow);
+            
+            // Add event listener to the remove button
+            newRow.querySelector(".remove-date-btn").addEventListener("click", function() {
+              availabilityContainer.removeChild(newRow);
+            });
+          }
         }
       }
     })
@@ -79,7 +97,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const zip = document.getElementById("zip").value;
     const skills = document.getElementById("skills").value;
     const preferences = document.getElementById("preferences")?.value || "";
-    const availability = document.getElementById("availability")?.value || "";
+    
+    // Collect all availability dates
+    const availabilityInputs = document.querySelectorAll(".availability-date");
+    const availabilityDates = [];
+    availabilityInputs.forEach(input => {
+      if (input.value) {
+        availabilityDates.push(input.value);
+      }
+    });
 
     if (fullName && lastName && address && city && state && zip && skills) {
       // Prepare profile data
@@ -92,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         zipCode: zip,
         skills: [skills],
         preferences: preferences,
-        availability: availability ? [availability] : [],
+        availability: availabilityDates,
       };
 
       // Call the API to update user profile

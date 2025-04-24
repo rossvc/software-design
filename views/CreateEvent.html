@@ -290,7 +290,7 @@
           const url = isEditMode
             ? `/api/createevents/${eventId}`
             : "/api/createevents";
-          const method = isEditMode ? "PUT" : "POST";
+          const method = isEditMode ? "PATCH" : "POST";
 
           // Send request to server
           fetch(url, {
