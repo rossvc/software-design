@@ -1,11 +1,11 @@
 // Dynamically inject navbar.html into #navbar-container and set up menu links
 function loadNavbar(title) {
-  fetch('navbar.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('navbar-container').innerHTML = data;
+  fetch("navbar.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("navbar-container").innerHTML = data;
       if (title) {
-        document.getElementById('navbar-title').textContent = title;
+        document.getElementById("navbar-title").textContent = title;
       }
       setupNavbarLinks();
       setupDropdown();
@@ -13,9 +13,9 @@ function loadNavbar(title) {
 }
 
 function setupNavbarLinks() {
-  const userJson = sessionStorage.getItem('user');
-  const linksDiv = document.getElementById('navbar-links');
-  let links = '';
+  const userJson = sessionStorage.getItem("user");
+  const linksDiv = document.getElementById("navbar-links");
+  let links = "";
   if (!userJson) {
     // Not logged in
     links += '<a href="Homepage.html">Home</a>';
@@ -23,10 +23,9 @@ function setupNavbarLinks() {
     links += '<a href="Registration.html">Register</a>';
   } else {
     const user = JSON.parse(userJson);
-    if (user.role === 'admin') {
+    if (user.role === "admin") {
       links += '<a href="Homepage.html">Home</a>';
       links += '<a href="AdminEventsDashboard.html">Admin Dashboard</a>';
-      links += '<a href="volunteer-matching.html">Volunteer Matching</a>';
       links += '<a href="Reporting.html">Reports</a>';
       links += '<a href="notifications.html">Notifications</a>';
     } else {
@@ -39,27 +38,28 @@ function setupNavbarLinks() {
     links += '<a href="#" id="logout-link">Log Out</a>';
   }
   linksDiv.innerHTML = links;
-  const logoutLink = document.getElementById('logout-link');
+  const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
-    logoutLink.addEventListener('click', function(e) {
+    logoutLink.addEventListener("click", function (e) {
       e.preventDefault();
-      sessionStorage.removeItem('user');
-      window.location.href = 'Homepage.html';
+      sessionStorage.removeItem("user");
+      window.location.href = "Homepage.html";
     });
   }
 }
 
 function setupDropdown() {
-  const menuIcon = document.getElementById('menuIcon');
-  const dropdownMenu = document.getElementById('dropdownMenu');
+  const menuIcon = document.getElementById("menuIcon");
+  const dropdownMenu = document.getElementById("dropdownMenu");
   if (menuIcon && dropdownMenu) {
     menuIcon.onclick = function () {
-      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+      dropdownMenu.style.display =
+        dropdownMenu.style.display === "block" ? "none" : "block";
     };
     window.onclick = function (event) {
-      if (!event.target.matches('#menuIcon, #menuIcon *')) {
-        if (dropdownMenu.style.display === 'block') {
-          dropdownMenu.style.display = 'none';
+      if (!event.target.matches("#menuIcon, #menuIcon *")) {
+        if (dropdownMenu.style.display === "block") {
+          dropdownMenu.style.display = "none";
         }
       }
     };

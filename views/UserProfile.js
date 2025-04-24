@@ -1,11 +1,116 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("userProfileForm");
+  const selectedDatesContainer = document.getElementById("selected-dates");
+  const availabilityInput = document.getElementById("availability");
+  const availabilityDatesInput = document.getElementById("availability-dates");
+  let selectedDates = [];
 
-  // Get user data from session storage
+  // Ensure consistent styling for the availability input
+  function matchInputStyles() {
+    const standardInput = document.getElementById("fullName"); // Using fullName as reference
+    if (standardInput) {
+      // Get computed styles from standard input
+      const computedStyle = window.getComputedStyle(standardInput);
+
+      // Apply the same width styling to availability input
+      availabilityInput.style.width = computedStyle.width;
+    }
+  }
+
+  // Call initially to set proper width
+  matchInputStyles();
+
+  // Also handle window resize
+  window.addEventListener("resize", matchInputStyles);
+
+  // Initialize flatpickr
+  const datePicker = flatpickr("#availability", {
+    mode: "multiple",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    inline: false,
+    static: true,
+    disableMobile: "true",
+    position: "below",
+    monthSelectorType: "static",
+    onChange: function (selectedDatesArray, dateStr) {
+      selectedDates = selectedDatesArray.map((date) => {
+        return flatpickr.formatDate(date, "Y-m-d");
+      });
+
+      // Update hidden input with selected dates
+      availabilityDatesInput.value = JSON.stringify(selectedDates);
+
+      // Update visual display of selected dates
+      updateSelectedDatesDisplay();
+    },
+    onOpen: function (selectedDates, dateStr, instance) {
+      // Ensure calendar width matches input width
+      const inputWidth = availabilityInput.offsetWidth;
+      instance.calendarContainer.style.width = inputWidth + "px";
+
+      // Re-apply styles to maintain consistent width
+      matchInputStyles();
+    },
+    onClose: function () {
+      // Ensure the input shows something when dates are selected
+      if (selectedDates.length > 0) {
+        availabilityInput.value = `${selectedDates.length} date(s) selected`;
+      }
+    },
+  });
+
+  // Function to update the display of selected dates
+  function updateSelectedDatesDisplay() {
+    selectedDatesContainer.innerHTML = "";
+
+    selectedDates.forEach((date) => {
+      const dateTag = document.createElement("div");
+      dateTag.className = "date-tag";
+
+      const dateText = document.createElement("span");
+      dateText.textContent = formatDisplayDate(date);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.innerHTML = "&times;";
+      removeBtn.setAttribute("data-date", date);
+      removeBtn.addEventListener("click", function () {
+        removeDate(date);
+      });
+
+      dateTag.appendChild(dateText);
+      dateTag.appendChild(removeBtn);
+      selectedDatesContainer.appendChild(dateTag);
+    });
+  }
+
+  // Format date for display
+  function formatDisplayDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  // Remove a date from selection
+  function removeDate(dateToRemove) {
+    selectedDates = selectedDates.filter((date) => date !== dateToRemove);
+    datePicker.setDate(selectedDates);
+    availabilityDatesInput.value = JSON.stringify(selectedDates);
+    updateSelectedDatesDisplay();
+
+    if (selectedDates.length > 0) {
+      availabilityInput.value = `${selectedDates.length} date(s) selected`;
+    } else {
+      availabilityInput.value = "";
+    }
+  }
+
+  // Check if user is logged in
   const userJson = sessionStorage.getItem("user");
   if (!userJson) {
-    // Redirect to login if not logged in
-    alert("Please log in to update your profile");
     window.location.href = "Signin.html";
     return;
   }
@@ -17,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userId: user.id }),
     credentials: "include",
   })
     .then((response) => {
@@ -35,44 +139,112 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("lastName").value = data.lastName || "";
         document.getElementById("address").value = data.address || "";
         document.getElementById("city").value = data.city || "";
-        document.getElementById("state").value = data.state || "";
+        
+        // Properly set the state dropdown value
+        const stateSelect = document.getElementById("state");
+        if (data.state) {
+          console.log("Setting state dropdown for state:", data.state);
+          let stateFound = false;
+          
+          // First try to match by state code (2-letter abbreviation)
+          for (let i = 0; i < stateSelect.options.length; i++) {
+            if (stateSelect.options[i].value === data.state) {
+              stateSelect.selectedIndex = i;
+              stateFound = true;
+              console.log("State matched by code at index:", i);
+              break;
+            }
+          }
+          
+          // If no match found by code, try to match by state name
+          if (!stateFound) {
+            const stateName = data.state.toLowerCase();
+            for (let i = 0; i < stateSelect.options.length; i++) {
+              if (stateSelect.options[i].text.toLowerCase() === stateName) {
+                stateSelect.selectedIndex = i;
+                stateFound = true;
+                console.log("State matched by name at index:", i);
+                break;
+              }
+            }
+            
+            // If still no match, try to find a partial match
+            if (!stateFound) {
+              for (let i = 0; i < stateSelect.options.length; i++) {
+                if (stateSelect.options[i].text.toLowerCase().includes(stateName) || 
+                    stateName.includes(stateSelect.options[i].text.toLowerCase())) {
+                  stateSelect.selectedIndex = i;
+                  console.log("State matched by partial name at index:", i);
+                  break;
+                }
+              }
+            }
+          }
+        }
+        
         document.getElementById("zip").value = data.zipCode || "";
 
-        // For select fields, we need to find the matching option
+        // Properly set the skills dropdown value
         const skillsSelect = document.getElementById("skills");
         if (data.skills && data.skills.length > 0) {
+          console.log("Setting skills dropdown for skills:", data.skills);
+          let skillFound = false;
+          
+          // Find the first matching skill and select it
           for (let i = 0; i < skillsSelect.options.length; i++) {
-            if (data.skills.includes(skillsSelect.options[i].value)) {
-              skillsSelect.selectedIndex = i;
-              break;
+            const optionValue = skillsSelect.options[i].value.toLowerCase();
+            
+            // Check for exact match
+            for (const skill of data.skills) {
+              if (skill.toLowerCase() === optionValue) {
+                skillsSelect.selectedIndex = i;
+                skillFound = true;
+                console.log("Skill matched at index:", i);
+                break;
+              }
+            }
+            
+            if (skillFound) break;
+          }
+          
+          // If no exact match, try partial match
+          if (!skillFound) {
+            for (let i = 0; i < skillsSelect.options.length; i++) {
+              const optionValue = skillsSelect.options[i].value.toLowerCase();
+              const optionText = skillsSelect.options[i].text.toLowerCase();
+              
+              for (const skill of data.skills) {
+                const skillLower = skill.toLowerCase();
+                if (skillLower.includes(optionValue) || optionValue.includes(skillLower) ||
+                    skillLower.includes(optionText) || optionText.includes(skillLower)) {
+                  skillsSelect.selectedIndex = i;
+                  console.log("Skill partially matched at index:", i);
+                  break;
+                }
+              }
             }
           }
         }
 
+        // Handle preferences as a simple string
         if (data.preferences) {
           document.getElementById("preferences").value = data.preferences;
         }
 
-        if (data.availability && Array.isArray(data.availability) && data.availability.length > 0) {
-          // Set the first date in the existing input
-          document.querySelector(".availability-date").value = data.availability[0];
-          
-          // Add additional rows for the rest of the dates
-          const availabilityContainer = document.getElementById("availability-container");
-          for (let i = 1; i < data.availability.length; i++) {
-            const newRow = document.createElement("div");
-            newRow.className = "date-row";
-            newRow.innerHTML = `
-              <input type="date" class="availability-date" value="${data.availability[i]}" />
-              <button type="button" class="remove-date-btn">-</button>
-            `;
-            availabilityContainer.appendChild(newRow);
-            
-            // Add event listener to the remove button
-            newRow.querySelector(".remove-date-btn").addEventListener("click", function() {
-              availabilityContainer.removeChild(newRow);
-            });
-          }
+        // Set availability dates
+        if (
+          data.availability &&
+          Array.isArray(data.availability) &&
+          data.availability.length > 0
+        ) {
+          // Set selected dates in the flatpickr
+          selectedDates = data.availability;
+          datePicker.setDate(selectedDates);
+          availabilityDatesInput.value = JSON.stringify(selectedDates);
+
+          // Update display
+          availabilityInput.value = `${selectedDates.length} date(s) selected`;
+          updateSelectedDatesDisplay();
         }
       }
     })
@@ -97,15 +269,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const zip = document.getElementById("zip").value;
     const skills = document.getElementById("skills").value;
     const preferences = document.getElementById("preferences")?.value || "";
-    
-    // Collect all availability dates
-    const availabilityInputs = document.querySelectorAll(".availability-date");
-    const availabilityDates = [];
-    availabilityInputs.forEach(input => {
-      if (input.value) {
-        availabilityDates.push(input.value);
-      }
-    });
+
+    // Get availability dates from the hidden input
+    const availabilityDates = selectedDates;
 
     if (fullName && lastName && address && city && state && zip && skills) {
       // Prepare profile data

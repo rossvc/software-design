@@ -59,8 +59,8 @@ const updateUserProfile = async (userId, profileData) => {
 
     const fullName = `${profileData.name} ${profileData.lastName}`;
     const skills = JSON.stringify(profileData.skills);
-    const preferences = JSON.stringify(profileData.preferences || {});
-    const availability = profileData.availability ? 1 : 0;
+    const preferences = JSON.stringify(profileData.preferences || "");
+    const availability = JSON.stringify(profileData.availability || []);
 
     if (profiles.length > 0) {
       await db.query(
@@ -143,28 +143,66 @@ const getUserProfile = async (userId) => {
     const lastName = fullNameParts.pop();
     const name = fullNameParts.join(" ");
 
-    // ✅ Safe parsing for skills
+    // Direct extraction for skills from the database format
     let skillsArray = [];
-    try {
-      const parsedSkills = JSON.parse(profile.skills);
-      skillsArray = Array.isArray(parsedSkills) ? parsedSkills : [parsedSkills];
-    } catch (e) {
-      console.error(`Invalid skills format for user_id: ${profile.user_id}`);
-      skillsArray = []; // Prevent crashing if JSON is invalid
+    if (profile.skills) {
+      // Check if skills is already an array (parsed JSON)
+      if (Array.isArray(profile.skills)) {
+        skillsArray = profile.skills;
+      } else if (typeof profile.skills === 'string') {
+        try {
+          // Try to parse it as JSON first
+          const parsed = JSON.parse(profile.skills);
+          if (Array.isArray(parsed)) {
+            skillsArray = parsed;
+          } else {
+            // Handle string formats
+            // Check if it's the format like: ["teamwork"] or ["skill1", "skill2"]
+            const skillMatches = profile.skills.match(/"([^"]+)"/g);
+            if (skillMatches && skillMatches.length > 0) {
+              // Extract the skills from the matches
+              skillsArray = skillMatches.map(match => match.replace(/"/g, ''));
+            } else if (profile.skills.includes(',')) {
+              // Handle comma-separated format
+              skillsArray = profile.skills.split(',').map(s => s.trim().replace(/"/g, ''));
+            } else if (profile.skills.trim() !== '') {
+              // Single skill without quotes
+              skillsArray = [profile.skills.trim().replace(/"/g, '')];
+            }
+          }
+        } catch (e) {
+          // If JSON parsing fails, handle as string
+          if (profile.skills.includes(',')) {
+            // Handle comma-separated format
+            skillsArray = profile.skills.split(',').map(s => s.trim().replace(/"/g, ''));
+          } else if (profile.skills.trim() !== '') {
+            // Single skill without quotes
+            skillsArray = [profile.skills.trim().replace(/"/g, '')];
+          }
+        }
+      } else if (typeof profile.skills === 'object') {
+        // Handle case where skills might be a non-array object
+        skillsArray = Object.values(profile.skills);
+      }
+      console.log(`Extracted skills for user_id ${profile.user_id}:`, skillsArray);
     }
 
-    // ✅ Safe parsing for preferences
-    let preferencesObject = {};
-    try {
-      preferencesObject = JSON.parse(profile.preferences);
-    } catch (e) {
-      console.error(
-        `Invalid preferences format for user_id: ${profile.user_id}`
-      );
-      preferencesObject = {}; // Prevent crashing if JSON is invalid
+    // Direct handling for preferences as a string
+    let preferences = "";
+    if (profile.preferences) {
+      // If it's wrapped in quotes like "preference text"
+      if (profile.preferences.startsWith('"') && profile.preferences.endsWith('"')) {
+        preferences = profile.preferences.substring(1, profile.preferences.length - 1);
+      } else {
+        preferences = profile.preferences;
+      }
+      // Remove any escaped quotes
+      preferences = preferences.replace(/\\"|\"/g, '');
+      console.log(`Extracted preferences for user_id ${profile.user_id}:`, preferences);
     }
-
-    return {
+    
+    // Create result object
+    const result = {
       userId: profile.user_id,
       name,
       lastName,
@@ -172,10 +210,55 @@ const getUserProfile = async (userId) => {
       city: profile.city,
       state: profile.state_name, // Full state name from States table
       zipCode: profile.zip_code,
-      skills: skillsArray, // ✅ Safe skills array
-      preferences: preferencesObject, // ✅ Safe preferences object
-      availability: profile.availability === 1, // Convert 1/0 to true/false
+      skills: skillsArray, // Extracted skills array
+      preferences: preferences, // Preferences as string
+      availability: [] // Default empty array for availability (will be populated below)
     };
+    
+    // Direct extraction for availability dates from the database format
+    if (profile.availability) {
+      // Check if availability is already an array (parsed JSON)
+      if (Array.isArray(profile.availability)) {
+        result.availability = profile.availability;
+      } else if (typeof profile.availability === 'string') {
+        try {
+          // Try to parse it as JSON first
+          const parsed = JSON.parse(profile.availability);
+          if (Array.isArray(parsed)) {
+            result.availability = parsed;
+          } else {
+            // Handle string formats
+            // Check if it's the format like: ["2025-04-24", "2025-04-25", "2025-04-26"]
+            const dateMatches = profile.availability.match(/"([^"]+)"/g);
+            if (dateMatches && dateMatches.length > 0) {
+              // Extract the dates from the matches
+              result.availability = dateMatches.map(match => match.replace(/"/g, ''));
+            } else if (profile.availability.includes(',')) {
+              // Handle comma-separated format
+              result.availability = profile.availability.split(',').map(d => d.trim().replace(/"/g, ''));
+            } else if (profile.availability.trim() !== '') {
+              // Single date without quotes
+              result.availability = [profile.availability.trim().replace(/"/g, '')];
+            }
+          }
+        } catch (e) {
+          // If JSON parsing fails, handle as string
+          if (profile.availability.includes(',')) {
+            // Handle comma-separated format
+            result.availability = profile.availability.split(',').map(d => d.trim().replace(/"/g, ''));
+          } else if (profile.availability.trim() !== '') {
+            // Single date without quotes
+            result.availability = [profile.availability.trim().replace(/"/g, '')];
+          }
+        }
+      } else if (typeof profile.availability === 'object') {
+        // Handle case where availability might be a non-array object
+        result.availability = Object.values(profile.availability);
+      }
+      console.log(`Extracted availability for user_id ${profile.user_id}:`, result.availability);
+    }
+    
+    return result;
   } catch (error) {
     console.error("Error getting user profile:", error);
     throw error;

@@ -8,6 +8,10 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <link rel="stylesheet" href="UserProfile.css" />
     <style>
       /* Add dropdown styles */
@@ -43,50 +47,99 @@
       .show {
         display: block;
       }
-      
-      /* Styles for multiple date selection */
-      #availability-container {
+
+      /* Form styles to ensure consistency */
+      .form-group {
+        margin-bottom: 20px;
         width: 100%;
       }
-      
-      .date-row {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      
-      .availability-date {
-        flex: 1;
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
+        box-sizing: border-box;
       }
-      
-      .add-date-btn,
-      .remove-date-btn {
-        margin-left: 10px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
+
+      /* Styles for date picker */
+      .availability-container {
+        width: 100%;
+        position: relative;
+      }
+
+      #availability {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        height: auto;
+      }
+
+      .flatpickr-calendar {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      .flatpickr-months,
+      .flatpickr-weekdays,
+      .flatpickr-days {
+        width: 100% !important;
+      }
+
+      .dayContainer {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      span.flatpickr-day {
+        flex-basis: 14.28% !important;
+        max-width: 14.28% !important;
+      }
+
+      .selected-dates {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+      }
+
+      .date-tag {
+        background-color: #e9f5ff;
+        border: 1px solid #0951bd;
+        border-radius: 4px;
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .date-tag span {
+        margin-right: 5px;
+      }
+
+      .date-tag button {
+        background: none;
         border: none;
-        color: white;
-        font-weight: bold;
+        color: #f44336;
         cursor: pointer;
-      }
-      
-      .add-date-btn {
-        background-color: #4CAF50;
-      }
-      
-      .remove-date-btn {
-        background-color: #f44336;
+        padding: 0;
+        font-size: 14px;
       }
     </style>
   </head>
   <body>
     <div id="navbar-container"></div>
     <script src="navbar.js"></script>
-    <script>loadNavbar('Profile Form');</script>
+    <script>
+      loadNavbar("Profile Form");
+    </script>
 
     <div class="container">
       <form id="userProfileForm">
@@ -200,11 +253,19 @@
 
         <div class="form-group">
           <label for="availability">Availability (Select Multiple Dates)</label>
-          <div id="availability-container">
-            <div class="date-row">
-              <input type="date" class="availability-date" />
-              <button type="button" class="add-date-btn">+</button>
-            </div>
+          <div class="availability-container">
+            <input
+              type="text"
+              id="availability"
+              placeholder="Click to select dates"
+              readonly
+            />
+            <div id="selected-dates" class="selected-dates"></div>
+            <input
+              type="hidden"
+              id="availability-dates"
+              name="availability-dates"
+            />
           </div>
         </div>
         <div class="buttons">
@@ -217,66 +278,45 @@
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="UserProfile.js"></script>
     <script>
-      // Handle adding and removing dates for availability
-      document.addEventListener("DOMContentLoaded", function() {
-        const availabilityContainer = document.getElementById("availability-container");
-        
-        // Function to add a new date input row
-        function addDateRow() {
-          const newRow = document.createElement("div");
-          newRow.className = "date-row";
-          newRow.innerHTML = `
-            <input type="date" class="availability-date" />
-            <button type="button" class="remove-date-btn">-</button>
-          `;
-          availabilityContainer.appendChild(newRow);
-          
-          // Add event listener to the remove button
-          newRow.querySelector(".remove-date-btn").addEventListener("click", function() {
-            availabilityContainer.removeChild(newRow);
-          });
-        }
-        
-        // Add event listener to the add date button
-        availabilityContainer.querySelector(".add-date-btn").addEventListener("click", addDateRow);
-      });
-      
       // Add dropdown toggle function
       function toggleDropdown() {
         document.getElementById("dropdownMenu").classList.toggle("show");
       }
 
       // Check if user is logged in and show admin links if admin
-      document.addEventListener("DOMContentLoaded", function() {
-        const userJson = sessionStorage.getItem('user');
+      document.addEventListener("DOMContentLoaded", function () {
+        const userJson = sessionStorage.getItem("user");
         if (!userJson) {
           // Redirect to login if not logged in
           window.location.href = "Signin.html";
           return;
         }
-        
+
         const user = JSON.parse(userJson);
-        if (user.role === 'admin') {
+        if (user.role === "admin") {
           // Show admin-only links
-          document.getElementById('admin-dashboard-link').style.display = 'block';
-          document.getElementById('volunteer-matching-link').style.display = 'block';
+          document.getElementById("admin-dashboard-link").style.display =
+            "block";
+          document.getElementById("volunteer-matching-link").style.display =
+            "block";
         }
-        
-        // Load user profile data
-        // Add code here to load user profile data from API
       });
 
       // Close dropdown when clicking outside
-      window.onclick = function(event) {
-        if (!event.target.matches('.bx-menu') && !event.target.matches('.menu-icon')) {
+      window.onclick = function (event) {
+        if (
+          !event.target.matches(".bx-menu") &&
+          !event.target.matches(".menu-icon")
+        ) {
           const dropdown = document.getElementById("dropdownMenu");
-          if (dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
           }
         }
-      }
+      };
     </script>
   </body>
 </html>

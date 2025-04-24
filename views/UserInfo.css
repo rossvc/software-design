@@ -184,6 +184,13 @@ body {
   color: #a67c00;
 }
 
+/* Availability Dates */
+.availability-dates {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
 /* Footer */
 .footer {
   background-color: #0951bd;

@@ -27,8 +27,47 @@ const getUserProfile = async (req, res) => {
 // Update user profile
 const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.body.userId;
-    const profileData = req.body.profileData;
+    let userId;
+    let profileData;
+
+    // Check if this is a registration flow (userId in request body) or a profile update (userId in session)
+    if (req.body.userId) {
+      // Registration flow - userId is in the request body
+      userId = req.body.userId;
+      profileData = req.body.profileData || req.body;
+    } else if (req.session && req.session.user && req.session.user.id) {
+      // Regular profile update - userId is in the session
+      userId = req.session.user.id;
+      profileData = req.body;
+    } else {
+      return res.status(400).json({ message: "User ID not provided" });
+    }
+    
+    // Ensure availability is properly formatted as an array of dates
+    if (profileData.availability) {
+      // If availability is provided as a string, convert it to an array
+      if (typeof profileData.availability === 'string') {
+        try {
+          profileData.availability = JSON.parse(profileData.availability);
+        } catch (e) {
+          // If parsing fails, treat it as a single date string
+          profileData.availability = [profileData.availability];
+        }
+      }
+      
+      // Ensure availability is an array
+      if (!Array.isArray(profileData.availability)) {
+        profileData.availability = [profileData.availability];
+      }
+      
+      // Validate that all dates are in a valid format
+      profileData.availability = profileData.availability.filter(date => {
+        return date && !isNaN(new Date(date).getTime());
+      });
+    } else {
+      // Default to empty array if no availability provided
+      profileData.availability = [];
+    }
 
     const updatedProfile = await userInfoModel.updateUserProfile(
       userId,
@@ -68,4 +107,3 @@ module.exports = {
   updateUserProfile,
   getUserNotifications,
 };
-

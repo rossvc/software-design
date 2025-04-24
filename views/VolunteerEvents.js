@@ -65,12 +65,12 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.register = function (modalId, eventId) {
-    const registerButton = document.querySelector(
-      `#${modalId} button:last-of-type`
+    const cardButton = document.querySelector(
+      `.card button[onclick*="${modalId}"]`
     );
-    const originalButtonText = registerButton.textContent;
-    registerButton.textContent = "Registering...";
-    registerButton.disabled = true;
+    const originalButtonText = cardButton.textContent;
+    cardButton.textContent = "Registering...";
+    cardButton.disabled = true;
 
     fetch("/api/matching/matches", {
       method: "POST",
@@ -97,14 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
           message.style.display = "block";
         }
 
-        const cardButton = document
-          .querySelector(`#${modalId}`)
-          .parentNode.querySelector("button");
-        if (cardButton) {
-          cardButton.textContent = "Registered";
-          cardButton.disabled = true;
-          cardButton.classList.add("registered");
-        }
+        cardButton.textContent = "Registered";
+        cardButton.disabled = true;
+        cardButton.classList.add("registered");
       })
       .catch((error) => {
         alert(
@@ -112,8 +107,10 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       })
       .finally(() => {
-        registerButton.textContent = originalButtonText;
-        registerButton.disabled = false;
+        if (!cardButton.classList.contains("registered")) {
+          cardButton.textContent = originalButtonText;
+          cardButton.disabled = false;
+        }
       });
   };
 
@@ -144,34 +141,24 @@ document.addEventListener("DOMContentLoaded", function () {
           <h3>${event.eventName}</h3>
           <img src=${event.image} alt="${event.eventName}" />
           <p>${event.description || "No description available"}</p>
-          <button onclick="showModal('${modalId}')">Register</button>
-          <div id="${modalId}" class="modal">
-            <h3>${event.eventName}</h3>
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2070&auto=format&fit=crop" alt="${
-              event.eventName
-            }" />
-            <p>${event.description || "No description available"}</p>
-            <button onclick="showModal('${modalId}')">Register</button>
-            <div id="${modalId}" class="modal">
-              <h3>${event.eventName}</h3>
-              <p>
-                Location: ${event.location}<br />
-                Urgency: ${event.urgency} <br />
-                Skills required: ${
-                  event.skills ? event.skills.join(", ") : "None"
-                } <br />
-                Date: ${event.date} <br />
-                Time: ${event.startTime} - ${event.endTime}
-              </p>
-              <button onclick="closeModal('${modalId}')">Close</button>
-              <button onclick="register('${modalId}', ${
+          <div class="event-details">
+            <p>
+              Location: ${event.location}<br />
+              Urgency: ${event.urgency} <br />
+              Skills required: ${
+                event.skills ? event.skills.join(", ") : "None"
+              } <br />
+              Date: ${event.date} <br />
+              Time: ${event.startTime} - ${event.endTime}
+            </p>
+          </div>
+          <button onclick="register('${modalId}', ${
           event.id
         })">Register</button>
-              <div id="message-${modalId}" class="registered-message">
-                Congratulations! Registered
-              </div>
-            </div>
+          <div id="message-${modalId}" class="registered-message">
+            Congratulations! Registered
           </div>
+        </div>
         `;
         container.innerHTML += cardHtml;
       });

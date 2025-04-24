@@ -1,20 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let selectedVolunteer = null;
-  let selectedEvent = null;
+  let selectedVolunteers = new Set();
+  let eventId = null;
+  let eventDetails = null;
   let volunteers = [];
-  let events = [];
 
   // Check if user is logged in
-  const userJson = sessionStorage.getItem('user');
+  const userJson = sessionStorage.getItem("user");
   if (!userJson) {
-    // Redirect to login if not logged in
-    alert('Please log in to access volunteer matching');
-    window.location.href = 'Signin.html';
+    alert("Please log in to access volunteer matching");
+    window.location.href = "Signin.html";
     return;
   }
 
   // Function to toggle dropdown menu
-  window.toggleDropdown = function() {
+  window.toggleDropdown = function () {
     const dropdownMenu = document.getElementById("dropdownMenu");
     if (dropdownMenu) {
       dropdownMenu.classList.toggle("show");
@@ -22,8 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Close dropdown when clicking outside
-  window.onclick = function(event) {
-    if (!event.target.matches('.menu-icon, .menu-icon *')) {
+  window.onclick = function (event) {
+    if (!event.target.matches(".menu-icon, .menu-icon *")) {
       const dropdownMenu = document.getElementById("dropdownMenu");
       if (dropdownMenu && dropdownMenu.classList.contains("show")) {
         dropdownMenu.classList.remove("show");
@@ -31,140 +30,148 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Function to select a volunteer
-  window.selectVolunteer = function(card, volunteerId) {
-    document
-      .querySelectorAll(".volunteer-card")
-      .forEach((c) => c.classList.remove("selected"));
-    card.classList.add("selected");
-    selectedVolunteer = volunteers.find(v => v.id === volunteerId);
-    updateMatchButton();
-    
-    // If an event is already selected, get recommendations for this volunteer
-    if (selectedEvent) {
-      getRecommendationsForVolunteer(volunteerId);
+  // Get the event ID from URL parameters
+  function getEventIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventIdParam = urlParams.get("eventId");
+
+    if (!eventIdParam) {
+      alert("No event ID provided in URL. Redirecting to events page.");
+      window.location.href = "events.html";
+      return null;
     }
+
+    return parseInt(eventIdParam);
+  }
+
+  // Function to toggle volunteer selection
+  window.toggleVolunteerSelection = function (checkbox, volunteerId) {
+    const card = checkbox.closest(".volunteer-card");
+
+    if (checkbox.checked) {
+      selectedVolunteers.add(volunteerId);
+      card.classList.add("selected");
+    } else {
+      selectedVolunteers.delete(volunteerId);
+      card.classList.remove("selected");
+    }
+
+    updateSelectionCount();
+    updateMatchButton();
   };
 
-  // Function to select an event
-  window.selectEvent = function(card, eventId) {
-    document
-      .querySelectorAll(".event-card")
-      .forEach((c) => c.classList.remove("selected"));
-    card.classList.add("selected");
-    selectedEvent = events.find(e => e.id === eventId);
-    updateMatchButton();
-    
-    // If a volunteer is already selected, get recommendations for this event
-    if (selectedVolunteer) {
-      getRecommendationsForEvent(eventId);
+  // Function to update selection count display
+  function updateSelectionCount() {
+    const countElement = document.getElementById("selection-count");
+    if (countElement) {
+      countElement.textContent = `${selectedVolunteers.size} Selected`;
     }
-  };
+  }
 
   // Function to update match button state
   function updateMatchButton() {
     const matchButton = document.getElementById("match-button");
-    matchButton.disabled = !(selectedVolunteer && selectedEvent);
+    if (matchButton) {
+      matchButton.disabled = selectedVolunteers.size === 0;
+    }
   }
 
-  // Function to get recommendations for a volunteer
-  function getRecommendationsForVolunteer(volunteerId) {
-    fetch(`/api/matching/recommendations?volunteerId=${volunteerId}`, {
-      method: 'GET',
+  // Function to get event details
+  function getEventDetails(eventId) {
+    fetch(`/api/matching/events/${eventId}`, {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include'
+      credentials: "include",
     })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to get recommendations');
-        });
-      }
-      return response.json();
-    })
-    .then(recommendedEvents => {
-      // Update event cards with match scores
-      updateEventCards(recommendedEvents);
-    })
-    .catch(error => {
-      console.error('Error getting recommendations:', error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.message || "Failed to get event details");
+          });
+        }
+        return response.json();
+      })
+      .then((event) => {
+        eventDetails = event;
+        renderEventDetails(event);
+        getRegisteredVolunteers(eventId);
+      })
+      .catch((error) => {
+        console.error("Error getting event details:", error);
+        document.getElementById(
+          "event-info"
+        ).innerHTML = `<p class="event-info-item">Error loading event: ${error.message}</p>`;
+      });
   }
 
-  // Function to get recommendations for an event
-  function getRecommendationsForEvent(eventId) {
+  // Function to get registered volunteers for an event with "Waiting" status
+  function getRegisteredVolunteers(eventId) {
     fetch(`/api/matching/recommendations?eventId=${eventId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include'
+      credentials: "include",
     })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to get recommendations');
-        });
-      }
-      return response.json();
-    })
-    .then(recommendedVolunteers => {
-      // Update volunteer cards with match scores
-      updateVolunteerCards(recommendedVolunteers);
-    })
-    .catch(error => {
-      console.error('Error getting recommendations:', error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(
+              data.message || "Failed to get registered volunteers"
+            );
+          });
+        }
+        return response.json();
+      })
+      .then((registeredVolunteers) => {
+        volunteers = registeredVolunteers;
+        renderVolunteerCards(registeredVolunteers);
+      })
+      .catch((error) => {
+        console.error("Error getting registered volunteers:", error);
+        document.getElementById(
+          "volunteers-container"
+        ).innerHTML = `<p>Error loading registered volunteers: ${error.message}</p>`;
+      });
   }
 
-  // Function to update event cards with match scores
-  function updateEventCards(recommendedEvents) {
-    const eventContainer = document.querySelector('.event-section .scroll-container');
-    eventContainer.innerHTML = '';
-    
-    recommendedEvents.forEach(event => {
-      const matchScoreText = event.matchScore ? `${event.matchScore}% Match` : getUrgencyText(event.urgency);
-      const matchScoreClass = event.matchScore ? 'match-score' : `match-score ${event.urgency.toLowerCase()}-priority`;
-      
-      const cardHtml = `
-        <div class="event-card" onclick="selectEvent(this, ${event.id})">
-          <h3>
-            ${event.name} <span class="${matchScoreClass}">${matchScoreText}</span>
-          </h3>
-          <p>Location: ${event.location}</p>
-          <p>Date: ${event.date}</p>
-          <div class="skills-list">
-            ${event.requiredSkills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-          </div>
-          <p>Volunteers Needed: ${event.volunteersNeeded}</p>
-        </div>
-      `;
-      
-      eventContainer.innerHTML += cardHtml;
-    });
-  }
+  // Function to render event details
+  function renderEventDetails(event) {
+    const eventInfoElement = document.getElementById("event-info");
+    const eventUrgencyElement = document.getElementById("event-urgency");
 
-  // Function to update volunteer cards with match scores
-  function updateVolunteerCards(recommendedVolunteers) {
-    const volunteerContainer = document.querySelector('.volunteer-section .scroll-container');
-    volunteerContainer.innerHTML = '';
-    
-    recommendedVolunteers.forEach(volunteer => {
-      const cardHtml = `
-        <div class="volunteer-card" onclick="selectVolunteer(this, ${volunteer.id})">
-          <h3>${volunteer.name} <span class="match-score">${volunteer.matchScore}% Match</span></h3>
-          <p>${volunteer.email}</p>
+    if (eventInfoElement && eventUrgencyElement) {
+      const requiredSkills = Array.isArray(event.requiredSkills)
+        ? event.requiredSkills
+        : JSON.parse(event.requiredSkills || "[]");
+
+      eventUrgencyElement.textContent = getUrgencyText(event.urgency);
+      eventUrgencyElement.className = `match-score ${event.urgency.toLowerCase()}-priority`;
+
+      eventInfoElement.innerHTML = `
+        <h3 class="event-info-item">${event.name}</h3>
+        <p class="event-info-item"><strong>Location:</strong> ${
+          event.location
+        }</p>
+        <p class="event-info-item"><strong>Date:</strong> ${event.date}</p>
+        <p class="event-info-item"><strong>Volunteers Needed:</strong> ${
+          event.volunteersNeeded || "Flexible"
+        }</p>
+        <div class="event-info-item">
+          <strong>Required Skills:</strong>
           <div class="skills-list">
-            ${volunteer.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            ${requiredSkills
+              .map((skill) => `<span class="skill-tag">${skill}</span>`)
+              .join("")}
           </div>
-          <p class="availability">Available: ${volunteer.availability.join(', ')}</p>
         </div>
+        <p class="event-info-item"><strong>Description:</strong> ${
+          event.description || "No description provided"
+        }</p>
       `;
-      
-      volunteerContainer.innerHTML += cardHtml;
-    });
+    }
   }
 
   // Helper function to get urgency text
@@ -173,213 +180,155 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Set up search functionality
-  document.querySelectorAll(".search-box").forEach((searchBox) => {
-    searchBox.addEventListener("input", function () {
+  const volunteerSearch = document.getElementById("volunteer-search");
+  if (volunteerSearch) {
+    volunteerSearch.addEventListener("input", function () {
       const searchTerm = this.value.toLowerCase();
-      const isVolunteerSearch = this.closest(".volunteer-section");
-      const cards = isVolunteerSearch
-        ? document.querySelectorAll(".volunteer-card")
-        : document.querySelectorAll(".event-card");
+      const volunteerCards = document.querySelectorAll(".volunteer-card");
 
-      cards.forEach((card) => {
+      volunteerCards.forEach((card) => {
         const text = card.textContent.toLowerCase();
         card.style.display = text.includes(searchTerm) ? "" : "none";
       });
     });
-  });
-
-  // Set up filter functionality
-  document.getElementById("skill-filter").addEventListener("change", function() {
-    const skill = this.value.toLowerCase();
-    filterVolunteers('skill', skill);
-  });
-
-  document.getElementById("availability-filter").addEventListener("change", function() {
-    const availability = this.value.toLowerCase();
-    filterVolunteers('availability', availability);
-  });
-
-  document.getElementById("urgency-filter").addEventListener("change", function() {
-    const urgency = this.value.toLowerCase();
-    filterEvents('urgency', urgency);
-  });
-
-  document.getElementById("date-filter").addEventListener("change", function() {
-    const dateFilter = this.value.toLowerCase();
-    filterEvents('date', dateFilter);
-  });
-
-  // Function to filter volunteers
-  function filterVolunteers(filterType, filterValue) {
-    if (!filterValue) {
-      // If no filter value, fetch all volunteers again
-      fetchVolunteers();
-      return;
-    }
-    
-    let filteredVolunteers = [...volunteers];
-    
-    if (filterType === 'skill') {
-      filteredVolunteers = filteredVolunteers.filter(volunteer => 
-        volunteer.skills.some(skill => skill.toLowerCase().includes(filterValue))
-      );
-    } else if (filterType === 'availability') {
-      filteredVolunteers = filteredVolunteers.filter(volunteer => 
-        volunteer.availability.some(avail => avail.toLowerCase().includes(filterValue))
-      );
-    }
-    
-    updateVolunteerCards(filteredVolunteers);
   }
 
-  // Function to filter events
-  function filterEvents(filterType, filterValue) {
-    if (!filterValue) {
-      // If no filter value, fetch all events again
-      fetchEvents();
+  // Function to render volunteer cards
+  function renderVolunteerCards(volunteers) {
+    const volunteerContainer = document.getElementById("volunteers-container");
+    if (!volunteerContainer) return;
+
+    volunteerContainer.innerHTML = "";
+
+    if (volunteers.length === 0) {
+      volunteerContainer.innerHTML =
+        "<p>No registered volunteers found with Waiting status.</p>";
       return;
     }
-    
-    let filteredEvents = [...events];
-    
-    if (filterType === 'urgency') {
-      filteredEvents = filteredEvents.filter(event => 
-        event.urgency.toLowerCase() === filterValue
-      );
-    } else if (filterType === 'date') {
-      // This would need more complex date filtering logic
-      // For now, just a simple filter based on the date string
-      const today = new Date();
-      const oneWeek = new Date(today);
-      oneWeek.setDate(today.getDate() + 7);
-      const oneMonth = new Date(today);
-      oneMonth.setDate(today.getDate() + 30);
-      
-      filteredEvents = filteredEvents.filter(event => {
-        const eventDate = new Date(event.date);
-        if (filterValue === 'this-week') {
-          return eventDate >= today && eventDate <= oneWeek;
-        } else if (filterValue === 'next-week') {
-          return eventDate > oneWeek && eventDate <= new Date(oneWeek.getTime() + 7 * 24 * 60 * 60 * 1000);
-        } else if (filterValue === 'this-month') {
-          return eventDate >= today && eventDate <= oneMonth;
-        }
-        return true;
-      });
-    }
-    
-    updateEventCards(filteredEvents);
+
+    // Sort volunteers by match score (highest first)
+    volunteers.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+
+    volunteers.forEach((volunteer) => {
+      const skills = Array.isArray(volunteer.skills)
+        ? volunteer.skills
+        : JSON.parse(volunteer.skills || "[]");
+
+      const cardHtml = `
+        <div class="volunteer-card" data-id="${volunteer.id}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div class="checkbox-container">
+              <input 
+                type="checkbox" 
+                id="volunteer-${volunteer.id}" 
+                ${selectedVolunteers.has(volunteer.id) ? "checked" : ""}
+                onchange="toggleVolunteerSelection(this, ${volunteer.id})"
+              />
+            </div>
+            <div style="flex-grow: 1;">
+              <h3>${volunteer.name} <span class="match-score">${
+        volunteer.matchScore || 0
+      }% Match</span></h3>
+              <p>${volunteer.email}</p>
+              <div class="skills-list">
+                ${skills
+                  .map((skill) => `<span class="skill-tag">${skill}</span>`)
+                  .join("")}
+              </div>
+              <p class="availability">Available: ${
+                Array.isArray(volunteer.availability)
+                  ? volunteer.availability.join(", ")
+                  : "Flexible"
+              }</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      volunteerContainer.innerHTML += cardHtml;
+    });
   }
 
   // Set up match button functionality
-  document.getElementById("match-button").addEventListener("click", function () {
-    if (selectedVolunteer && selectedEvent) {
-      // Show loading state
-      this.textContent = "Creating Match...";
-      this.disabled = true;
-      
-      // Call the API to create a match
-      fetch('/api/matching/matches', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          volunteerId: selectedVolunteer.id,
-          eventId: selectedEvent.id
-        }),
-        credentials: 'include'
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || 'Failed to create match');
+  const matchButton = document.getElementById("match-button");
+  if (matchButton) {
+    matchButton.addEventListener("click", function () {
+      if (selectedVolunteers.size > 0 && eventId) {
+        // Show loading state
+        this.textContent = "Creating Matches...";
+        this.disabled = true;
+
+        const volunteerIds = Array.from(selectedVolunteers);
+
+        // Call the API to create matches
+        fetch("/api/matching/batch-matches", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            volunteerIds: volunteerIds,
+            eventId: eventId,
+          }),
+          credentials: "include",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(data.message || "Failed to create matches");
+              });
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const count = volunteerIds.length;
+            alert(
+              `Successfully matched ${count} volunteer${
+                count !== 1 ? "s" : ""
+              } with the event!`
+            );
+
+            // Reset selection
+            selectedVolunteers.clear();
+            document.querySelectorAll(".volunteer-card").forEach((card) => {
+              card.classList.remove("selected");
+              const checkbox = card.querySelector("input[type='checkbox']");
+              if (checkbox) checkbox.checked = false;
+            });
+
+            updateSelectionCount();
+            updateMatchButton();
+
+            // Refresh volunteer data
+            getRegisteredVolunteers(eventId);
+          })
+          .catch((error) => {
+            alert(
+              error.message || "Failed to create matches. Please try again."
+            );
+          })
+          .finally(() => {
+            // Reset button state
+            this.textContent = "Approve Selected Volunteers";
+            this.disabled = selectedVolunteers.size === 0;
           });
-        }
-        return response.json();
-      })
-      .then(data => {
-        alert(`Successfully matched ${selectedVolunteer.name} with ${selectedEvent.name}!`);
-        
-        // Reset selection
-        document.querySelectorAll(".volunteer-card").forEach((c) => c.classList.remove("selected"));
-        document.querySelectorAll(".event-card").forEach((c) => c.classList.remove("selected"));
-        selectedVolunteer = null;
-        selectedEvent = null;
-        updateMatchButton();
-        
-        // Refresh data
-        fetchVolunteers();
-        fetchEvents();
-      })
-      .catch(error => {
-        alert(error.message || "Failed to create match. Please try again.");
-      })
-      .finally(() => {
-        // Reset button state
-        this.textContent = "Create Match";
-        this.disabled = !(selectedVolunteer && selectedEvent);
-      });
+      }
+    });
+  }
+
+  // Initialize the page
+  function init() {
+    // Get event ID from URL
+    eventId = getEventIdFromUrl();
+    if (eventId) {
+      // Get event details and registered volunteers with "Waiting" status
+      getEventDetails(eventId);
+    } else {
+      alert("No event ID provided. Please select an event first.");
+      window.location.href = "AdminEventsDashboard.html";
     }
-  });
-
-  // Function to fetch volunteers
-  function fetchVolunteers() {
-    fetch('/api/matching/volunteers', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include'
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to fetch volunteers');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      volunteers = data;
-      updateVolunteerCards(data);
-    })
-    .catch(error => {
-      console.error('Error fetching volunteers:', error);
-      const volunteerContainer = document.querySelector('.volunteer-section .scroll-container');
-      volunteerContainer.innerHTML = `<p class="error">Error loading volunteers: ${error.message}</p>`;
-    });
   }
 
-  // Function to fetch events
-  function fetchEvents() {
-    fetch('/api/matching/events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include'
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.message || 'Failed to fetch events');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      events = data;
-      updateEventCards(data);
-    })
-    .catch(error => {
-      console.error('Error fetching events:', error);
-      const eventContainer = document.querySelector('.event-section .scroll-container');
-      eventContainer.innerHTML = `<p class="error">Error loading events: ${error.message}</p>`;
-    });
-  }
-
-  // Initialize by fetching volunteers and events
-  fetchVolunteers();
-  fetchEvents();
+  // Start the page initialization
+  init();
 });

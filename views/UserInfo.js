@@ -36,13 +36,36 @@ document.addEventListener("DOMContentLoaded", function () {
         data.state || "Not provided"; // Full state name
       document.getElementById("userZip").innerText =
         data.zipCode || "Not provided";
-      document.getElementById("userSkills").innerText = data.skills
+      
+      // Display skills as a comma-separated list
+      document.getElementById("userSkills").innerText = 
+        Array.isArray(data.skills) && data.skills.length > 0
         ? data.skills.join(", ")
         : "None";
+        
       document.getElementById("userRole").innerText = user.role || "User";
-      document.getElementById("userAvailability").innerText = data.availability
-        ? "Available"
-        : "Not Available"; // ✅ FIXED!
+      
+      // Add a preferences display if not already in the HTML
+      if (document.getElementById("userPreferences")) {
+        document.getElementById("userPreferences").innerText = 
+          data.preferences && data.preferences.trim() !== ""
+          ? data.preferences
+          : "None";
+      }
+      // Format and display availability dates
+      if (data.availability && Array.isArray(data.availability) && data.availability.length > 0) {
+        const formattedDates = data.availability.map(date => {
+          return new Date(date).toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short', 
+            day: 'numeric',
+            year: 'numeric'
+          });
+        });
+        document.getElementById("userAvailability").innerHTML = formattedDates.join('<br>');
+      } else {
+        document.getElementById("userAvailability").innerText = "No availability dates provided";
+      }
     })
     .catch((error) => {
       console.error("Error fetching user profile:", error);

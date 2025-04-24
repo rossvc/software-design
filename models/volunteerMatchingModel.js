@@ -97,6 +97,7 @@ const mapDbVolunteerToModelVolunteer = (dbVolunteer) => {
       : ["Weekends"],
     location: dbVolunteer.city,
     matchScore: dbVolunteer.match_score || 0,
+    status: dbVolunteer.status || "Waiting",
   };
 };
 
@@ -115,15 +116,29 @@ const mapDbEventToModelEvent = (dbEvent) => {
 };
 
 module.exports = {
-  getAllVolunteers: async () => {
+  getAllVolunteers: async (status) => {
     try {
-      const volunteers = await db.query(`
-        SELECT uc.id, uc.username, up.full_name, up.skills, up.city, up.availability
+      let query = `
+        SELECT uc.id, uc.username, up.full_name, up.skills, up.city, up.availability, 
+               vm.status
         FROM UserCredentials uc
         JOIN UserProfile up ON uc.id = up.user_id
+        LEFT JOIN VolunteerMatching vm ON uc.id = vm.volunteer_id
         WHERE uc.role = 'volunteer'
-      `);
+      `;
 
+      // Filter volunteers by status if provided
+      if (status) {
+        if (status === "Waiting") {
+          query += ` AND (vm.status IS NULL OR vm.id IS NULL)`;
+        } else {
+          query += ` AND vm.status = ?`;
+          const volunteers = await db.query(query, [status]);
+          return volunteers.map(mapDbVolunteerToModelVolunteer);
+        }
+      }
+
+      const volunteers = await db.query(query);
       return volunteers.map(mapDbVolunteerToModelVolunteer);
     } catch (error) {
       console.error("Error getting all volunteers:", error);
@@ -247,74 +262,84 @@ module.exports = {
     }
   },
 
-  createMatch: async (volunteerId, eventId) => {
+  getEventMatches: async (eventId, status) => {
     try {
-      // Get volunteer and event to validate
-      const volunteer = await module.exports.getVolunteerById(volunteerId);
-      const event = await module.exports.getEventById(eventId);
+      // Get all volunteers who registered for this specific event with the given status
+      const query = `
+        SELECT vm.id, vm.volunteer_id, vm.event_id, vm.status, vm.match_score, 
+               uc.username as email, up.full_name as name, up.skills, up.city as location, up.availability
+        FROM VolunteerMatching vm
+        JOIN UserCredentials uc ON vm.volunteer_id = uc.id 
+        JOIN UserProfile up ON vm.volunteer_id = up.user_id
+        WHERE vm.event_id = ? AND vm.status = ?
+      `;
 
-      if (!volunteer || !event) {
-        throw new Error("Volunteer or event not found");
-      }
+      const volunteers = await db.query(query, [eventId, status]);
 
-      // Validate volunteer and event before creating match
-      const volunteerErrors = validateVolunteer(volunteer);
-      const eventErrors = validateEvent(event);
+      // Map the database results to the expected volunteer format
+      return volunteers.map((v) => ({
+        id: v.volunteer_id,
+        name: v.name,
+        email: v.email,
+        skills: v.skills,
+        location: v.location,
+        availability: v.availability ? ["Weekdays", "Weekends"] : ["Weekends"],
+        status: v.status,
+        matchScore: Math.round(parseFloat(v.match_score) * 100), // Convert from 0-1 to percentage
+        matchId: v.id,
+      }));
+    } catch (error) {
+      console.error(
+        `Error getting volunteers for event ${eventId} with status ${status}:`,
+        error
+      );
+      throw error;
+    }
+  },
 
-      if (volunteerErrors.length > 0 || eventErrors.length > 0) {
-        throw new Error(
-          JSON.stringify({
-            volunteerErrors,
-            eventErrors,
-          })
-        );
-      }
-
-      // Calculate match score
-      const matchScore = module.exports.calculateMatchScore(volunteer, event);
-
-      // Check if match already exists
+  createMatch: async (volunteerId, eventId, matchScore) => {
+    try {
+      // Check if a match already exists
       const existingMatches = await db.query(
         "SELECT * FROM VolunteerMatching WHERE volunteer_id = ? AND event_id = ?",
         [volunteerId, eventId]
       );
 
       if (existingMatches.length > 0) {
-        throw new Error("Match already exists");
+        throw new Error("A match already exists for this volunteer and event");
       }
 
-      // Create the match
+      // Insert the new match
       const result = await db.query(
-        `INSERT INTO VolunteerMatching (volunteer_id, event_id, status, match_score) 
-         VALUES (?, ?, ?, ?)`,
-        [volunteerId, eventId, "Pending", matchScore]
+        `INSERT INTO VolunteerMatching 
+        (volunteer_id, event_id, status, match_score, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, NOW(), NOW())`,
+        [volunteerId, eventId, "Waiting", matchScore || 0]
       );
 
-      // Get the newly created match
-      const newMatches = await db.query(
-        `SELECT vm.id, vm.volunteer_id, vm.event_id, vm.status, vm.match_score, vm.created_at,
-                up.full_name as volunteer_name, ed.name as event_name
-         FROM VolunteerMatching vm
-         JOIN UserProfile up ON vm.volunteer_id = up.user_id
-         JOIN EventDetails ed ON vm.event_id = ed.id
-         WHERE vm.id = ?`,
+      if (result.affectedRows === 0) {
+        throw new Error("Failed to create match");
+      }
+
+      // Get the created match
+      const createdMatch = await db.query(
+        `SELECT vm.*, up.full_name as volunteer_name, ed.name as event_name
+        FROM VolunteerMatching vm
+        JOIN UserProfile up ON vm.volunteer_id = up.user_id
+        JOIN EventDetails ed ON vm.event_id = ed.id
+        WHERE vm.id = ?`,
         [result.insertId]
       );
 
-      if (newMatches.length === 0) {
-        throw new Error("Failed to retrieve created match");
-      }
-
-      const m = newMatches[0];
       return {
-        id: m.id,
-        volunteerId: m.volunteer_id,
-        eventId: m.event_id,
-        volunteer: m.volunteer_name,
-        event: m.event_name,
-        status: m.status,
-        matchScore: parseFloat(m.match_score),
-        createdAt: m.created_at.toISOString(),
+        id: createdMatch[0].id,
+        volunteerId: createdMatch[0].volunteer_id,
+        eventId: createdMatch[0].event_id,
+        status: createdMatch[0].status,
+        matchScore: createdMatch[0].match_score,
+        volunteerName: createdMatch[0].volunteer_name,
+        eventName: createdMatch[0].event_name,
+        createdAt: createdMatch[0].created_at,
       };
     } catch (error) {
       console.error("Error creating match:", error);
@@ -323,43 +348,143 @@ module.exports = {
   },
 
   calculateMatchScore: (volunteer, event) => {
-    // Validate inputs before calculating score
-    const volunteerErrors = validateVolunteer(volunteer);
-    const eventErrors = validateEvent(event);
+    try {
+      let score = 0;
+      const maxScore = 100;
 
-    if (volunteerErrors.length > 0 || eventErrors.length > 0) {
-      throw new Error(
-        JSON.stringify({
-          volunteerErrors,
-          eventErrors,
-        })
-      );
-    }
-
-    let score = 0;
-
-    // Check if volunteer has required skills
-    const hasRequiredSkills = event.requiredSkills.every((skill) =>
-      volunteer.skills.includes(skill)
-    );
-
-    if (hasRequiredSkills) {
-      score += 50;
-    }
-
-    // Add points for each matching skill
-    event.requiredSkills.forEach((skill) => {
-      if (volunteer.skills.includes(skill)) {
-        score += 10;
+      // Parse skills if they're in string format
+      let volunteerSkills = [];
+      if (typeof volunteer.skills === "string") {
+        try {
+          volunteerSkills = JSON.parse(volunteer.skills);
+        } catch (error) {
+          volunteerSkills = [];
+        }
+      } else if (Array.isArray(volunteer.skills)) {
+        volunteerSkills = volunteer.skills;
       }
-    });
 
-    // Check location proximity (simplified)
-    if (volunteer.location === event.location.split(" ")[0]) {
-      score += 20;
+      // Parse required skills if they're in string format
+      let eventRequiredSkills = [];
+      if (typeof event.requiredSkills === "string") {
+        try {
+          eventRequiredSkills = JSON.parse(event.requiredSkills);
+        } catch (error) {
+          eventRequiredSkills = [];
+        }
+      } else if (Array.isArray(event.requiredSkills)) {
+        eventRequiredSkills = event.requiredSkills;
+      } else if (typeof event.required_skills === "string") {
+        try {
+          eventRequiredSkills = JSON.parse(event.required_skills);
+        } catch (error) {
+          eventRequiredSkills = [];
+        }
+      }
+
+      // Skills match (up to 60 points)
+      if (eventRequiredSkills.length > 0 && volunteerSkills.length > 0) {
+        const matchingSkills = volunteerSkills.filter((skill) =>
+          eventRequiredSkills.includes(skill)
+        );
+
+        const skillMatchPercentage =
+          matchingSkills.length / eventRequiredSkills.length;
+        score += Math.min(60, Math.round(skillMatchPercentage * 60));
+      } else {
+        // If no skills required, give 30 points by default
+        score += 30;
+      }
+
+      // Location match (up to 20 points)
+      if (volunteer.location && event.location) {
+        // Simple string match - in a real app, use distance calculation
+        if (volunteer.location.toLowerCase() === event.location.toLowerCase()) {
+          score += 20;
+        } else {
+          // Partial match - first word matches (e.g., "New York" vs "New Jersey")
+          const volunteerCity = volunteer.location.split(" ")[0].toLowerCase();
+          const eventCity = event.location.split(" ")[0].toLowerCase();
+
+          if (volunteerCity === eventCity) {
+            score += 10;
+          }
+        }
+      }
+
+      // Urgency factor (up to 20 points)
+      if (event.urgency) {
+        switch (event.urgency.toLowerCase()) {
+          case "high":
+            score += 20;
+            break;
+          case "medium":
+            score += 10;
+            break;
+          case "low":
+            score += 5;
+            break;
+          default:
+            score += 10; // Default medium urgency
+        }
+      }
+
+      // Normalize score to be between 0 and 1 for database storage
+      return Math.min(score / 100, 1).toFixed(2);
+    } catch (error) {
+      console.error("Error calculating match score:", error);
+      return 0;
     }
+  },
 
-    return Math.min(score, 100);
+  updateMatchStatus: async (id, status) => {
+    try {
+      // Validate status
+      const validStatuses = ["Waiting", "Pending", "Active", "Completed"];
+      if (!validStatuses.includes(status)) {
+        throw new Error(
+          `Invalid status. Must be one of: ${validStatuses.join(", ")}`
+        );
+      }
+
+      // Update the match
+      const result = await db.query(
+        "UPDATE VolunteerMatching SET status = ?, updated_at = NOW() WHERE id = ?",
+        [status, id]
+      );
+
+      if (result.affectedRows === 0) {
+        throw new Error("Match not found or status not updated");
+      }
+
+      // Get the updated match
+      const updatedMatch = await db.query(
+        `SELECT vm.*, up.full_name as volunteer_name, ed.name as event_name
+        FROM VolunteerMatching vm
+        JOIN UserProfile up ON vm.volunteer_id = up.user_id
+        JOIN EventDetails ed ON vm.event_id = ed.id
+        WHERE vm.id = ?`,
+        [id]
+      );
+
+      if (updatedMatch.length === 0) {
+        return null;
+      }
+
+      return {
+        id: updatedMatch[0].id,
+        volunteerId: updatedMatch[0].volunteer_id,
+        eventId: updatedMatch[0].event_id,
+        status: updatedMatch[0].status,
+        matchScore: updatedMatch[0].match_score,
+        volunteerName: updatedMatch[0].volunteer_name,
+        eventName: updatedMatch[0].event_name,
+        updatedAt: updatedMatch[0].updated_at,
+      };
+    } catch (error) {
+      console.error("Error updating match status:", error);
+      throw error;
+    }
   },
 
   // Expose validation functions for testing
