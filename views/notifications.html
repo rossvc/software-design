@@ -15,6 +15,15 @@
         padding: 0;
         box-sizing: border-box;
       }
+      
+      /* Toast notification styles */
+      .toast-container {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        z-index: 1001;
+        max-width: 350px;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: whitesmoke;
@@ -54,7 +63,7 @@
       .menu-icon {
         cursor: pointer;
       }
-      
+
       .dropdown {
         position: absolute;
         top: 60px;
@@ -217,6 +226,77 @@
         margin-bottom: 10px;
       }
 
+      /* Toast notification styles */
+      .toast {
+        background-color: white;
+        color: #333;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        border-left: 4px solid #10b981;
+      }
+
+      .toast.error {
+        border-left: 4px solid #ef4444;
+      }
+
+      .toast-icon {
+        margin-right: 12px;
+        font-size: 20px;
+      }
+
+      .toast.success .toast-icon {
+        color: #10b981;
+      }
+
+      .toast.error .toast-icon {
+        color: #ef4444;
+      }
+
+      .toast-content {
+        flex: 1;
+      }
+
+      .toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .toast-progress-bar {
+        height: 100%;
+        width: 100%;
+        background-color: #10b981;
+        transition: width linear;
+      }
+
+      /* Notification item removal animation */
+      .notification.removing {
+        animation: slide-out 0.5s forwards;
+        opacity: 0.7;
+      }
+
+      @keyframes slide-out {
+        0% { transform: translateX(0); opacity: 1; }
+        100% { transform: translateX(100%); opacity: 0; height: 0; padding: 0; margin: 0; }
+      }
+
       @media (max-width: 600px) {
         .filters {
           flex-direction: column;
@@ -225,13 +305,20 @@
           width: 100%;
           margin-top: 10px;
         }
+        .toast-container {
+          left: 20px;
+          right: 20px;
+          max-width: calc(100% - 40px);
+        }
       }
     </style>
   </head>
   <body>
     <div id="navbar-container"></div>
     <script src="navbar.js"></script>
-    <script>loadNavbar('Notifications');</script>
+    <script>
+      loadNavbar("Notifications");
+    </script>
 
     <div class="container">
       <div class="filters">
@@ -244,59 +331,11 @@
         <button class="mark-all-read">Mark All as Read</button>
       </div>
 
-      <div class="notification-list">
-        <div class="notification unread" data-type="assignment">
-          <div class="notification-icon">
-            <i class="bx bx-calendar-check" style="font-size: 24px"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-title">
-              New Event Assignment
-              <span class="notification-type type-assignment">Assignment</span>
-            </div>
-            <div class="notification-message">
-              You have been assigned to "Beach Cleanup" event on February 20,
-              2025.
-            </div>
-            <div class="notification-time">2 hours ago</div>
-          </div>
-        </div>
-
-        <div class="notification unread" data-type="update">
-          <div class="notification-icon">
-            <i class="bx bx-refresh" style="font-size: 24px"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-title">
-              Event Update
-              <span class="notification-type type-update">Update</span>
-            </div>
-            <div class="notification-message">
-              The location for "Senior Care Workshop" has been updated to "Main
-              Community Center".
-            </div>
-            <div class="notification-time">5 hours ago</div>
-          </div>
-        </div>
-
-        <div class="notification" data-type="reminder">
-          <div class="notification-icon">
-            <i class="bx bx-bell" style="font-size: 24px"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-title">
-              Event Reminder
-              <span class="notification-type type-reminder">Reminder</span>
-            </div>
-            <div class="notification-message">
-              Don't forget about your upcoming event "Teaching Workshop"
-              tomorrow at 9 AM.
-            </div>
-            <div class="notification-time">1 day ago</div>
-          </div>
-        </div>
-      </div>
+      <div class="notification-list"></div>
     </div>
+
+    <!-- Toast container for notifications -->
+    <div class="toast-container"></div>
 
     <footer
       style="
@@ -312,75 +351,5 @@
     >
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
-    <script>
-      // Check if user is logged in and show appropriate links based on role
-      document.addEventListener("DOMContentLoaded", function() {
-        const userJson = sessionStorage.getItem('user');
-        if (!userJson) {
-          // Redirect to login if not logged in
-          window.location.href = "Signin.html";
-          return;
-        }
-        
-        const user = JSON.parse(userJson);
-        if (user.role === 'admin') {
-          // Show admin-only links
-          document.getElementById('admin-dashboard-link').style.display = 'block';
-          document.getElementById('volunteer-matching-link').style.display = 'block';
-        }
-        
-        // Load notifications data
-        // Add code here to load notifications from API
-      });
-
-      // Filter notifications
-      const filterButtons = document.querySelectorAll('.filter-button');
-      const notifications = document.querySelectorAll('.notification');
-      
-      filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          // Remove active class from all buttons
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          
-          // Add active class to clicked button
-          button.classList.add('active');
-          
-          const filter = button.getAttribute('data-filter');
-          
-          // Show/hide notifications based on filter
-          notifications.forEach(notification => {
-            if (filter === 'all' || notification.getAttribute('data-type') === filter) {
-              notification.style.display = 'flex';
-            } else {
-              notification.style.display = 'none';
-            }
-          });
-        });
-      });
-      
-      // Mark all as read
-      const markAllReadButton = document.querySelector('.mark-all-read');
-      
-      markAllReadButton.addEventListener('click', () => {
-        notifications.forEach(notification => {
-          notification.classList.remove('unread');
-        });
-      });
-      
-      // Add dropdown toggle function
-      function toggleDropdown() {
-        document.getElementById("dropdownMenu").classList.toggle("show");
-      }
-
-      // Close dropdown when clicking outside
-      window.onclick = function(event) {
-        if (!event.target.matches('.bx-menu') && !event.target.matches('.menu-icon')) {
-          const dropdown = document.getElementById("dropdownMenu");
-          if (dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
-          }
-        }
-      }
-    </script>
   </body>
 </html>

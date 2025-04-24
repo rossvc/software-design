@@ -1,4 +1,4 @@
-const db = require('../utils/db');
+const db = require("../utils/db");
 
 // Validate notification data
 const validateNotification = (notification) => {
@@ -40,28 +40,36 @@ const validateNotification = (notification) => {
 module.exports = {
   getAllNotifications: async () => {
     try {
-      return await db.query('SELECT * FROM Notifications ORDER BY created_at DESC');
+      return await db.query(
+        "SELECT * FROM Notifications ORDER BY created_at DESC"
+      );
     } catch (error) {
-      console.error('Error getting all notifications:', error);
+      console.error("Error getting all notifications:", error);
       throw error;
     }
   },
 
   getNotificationsByUserId: async (userId) => {
     try {
-      return await db.query('SELECT * FROM Notifications WHERE user_id = ? ORDER BY created_at DESC', [userId]);
+      return await db.query(
+        "SELECT * FROM Notifications WHERE user_id = ? AND status = 'unread' ORDER BY created_at DESC",
+        [userId]
+      );
     } catch (error) {
-      console.error('Error getting notifications by user ID:', error);
+      console.error("Error getting notifications by user ID:", error);
       throw error;
     }
   },
 
   getNotificationById: async (id) => {
     try {
-      const notifications = await db.query('SELECT * FROM Notifications WHERE id = ?', [id]);
+      const notifications = await db.query(
+        "SELECT * FROM Notifications WHERE id = ?",
+        [id]
+      );
       return notifications.length ? notifications[0] : null;
     } catch (error) {
-      console.error('Error getting notification by ID:', error);
+      console.error("Error getting notification by ID:", error);
       throw error;
     }
   },
@@ -69,9 +77,9 @@ module.exports = {
   addNotification: async (notification) => {
     try {
       validateNotification(notification);
-      
-      const status = notification.read ? 'read' : 'unread';
-      
+
+      const status = notification.read ? "read" : "unread";
+
       const result = await db.query(
         `INSERT INTO Notifications (user_id, title, message, type, status) 
          VALUES (?, ?, ?, ?, ?)`,
@@ -80,18 +88,18 @@ module.exports = {
           notification.title,
           notification.message,
           notification.type,
-          status
+          status,
         ]
       );
-      
+
       return {
         id: result.insertId,
         ...notification,
         status,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error adding notification:', error);
+      console.error("Error adding notification:", error);
       throw error;
     }
   },
@@ -104,7 +112,7 @@ module.exports = {
       const updatedNotification = { ...notification, ...updatedFields };
       validateNotification(updatedNotification);
 
-      const status = updatedNotification.read ? 'read' : 'unread';
+      const status = updatedNotification.read ? "read" : "unread";
 
       await db.query(
         `UPDATE Notifications 
@@ -115,16 +123,16 @@ module.exports = {
           updatedNotification.message,
           updatedNotification.type,
           status,
-          id
+          id,
         ]
       );
-      
+
       return {
         ...updatedNotification,
-        status
+        status,
       };
     } catch (error) {
-      console.error('Error updating notification:', error);
+      console.error("Error updating notification:", error);
       throw error;
     }
   },
@@ -133,21 +141,39 @@ module.exports = {
     try {
       const notification = await module.exports.getNotificationById(id);
       if (!notification) return null;
-      
-      await db.query('DELETE FROM Notifications WHERE id = ?', [id]);
+
+      await db.query("DELETE FROM Notifications WHERE id = ?", [id]);
       return notification;
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      console.error("Error deleting notification:", error);
+      throw error;
+    }
+  },
+
+  markNotificationAsRead: async (id) => {
+    try {
+      const notification = await module.exports.getNotificationById(id);
+      if (!notification) return null;
+
+      await db.query('UPDATE Notifications SET status = "read" WHERE id = ?', [
+        id,
+      ]);
+      return notification;
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
       throw error;
     }
   },
 
   markAllAsRead: async (userId) => {
     try {
-      await db.query("UPDATE Notifications SET status = 'read' WHERE user_id = ?", [userId]);
+      await db.query(
+        "UPDATE Notifications SET status = 'read' WHERE user_id = ?",
+        [userId]
+      );
       return await module.exports.getNotificationsByUserId(userId);
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+      console.error("Error marking all notifications as read:", error);
       throw error;
     }
   },

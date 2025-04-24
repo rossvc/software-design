@@ -10,6 +10,9 @@ router.get("/", isAuthenticated, notificationsController.getAllNotifications);
 // Get a specific notification - Requires authentication
 router.get("/:id", isAuthenticated, notificationsController.getNotification);
 
+// Mark a notification as read - Requires authentication
+router.put("/:id/read", isAuthenticated, notificationsController.markNotificationAsRead);
+
 // Create a new notification - Admin only
 router.post("/", isAuthenticated, isAdmin, notificationsController.createNotification);
 
