@@ -1,18 +1,20 @@
-# Software Design Project
+# Volunteer Center
 
 ## 📌 Overview
 
-This repository contains the **Software Design Project**, developed to demonstrate key principles of software engineering, including design patterns, modular architecture, and clean code practices.
+**Volunteer Center** is a web-based application designed to facilitate volunteer management, event registration, and matching of volunteers to events based on their skills and availability. This project was developed as part of **Group 20 COSC4353 (Software Design)** coursework.
 
-The purpose of this project is to apply software design methodologies to solve real-world problems efficiently and maintainably.
+The goal of this project is to apply software design principles like modular architecture, authentication, validation, and clean code practices to create an efficient and user-friendly volunteer matching system.
 
 ## 🛠️ Technologies Used
 
-- Programming Language: [Specify language, e.g., JavaScript, Python, etc.]
-- Frameworks/Libraries: [List any if applicable]
-- Database: [If applicable]
-- Tools: Git, GitHub for version control
+- **Programming Language:** JavaScript (Node.js for backend, Vite + JavaScript for frontend)
+- **Frameworks/Libraries:**
+  - Express.js (Backend)
+  - Vite (Frontend)
+  - Jest (Testing)
+- **Database:** (MySQL)
+- **Tools:** Git, GitHub for version control
 
 ## 📂 Project Structure
-
 
