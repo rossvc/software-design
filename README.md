@@ -1,21 +1,10 @@
 📌 Overview
 The Volunteer Matching System is a full-stack web application designed to connect volunteers with available events based on their skills, preferences, and availability. The system supports user registration, profile management, event matching, notifications, and volunteer history tracking.
 
-🗂️ Project Structure
-bash
-Copy
-Edit
-├── controllers/        # Handles business logic and route control
-├── middleware/         # Session management, authentication
-├── models/             # Database models and schema validation
-├── routes/             # API route definitions
-├── scripts/            # Utility scripts (e.g., for seeding or setup)
-├── utils/              # Helper functions
-├── views/              # Frontend views (HTML, CSS, JS)
-├── app.js              # Entry point for the Express server
-├── jest.config.js      # Jest configuration for testing
-├── package.json        # Node.js project configuration
-├── vite.config.js      # Vite configuration for frontend build
+## 📂 Project Structure
+
+volunteer-matching-system/ ├── controllers/ # Handles business logic and route control ├── middleware/ # Session management, authentication ├── models/ # Database models and schema validation ├── routes/ # API route definitions ├── scripts/ # Utility scripts (e.g., for seeding or setup) ├── utils/ # Helper functions ├── views/ # Frontend views (HTML, CSS, JS) ├── app.js # Entry point for the Express server ├── jest.config.js # Jest configuration for testing ├── package.json # Node.js project configuration ├── vite.config.js # Vite configuration for frontend build
+
 ⚙️ Getting Started
 ✅ Prerequisites
 Node.js (v14+ recommended)
