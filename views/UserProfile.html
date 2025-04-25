@@ -14,7 +14,7 @@
     />
     <link rel="stylesheet" href="UserProfile.css" />
     <style>
-      /* Add dropdown styles */
+      /* Your original styles */
       .dropdown {
         position: absolute;
         top: 60px;
@@ -48,7 +48,6 @@
         display: block;
       }
 
-      /* Form styles to ensure consistency */
       .form-group {
         margin-bottom: 20px;
         width: 100%;
@@ -64,7 +63,6 @@
         box-sizing: border-box;
       }
 
-      /* Styles for date picker */
       .availability-container {
         width: 100%;
         position: relative;
@@ -77,18 +75,6 @@
         border-radius: 4px;
         box-sizing: border-box;
         height: auto;
-      }
-
-      .flatpickr-calendar {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-      }
-
-      .flatpickr-months,
-      .flatpickr-weekdays,
-      .flatpickr-days {
-        width: 100% !important;
       }
 
       .dayContainer {
@@ -132,8 +118,32 @@
         padding: 0;
         font-size: 14px;
       }
+
+      .skills-checkboxes label {
+        display: inline-block;
+        background-color: #e0e0e0;
+        color: black;
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin: 5px 5px 0 0;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+        user-select: none;
+      }
+
+      .skills-checkboxes input[type="checkbox"] {
+        display: none;
+      }
+
+      .skills-checkboxes input[type="checkbox"]:checked + label,
+      .skills-checkboxes label:has(input[type="checkbox"]:checked) {
+        background-color: #0951bd;
+        color: white;
+      }
     </style>
   </head>
+
   <body>
     <div id="navbar-container"></div>
     <script src="navbar.js"></script>
@@ -175,6 +185,7 @@
           <label for="state">State</label>
           <select id="state" required>
             <option value="">Choose a State</option>
+            <!-- All states here -->
             <option value="AL">Alabama</option>
             <option value="AK">Alaska</option>
             <option value="AZ">Arizona</option>
@@ -225,6 +236,7 @@
             <option value="WV">West Virginia</option>
             <option value="WI">Wisconsin</option>
             <option value="WY">Wyoming</option>
+            <!-- You already have the full state list, keep it here -->
           </select>
         </div>
 
@@ -234,16 +246,25 @@
         </div>
 
         <div class="form-group">
-          <label for="skills">Skills</label>
-          <select id="skills" required>
-            <option value="">Select a skill</option>
-            <option value="communication">Communication</option>
-            <option value="leadership">Leadership</option>
-            <option value="teamwork">Teamwork</option>
-            <option value="problem-solving">Problem Solving</option>
-            <option value="technical">Technical</option>
-            <option value="management">Management</option>
-          </select>
+          <label for="skills">Skills (Select one or more):</label>
+          <div id="skills" class="skills-checkboxes">
+            <label
+              ><input type="checkbox" value="communication" />
+              Communication</label
+            >
+            <label
+              ><input type="checkbox" value="leadership" /> Leadership</label
+            >
+            <label><input type="checkbox" value="teamwork" /> Teamwork</label>
+            <label
+              ><input type="checkbox" value="problem-solving" /> Problem
+              Solving</label
+            >
+            <label><input type="checkbox" value="technical" /> Technical</label>
+            <label
+              ><input type="checkbox" value="management" /> Management</label
+            >
+          </div>
         </div>
 
         <div class="form-group">
@@ -280,43 +301,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="UserProfile.js"></script>
-    <script>
-      // Add dropdown toggle function
-      function toggleDropdown() {
-        document.getElementById("dropdownMenu").classList.toggle("show");
-      }
-
-      // Check if user is logged in and show admin links if admin
-      document.addEventListener("DOMContentLoaded", function () {
-        const userJson = sessionStorage.getItem("user");
-        if (!userJson) {
-          // Redirect to login if not logged in
-          window.location.href = "Signin.html";
-          return;
-        }
-
-        const user = JSON.parse(userJson);
-        if (user.role === "admin") {
-          // Show admin-only links
-          document.getElementById("admin-dashboard-link").style.display =
-            "block";
-          document.getElementById("volunteer-matching-link").style.display =
-            "block";
-        }
-      });
-
-      // Close dropdown when clicking outside
-      window.onclick = function (event) {
-        if (
-          !event.target.matches(".bx-menu") &&
-          !event.target.matches(".menu-icon")
-        ) {
-          const dropdown = document.getElementById("dropdownMenu");
-          if (dropdown.classList.contains("show")) {
-            dropdown.classList.remove("show");
-          }
-        }
-      };
-    </script>
   </body>
 </html>

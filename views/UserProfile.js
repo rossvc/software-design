@@ -5,65 +5,48 @@ document.addEventListener("DOMContentLoaded", function () {
   const availabilityDatesInput = document.getElementById("availability-dates");
   let selectedDates = [];
 
-  // Ensure consistent styling for the availability input
+  // Keep availability input styled correctly
   function matchInputStyles() {
-    const standardInput = document.getElementById("fullName"); // Using fullName as reference
+    const standardInput = document.getElementById("fullName");
     if (standardInput) {
-      // Get computed styles from standard input
       const computedStyle = window.getComputedStyle(standardInput);
-
-      // Apply the same width styling to availability input
       availabilityInput.style.width = computedStyle.width;
     }
   }
 
-  // Call initially to set proper width
   matchInputStyles();
-
-  // Also handle window resize
   window.addEventListener("resize", matchInputStyles);
 
-  // Initialize flatpickr
+  // ✅ Initialize flatpickr with calendar opening upward
   const datePicker = flatpickr("#availability", {
     mode: "multiple",
     dateFormat: "Y-m-d",
     minDate: "today",
     inline: false,
-    static: true,
+    static: false,
     disableMobile: "true",
-    position: "below",
+    position: "above",
     monthSelectorType: "static",
-    onChange: function (selectedDatesArray, dateStr) {
-      selectedDates = selectedDatesArray.map((date) => {
-        return flatpickr.formatDate(date, "Y-m-d");
-      });
-
-      // Update hidden input with selected dates
+    onChange: function (selectedDatesArray) {
+      selectedDates = selectedDatesArray.map((date) =>
+        flatpickr.formatDate(date, "Y-m-d")
+      );
       availabilityDatesInput.value = JSON.stringify(selectedDates);
-
-      // Update visual display of selected dates
       updateSelectedDatesDisplay();
     },
-    onOpen: function (selectedDates, dateStr, instance) {
-      // Ensure calendar width matches input width
-      const inputWidth = availabilityInput.offsetWidth;
-      instance.calendarContainer.style.width = inputWidth + "px";
-
-      // Re-apply styles to maintain consistent width
-      matchInputStyles();
+    onOpen: function () {
+      matchInputStyles(); // ✅ Keep this, but REMOVE width override!
     },
     onClose: function () {
-      // Ensure the input shows something when dates are selected
-      if (selectedDates.length > 0) {
-        availabilityInput.value = `${selectedDates.length} date(s) selected`;
-      }
+      availabilityInput.value =
+        selectedDates.length > 0
+          ? `${selectedDates.length} date(s) selected`
+          : "";
     },
   });
 
-  // Function to update the display of selected dates
   function updateSelectedDatesDisplay() {
     selectedDatesContainer.innerHTML = "";
-
     selectedDates.forEach((date) => {
       const dateTag = document.createElement("div");
       dateTag.className = "date-tag";
@@ -84,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Format date for display
   function formatDisplayDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
@@ -94,18 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Remove a date from selection
   function removeDate(dateToRemove) {
     selectedDates = selectedDates.filter((date) => date !== dateToRemove);
     datePicker.setDate(selectedDates);
     availabilityDatesInput.value = JSON.stringify(selectedDates);
     updateSelectedDatesDisplay();
-
-    if (selectedDates.length > 0) {
-      availabilityInput.value = `${selectedDates.length} date(s) selected`;
-    } else {
-      availabilityInput.value = "";
-    }
+    availabilityInput.value =
+      selectedDates.length > 0
+        ? `${selectedDates.length} date(s) selected`
+        : "";
   }
 
   // Check if user is logged in
@@ -116,12 +95,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const user = JSON.parse(userJson);
-  // Fetch current user profile data to populate the form
+
+  // Populate form with existing user data
   fetch(`/api/userinfo`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     credentials: "include",
   })
     .then((response) => {
@@ -133,116 +111,57 @@ document.addEventListener("DOMContentLoaded", function () {
       return response.json();
     })
     .then((data) => {
-      // Populate form with existing data
       if (data) {
         document.getElementById("fullName").value = data.name || "";
+        document.getElementById("middleName").value = data.middleName || "";
         document.getElementById("lastName").value = data.lastName || "";
         document.getElementById("address").value = data.address || "";
+        document.getElementById("address2").value = data.address2 || "";
         document.getElementById("city").value = data.city || "";
-        
-        // Properly set the state dropdown value
+
         const stateSelect = document.getElementById("state");
         if (data.state) {
-          console.log("Setting state dropdown for state:", data.state);
           let stateFound = false;
-          
-          // First try to match by state code (2-letter abbreviation)
           for (let i = 0; i < stateSelect.options.length; i++) {
             if (stateSelect.options[i].value === data.state) {
               stateSelect.selectedIndex = i;
               stateFound = true;
-              console.log("State matched by code at index:", i);
               break;
             }
           }
-          
-          // If no match found by code, try to match by state name
           if (!stateFound) {
             const stateName = data.state.toLowerCase();
             for (let i = 0; i < stateSelect.options.length; i++) {
               if (stateSelect.options[i].text.toLowerCase() === stateName) {
                 stateSelect.selectedIndex = i;
-                stateFound = true;
-                console.log("State matched by name at index:", i);
                 break;
-              }
-            }
-            
-            // If still no match, try to find a partial match
-            if (!stateFound) {
-              for (let i = 0; i < stateSelect.options.length; i++) {
-                if (stateSelect.options[i].text.toLowerCase().includes(stateName) || 
-                    stateName.includes(stateSelect.options[i].text.toLowerCase())) {
-                  stateSelect.selectedIndex = i;
-                  console.log("State matched by partial name at index:", i);
-                  break;
-                }
               }
             }
           }
         }
-        
+
         document.getElementById("zip").value = data.zipCode || "";
 
-        // Properly set the skills dropdown value
-        const skillsSelect = document.getElementById("skills");
+        // ✅ Populate skills (checkboxes)
         if (data.skills && data.skills.length > 0) {
-          console.log("Setting skills dropdown for skills:", data.skills);
-          let skillFound = false;
-          
-          // Find the first matching skill and select it
-          for (let i = 0; i < skillsSelect.options.length; i++) {
-            const optionValue = skillsSelect.options[i].value.toLowerCase();
-            
-            // Check for exact match
-            for (const skill of data.skills) {
-              if (skill.toLowerCase() === optionValue) {
-                skillsSelect.selectedIndex = i;
-                skillFound = true;
-                console.log("Skill matched at index:", i);
-                break;
-              }
+          const skillCheckboxes = document.querySelectorAll(
+            "#skills input[type='checkbox']"
+          );
+          skillCheckboxes.forEach((checkbox) => {
+            if (data.skills.includes(checkbox.value)) {
+              checkbox.checked = true;
             }
-            
-            if (skillFound) break;
-          }
-          
-          // If no exact match, try partial match
-          if (!skillFound) {
-            for (let i = 0; i < skillsSelect.options.length; i++) {
-              const optionValue = skillsSelect.options[i].value.toLowerCase();
-              const optionText = skillsSelect.options[i].text.toLowerCase();
-              
-              for (const skill of data.skills) {
-                const skillLower = skill.toLowerCase();
-                if (skillLower.includes(optionValue) || optionValue.includes(skillLower) ||
-                    skillLower.includes(optionText) || optionText.includes(skillLower)) {
-                  skillsSelect.selectedIndex = i;
-                  console.log("Skill partially matched at index:", i);
-                  break;
-                }
-              }
-            }
-          }
+          });
         }
 
-        // Handle preferences as a simple string
         if (data.preferences) {
           document.getElementById("preferences").value = data.preferences;
         }
 
-        // Set availability dates
-        if (
-          data.availability &&
-          Array.isArray(data.availability) &&
-          data.availability.length > 0
-        ) {
-          // Set selected dates in the flatpickr
+        if (data.availability && Array.isArray(data.availability)) {
           selectedDates = data.availability;
           datePicker.setDate(selectedDates);
           availabilityDatesInput.value = JSON.stringify(selectedDates);
-
-          // Update display
           availabilityInput.value = `${selectedDates.length} date(s) selected`;
           updateSelectedDatesDisplay();
         }
@@ -252,47 +171,60 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Error fetching profile data:", error);
     });
 
+  // ✅ Handle form submit
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-
-    // Show loading state
     const submitButton = this.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.textContent = "Saving...";
     submitButton.disabled = true;
 
     const fullName = document.getElementById("fullName").value;
+    const middleName = document.getElementById("middleName").value;
     const lastName = document.getElementById("lastName").value;
     const address = document.getElementById("address").value;
+    const address2 = document.getElementById("address2").value;
     const city = document.getElementById("city").value;
     const state = document.getElementById("state").value;
     const zip = document.getElementById("zip").value;
-    const skills = document.getElementById("skills").value;
-    const preferences = document.getElementById("preferences")?.value || "";
+    const preferences = document.getElementById("preferences").value;
 
-    // Get availability dates from the hidden input
+    // ✅ Collect selected skills (checkboxes)
+    const skillCheckboxes = document.querySelectorAll(
+      "#skills input[type='checkbox']"
+    );
+    const skills = Array.from(skillCheckboxes)
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.value);
+
     const availabilityDates = selectedDates;
 
-    if (fullName && lastName && address && city && state && zip && skills) {
-      // Prepare profile data
+    if (
+      fullName &&
+      lastName &&
+      address &&
+      city &&
+      state &&
+      zip &&
+      skills.length > 0
+    ) {
       const profileData = {
         name: fullName,
+        middleName: middleName,
         lastName: lastName,
         address: address,
+        address2: address2,
         city: city,
         state: state,
         zipCode: zip,
-        skills: [skills],
+        skills: skills,
         preferences: preferences,
         availability: availabilityDates,
       };
 
-      // Call the API to update user profile
       fetch(`/api/userinfo`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileData),
         credentials: "include",
       })
@@ -306,11 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
           console.log("Profile updated successfully:", data);
-
-          // Update user profile in session storage
           sessionStorage.setItem("userProfile", JSON.stringify(data.profile));
-
-          // Show success message and redirect
           alert("Changes saved!");
           window.location.href = "UserInfo.html";
         })
@@ -319,12 +247,13 @@ document.addEventListener("DOMContentLoaded", function () {
           alert(error.message || "Failed to update profile. Please try again.");
         })
         .finally(() => {
-          // Reset button state
           submitButton.textContent = originalButtonText;
           submitButton.disabled = false;
         });
     } else {
-      alert("Please fill in all required fields.");
+      alert(
+        "Please fill in all required fields, including selecting at least one skill."
+      );
       submitButton.textContent = originalButtonText;
       submitButton.disabled = false;
     }
