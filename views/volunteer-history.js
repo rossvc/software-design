@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const row = document.createElement('tr');
       
       // Format date
-      const eventDate = new Date(item.date);
+      const eventDate = new Date(item.eventDate || item.date);
       const formattedDate = eventDate.toLocaleDateString('en-US', { 
         month: 'short', 
         day: 'numeric', 
@@ -182,12 +182,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const urgencyClass = `urgency-${item.urgency.toLowerCase()}`;
       
       row.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.description || 'No description available'}</td>
-        <td>${item.location}</td>
+        <td>${item.eventName || item.name}</td>
+        <td>${item.eventDescription || item.description || 'No description available'}</td>
+        <td>${item.eventLocation || item.location}</td>
         <td>
           <div class="skills-list">
-            ${item.requiredSkills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            ${item.requiredSkills ? item.requiredSkills.map(skill => `<span class="skill-tag">${skill}</span>`).join('') : 'No skills required'}
           </div>
         </td>
         <td><span class="${urgencyClass}">${item.urgency}</span></td>
