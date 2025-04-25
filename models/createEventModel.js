@@ -4,13 +4,11 @@ const db = require("../utils/db");
 const validateEvent = (event) => {
   // Required fields validation
   const requiredFields = [
-    "eventName",
+    "name",
     "description",
     "location",
     "urgency",
-    "startTime",
-    "endTime",
-    "date",
+    "event_date"
   ];
   for (const field of requiredFields) {
     if (!event[field]) {
@@ -19,7 +17,7 @@ const validateEvent = (event) => {
   }
 
   // Field type validation
-  if (typeof event.eventName !== "string")
+  if (typeof event.name !== "string")
     throw new Error("Event name must be a string");
   if (typeof event.description !== "string")
     throw new Error("Description must be a string");
@@ -27,15 +25,11 @@ const validateEvent = (event) => {
     throw new Error("Location must be a string");
   if (typeof event.urgency !== "string")
     throw new Error("Urgency must be a string");
-  if (typeof event.startTime !== "string")
-    throw new Error("Start time must be a string");
-  if (typeof event.endTime !== "string")
-    throw new Error("End time must be a string");
-  if (typeof event.date !== "string") throw new Error("Date must be a string");
-  if (!Array.isArray(event.skills)) throw new Error("Skills must be an array");
-
+  if (typeof event.event_date !== "string")
+    throw new Error("Event date must be a string");
+  
   // Field length validation
-  if (event.eventName.length < 3)
+  if (event.name.length < 3)
     throw new Error("Event name must be at least 3 characters");
   if (event.description.length < 10)
     throw new Error("Description must be at least 10 characters");
@@ -43,38 +37,29 @@ const validateEvent = (event) => {
     throw new Error("Location must be at least 3 characters");
 
   // Urgency enum validation
-  const validUrgencies = ["High", "Medium", "Low"];
-  if (!validUrgencies.includes(event.urgency)) {
-    throw new Error("Urgency must be High, Medium, or Low");
+  const validUrgencies = ["high", "medium", "low"];
+  if (!validUrgencies.includes(event.urgency.toLowerCase())) {
+    throw new Error("Urgency must be high, medium, or low");
   }
 
-  // Time format validation
-  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-  if (!timeRegex.test(event.startTime))
-    throw new Error("Start time must be in HH:MM format");
-  if (!timeRegex.test(event.endTime))
-    throw new Error("End time must be in HH:MM format");
-
   // Date format validation
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateRegex.test(event.date))
-    throw new Error("Date must be in YYYY-MM-DD format");
+  const dateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+  if (!dateTimeRegex.test(event.event_date))
+    throw new Error("Event date must be in YYYY-MM-DDThh:mm:ss format");
 };
 
 // Helper function to convert database event to model event
 const mapDbEventToModelEvent = (dbEvent) => {
   return {
     id: dbEvent.id,
-    eventName: dbEvent.name,
+    name: dbEvent.name,
     description: dbEvent.description,
     location: dbEvent.location,
-    urgency: dbEvent.urgency.charAt(0).toUpperCase() + dbEvent.urgency.slice(1), // Capitalize first letter
-    skills: dbEvent.required_skills ? JSON.parse(dbEvent.required_skills) : [],  // Handle null or invalid JSON
-    image: dbEvent.image_url,
-    startTime: dbEvent.event_date ? new Date(dbEvent.event_date).toTimeString().substring(0, 5) : null,
-    endTime: dbEvent.event_date ? new Date(dbEvent.event_date).toTimeString().substring(0, 5) : null, // Assuming end time is not stored separately
-    date: dbEvent.event_date ? new Date(dbEvent.event_date).toISOString().split("T")[0] : null,
-    createdAt: dbEvent.created_at
+    urgency: dbEvent.urgency,
+    required_skills: dbEvent.required_skills || "",
+    image_url: dbEvent.image_url,
+    event_date: dbEvent.event_date,
+    created_at: dbEvent.created_at
       ? new Date(dbEvent.created_at).toISOString()
       : new Date().toISOString(),
   };
@@ -107,31 +92,28 @@ module.exports = {
     try {
       validateEvent(event);
 
-      // Combine date and start time for event_date
-      const eventDate = `${event.date} ${event.startTime}:00`;
-
       // Convert urgency to lowercase for database
       const urgency = event.urgency.toLowerCase();
-      const skillsToStore = Array.isArray(event.skills) ? event.skills : [];
 
       const result = await db.query(
         `INSERT INTO EventDetails 
-         (name, description, location, required_skills, urgency, event_date) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+         (name, description, location, required_skills, urgency, event_date, image_url) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          event.eventName,
+          event.name,
           event.description,
           event.location,
-          JSON.stringify(skillsToStore), // Ensure skills is always a JSON string
+          event.required_skills,
           urgency,
-          eventDate,
+          event.event_date,
+          event.image_url || null
         ]
       );
 
       return {
         id: result.insertId,
         ...event,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
     } catch (error) {
       console.error("Error adding event:", error);
@@ -156,33 +138,30 @@ module.exports = {
       // Validate the updated event
       validateEvent(updatedEvent);
 
-      // Combine date and start time for event_date
-      const eventDate = `${updatedEvent.date} ${updatedEvent.startTime}:00`;
-
       // Convert urgency to lowercase for database
       const urgency = updatedEvent.urgency.toLowerCase();
-      const skillsToStore = Array.isArray(updatedEvent.skills) ? updatedEvent.skills : [];
 
       // Update in database
       await db.query(
         `UPDATE EventDetails 
          SET name = ?, description = ?, location = ?, required_skills = ?, 
-             urgency = ?, event_date = ? 
+             urgency = ?, event_date = ?, image_url = ? 
          WHERE id = ?`,
         [
-          updatedEvent.eventName,
+          updatedEvent.name,
           updatedEvent.description,
           updatedEvent.location,
-          JSON.stringify(skillsToStore), // Ensure skills is always a JSON string
+          updatedEvent.required_skills,
           urgency,
-          eventDate,
+          updatedEvent.event_date,
+          updatedEvent.image_url || null,
           id,
         ]
       );
 
       return {
         ...updatedEvent,
-        updatedAt: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
     } catch (error) {
       console.error("Error updating event:", error);

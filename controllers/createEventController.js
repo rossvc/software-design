@@ -41,29 +41,27 @@ const getEvent = async (req, res) => {
 const addEvent = async (req, res) => {
   try {
     const {
-      eventName,
+      name,
       description,
       location,
       urgency,
-      skills,
-      startTime,
-      endTime,
-      date,
+      required_skills,
+      event_date,
+      image_url
     } = req.body;
 
-    if (!eventName || !description || !location || !date || !startTime || !endTime) {
+    if (!name || !description || !location || !event_date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     const newEvent = await eventsModel.addEvent({
-      eventName,
+      name,
       description,
       location,
-      urgency: urgency || "Medium",
-      skills: skills || [],
-      startTime,
-      endTime,
-      date,
+      urgency: urgency || "medium",
+      required_skills: required_skills || "",
+      event_date,
+      image_url
     });
 
     res.status(201).json({
@@ -81,21 +79,20 @@ const updateEvent = async (req, res) => {
     const eventId = Number(req.params.id);
     await validateEventId(eventId);
 
-    const { eventName, description, location, urgency, skills, startTime, endTime, date } = req.body;
+    const { name, description, location, urgency, required_skills, event_date, image_url } = req.body;
 
-    if (!eventName || !description || !location || !date || !startTime || !endTime) {
+    if (!name || !description || !location || !event_date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     const updatedEvent = await eventsModel.updateEvent(eventId, {
-      eventName,
+      name,
       description,
       location,
-      urgency: urgency || "Medium",
-      skills: skills || [],
-      startTime,
-      endTime,
-      date,
+      urgency: urgency || "medium",
+      required_skills: required_skills || "",
+      event_date,
+      image_url
     });
 
     if (!updatedEvent) {

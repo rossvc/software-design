@@ -55,12 +55,12 @@
     <div class="container">
       <h2 class="title">Create New Event</h2>
       <form id="event-form">
-        <label for="event-name">Event Name:</label>
+        <label for="name">Event Name:</label>
         <input
           type="text"
-          id="event-name"
-          name="event-name"
-          maxlength="100"
+          id="name"
+          name="name"
+          maxlength="255"
           placeholder="Enter event name (required)"
           required
         />
@@ -90,13 +90,13 @@
         <label for="urgency">Urgency:</label>
         <select id="urgency" name="urgency" required>
           <option value="">Select</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
         </select>
 
-        <label for="skills">Required Skills:</label>
-        <select id="skills" name="skills" multiple required>
+        <label for="required_skills">Required Skills:</label>
+        <select id="required_skills" name="required_skills" multiple>
           <option value="Teaching">Teaching</option>
           <option value="Childcare">Childcare</option>
           <option value="Elderly Care">Elderly Care</option>
@@ -115,25 +115,18 @@
           <input type="time" id="end-time" name="end-time" required />
         </div>
 
-        <label for="date">Event Date:</label>
-        <input type="date" id="date" name="date" required />
+        <label for="event_date">Event Date:</label>
+        <input type="date" id="event_date" name="event_date" required />
 
+        <label for="image_url">Image URL:</label>
+        <input
+          type="url"
+          id="image_url"
+          name="image_url"
+          placeholder="Enter image URL (optional)"
+        />
+        
         <div class="button-container">
-          <input
-            type="file"
-            id="imageUpload"
-            name="image"
-            accept="image/*"
-            style="display: none"
-          />
-
-          <button
-            type="button"
-            class="button button-upload"
-            onclick="document.getElementById('imageUpload').click();"
-          >
-            Upload Image
-          </button>
           <button type="submit" class="button" id="submit-button">
             Create Event
           </button>
@@ -203,20 +196,28 @@
           })
           .then((event) => {
             // Populate the form with event details
-            document.getElementById("event-name").value = event.eventName || "";
+            document.getElementById("name").value = event.name || "";
             document.getElementById("description").value =
               event.description || "";
             document.getElementById("location").value = event.location || "";
+            document.getElementById("image_url").value = event.image_url || "";
 
             if (event.urgency) {
               document.getElementById("urgency").value = event.urgency;
             }
 
             // Handle date
-            if (event.date) {
-              const eventDate = new Date(event.date);
+            if (event.event_date) {
+              const eventDate = new Date(event.event_date);
               const formattedDate = eventDate.toISOString().split("T")[0];
-              document.getElementById("date").value = formattedDate;
+              document.getElementById("event_date").value = formattedDate;
+              
+              // Extract time if available
+              if (eventDate.getHours() || eventDate.getMinutes()) {
+                const hours = String(eventDate.getHours()).padStart(2, '0');
+                const minutes = String(eventDate.getMinutes()).padStart(2, '0');
+                document.getElementById("start-time").value = `${hours}:${minutes}`;
+              }
             }
 
             // Handle times
@@ -228,10 +229,14 @@
             }
 
             // Handle skills (multi-select)
-            if (event.skills && event.skills.length > 0) {
-              const skillsSelect = document.getElementById("skills");
+            if (event.required_skills) {
+              const skills = typeof event.required_skills === 'string' ? 
+                           event.required_skills.split(',') : 
+                           event.required_skills;
+                           
+              const skillsSelect = document.getElementById("required_skills");
               Array.from(skillsSelect.options).forEach((option) => {
-                if (event.skills.includes(option.value)) {
+                if (skills.includes(option.value)) {
                   option.selected = true;
                 }
               });
@@ -263,7 +268,7 @@
           e.preventDefault();
 
           // Validate form
-          let skills = document.getElementById("skills").selectedOptions;
+          let skills = document.getElementById("required_skills").selectedOptions;
           if (skills.length === 0) {
             alert("Please select at least one skill.");
             return;
@@ -276,14 +281,14 @@
 
           // Create event object
           const eventData = {
-            eventName: document.getElementById("event-name").value,
+            name: document.getElementById("name").value,
             description: document.getElementById("description").value,
             location: document.getElementById("location").value,
+            required_skills: selectedSkills.join(','),
             urgency: document.getElementById("urgency").value,
-            date: document.getElementById("date").value,
-            startTime: document.getElementById("start-time").value,
-            endTime: document.getElementById("end-time").value,
-            skills: selectedSkills,
+            event_date: document.getElementById("event_date").value + 'T' + 
+                        document.getElementById("start-time").value + ':00',
+            image_url: document.getElementById("image_url").value || null
           };
 
           // Determine if this is a create or update operation

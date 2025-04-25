@@ -397,13 +397,17 @@
             events.forEach((event) => {
               let skillsArray = [];
               try {
-                skillsArray = Array.isArray(event.skills) ? event.skills : [];
+                if (event.required_skills) {
+                  skillsArray = typeof event.required_skills === 'string' ? 
+                    event.required_skills.split(',') : 
+                    (Array.isArray(event.required_skills) ? event.required_skills : []);
+                }
               } catch (error) {
                 console.error("Error parsing skills:", error, event);
                 skillsArray = [];
               }
 
-              const eventDate = new Date(event.date);
+              const eventDate = new Date(event.event_date || event.date);
               const formattedDate = eventDate.toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -431,10 +435,10 @@
                   ? event.status.charAt(0).toUpperCase() + event.status.slice(1)
                   : "Active"
               }</span>
-                <h3>${event.eventName}</h3>
+                <h3>${event.name}</h3>
                 <img
-                  src="${event.image}"
-                  alt="${event.eventName}"
+                  src="${event.image_url || ''}"
+                  alt="${event.name}"
                   style="
                     width: 100%;
                     height: 200px;
