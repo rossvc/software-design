@@ -1,4 +1,4 @@
-/* Full-height layout to allow sticky footer */
+/* Full-page layout with sticky footer */
 html,
 body {
   height: 100%;
@@ -10,43 +10,39 @@ body {
   flex-direction: column;
 }
 
-/* Main Container */
+/* Main container takes remaining space */
 .container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  max-width: 900px;
-  margin: 32px auto;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
-  overflow: hidden;
-  padding-bottom: 40px;
+  align-items: center;
+  padding: 32px 16px;
 }
 
-/* Navbar/Header */
+/* ----------------------- Navbar/Header ----------------------- */
 .nav-header {
   background-color: #0951bd;
   color: white;
+  width: 100%; /* Full width */
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
 }
 
-/* Logo & Title */
 .nav-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .logo-img {
-  height: 35px;
-  width: auto;
+  height: 40px;
+  width: 40px;
   object-fit: contain;
+  border-radius: 50%;
 }
 
 .nav-header h1 {
@@ -54,19 +50,19 @@ body {
   font-size: 22px;
 }
 
-/* Dropdown Menu */
+/* ----------------------- Dropdown Menu ----------------------- */
+.dropbtn {
+  background-color: transparent;
+  color: white;
+  font-size: 26px;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
 .dropdown {
   position: relative;
   display: inline-block;
-}
-
-.dropbtn {
-  background-color: #0951bd;
-  color: white;
-  font-size: 18px;
-  border: none;
-  cursor: pointer;
-  padding: 8px 12px;
 }
 
 .dropdown-content {
@@ -78,7 +74,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   border-radius: 6px;
-  overflow: hidden;
 }
 
 .dropdown-content a {
@@ -97,65 +92,85 @@ body {
   display: block;
 }
 
-/* Content Section */
-.content {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* Card Styles */
-.card {
+/* ----------------------- Form Styling ----------------------- */
+.user-info-form {
+  max-width: 600px;
   background-color: #f9fafb;
+  padding: 24px;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  margin-top: 30px;
 }
 
-.card h2 {
-  font-size: 18px;
-  margin-bottom: 12px;
+@media (max-width: 768px) {
+  .user-info-form {
+    margin-top: 20px; /* Smaller top space on mobile */
+  }
 }
 
-.card p {
-  margin: 4px 0;
-  font-size: 14px;
+/* Form Headline */
+.user-info-form h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
 }
 
-/* Button */
+/* Labels and Data */
+.user-info-form label {
+  font-weight: bold;
+  display: block;
+  margin: 12px 0 4px;
+  color: #333;
+}
+
+.user-info-form span {
+  font-weight: normal;
+  color: #555;
+}
+
+/* Availability Section */
+.availability-dates {
+  margin-top: 8px;
+  padding-left: 12px;
+  color: #555;
+}
+
+/* Edit Button */
 .edit-btn {
-  display: inline-block;
-  margin-top: 16px;
+  background-color: #0951bd;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.edit-btn:hover {
+  background-color: #073f96;
+}
+
+/* ----------------------- Footer (Sticky) ----------------------- */
+.footer {
   background-color: #0951bd;
   color: white;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  text-align: center;
+  padding: 12px;
+  width: 100%;
   font-size: 14px;
-  border: none;
-  cursor: pointer;
+  margin-top: auto; /* Sticky footer */
 }
 
-/* Event Card */
-.event {
-  background-color: #e5e7eb;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.event h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.event p {
-  margin: 0;
-  font-size: 14px;
-}
-
-/* Notification Styling */
+/* ----------------------- Notifications ----------------------- */
 .notification {
   background-color: #fffae5;
   border-left: 5px solid #ffcc00;
@@ -184,18 +199,23 @@ body {
   color: #a67c00;
 }
 
-/* Availability Dates */
-.availability-dates {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
+/* ----------------------- Responsive Layout ----------------------- */
+@media (max-width: 768px) {
+  .nav-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-/* Footer */
-.footer {
-  background-color: #0951bd;
-  color: white;
-  text-align: center;
-  padding: 12px;
-  width: 100%;
+  .nav-title {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .dropbtn {
+    align-self: flex-end;
+  }
+
+  .user-info-form {
+    padding: 20px;
+  }
 }

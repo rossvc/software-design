@@ -9,14 +9,14 @@
   </head>
   <body>
     <div class="container">
-      <!-- Header with logo and dropdown -->
+      <!-- Header -->
       <div class="nav-header">
         <div class="nav-title">
           <img src="logo.png" alt="Logo" class="logo-img" />
           <h1>User Profile Page</h1>
         </div>
         <div class="dropdown" id="navDropdown">
-          <button class="dropbtn" onclick="toggleDropdown()">☰</button>
+          <button class="dropbtn">☰</button>
           <div class="dropdown-content">
             <a href="Homepage.html">Home</a>
             <a href="UserInfo.html">Your Profile</a>
@@ -28,54 +28,41 @@
         </div>
       </div>
 
-      <div class="content">
-        <!-- User Info Section -->
-        <div class="card">
-          <h2>User Information</h2>
-          <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
-          <p>
-            <strong>Last Name:</strong>
-            <span id="userLastName">Loading...</span>
-          </p>
-          <p>
-            <strong>Address:</strong> <span id="userAddress">Loading...</span>
-          </p>
-          <p><strong>City:</strong> <span id="userCity">Loading...</span></p>
-          <p><strong>State:</strong> <span id="userState">Loading...</span></p>
-          <p><strong>Zip Code:</strong> <span id="userZip">Loading...</span></p>
-          <p>
-            <strong>Skills:</strong> <span id="userSkills">Loading...</span>
-          </p>
-          <p>
-            <strong>User role:</strong> <span id="userRole">Loading...</span>
-          </p>
-          <p>
-            <strong>Preferences:</strong>
-            <span id="userPreferences">Loading...</span>
-          </p>
-          <div>
-            <strong>Availability:</strong>
-            <div id="userAvailability" class="availability-dates">
-              Loading...
-            </div>
-          </div>
-          <button onclick="location.href='UserProfile.html'" class="edit-btn">
-            Edit Profile
-          </button>
-        </div>
-
-        <!-- Upcoming Events Section -->
-        <div class="card" id="eventSection">
-          <h2>Your Upcoming Events</h2>
-          <div class="event">
-            <h3>Beach Cleanup</h3>
-            <p>Join us for a beach cleanup event to protect marine life.</p>
-          </div>
-          <div id="notificationSection"></div>
-        </div>
-      </div>
+      <!-- User Info Form -->
+      <form class="user-info-form">
+        <h2>User Information</h2>
+        <label>Name: <span id="userName">Loading...</span></label
+        ><br />
+        <label>Last Name: <span id="userLastName">Loading...</span></label
+        ><br />
+        <label>Address: <span id="userAddress">Loading...</span></label
+        ><br />
+        <label>City: <span id="userCity">Loading...</span></label
+        ><br />
+        <label>State: <span id="userState">Loading...</span></label
+        ><br />
+        <label>Zip Code: <span id="userZip">Loading...</span></label
+        ><br />
+        <label>Skills: <span id="userSkills">Loading...</span></label
+        ><br />
+        <label>User Role: <span id="userRole">Loading...</span></label
+        ><br />
+        <label>Preferences: <span id="userPreferences">Loading...</span></label
+        ><br />
+        <label>Availability:</label>
+        <div id="userAvailability" class="availability-dates">Loading...</div>
+        <br />
+        <button
+          type="button"
+          onclick="location.href='UserProfile.html'"
+          class="edit-btn"
+        >
+          Edit Profile
+        </button>
+      </form>
     </div>
 
+    <!-- Footer inside the body -->
     <footer class="footer">
       &copy; 2025 Volunteer Center. All rights reserved.
     </footer>
