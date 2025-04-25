@@ -51,7 +51,7 @@
   npm install
 
 ## ⚙️ Set Up Environment Variables
-- The project requires a connection to a database.
+- The project requires a connection to MySQL database.
 
 - To configure the database connection:
 
