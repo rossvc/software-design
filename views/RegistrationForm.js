@@ -184,13 +184,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Show success message and redirect
           alert("Registration successful!");
-          window.location.href = "VolunteerEvents.html";
+          window.location.href = "Signin.html";
         })
         .catch((error) => {
           console.error("Error updating profile:", error);
-          alert(
-            error.message || "Failed to update profile. Please try again."
-          );
+          alert(error.message || "Failed to update profile. Please try again.");
         })
         .finally(() => {
           // Reset button state
