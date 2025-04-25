@@ -69,4 +69,12 @@ DB_NAME=volunteer_db
 - To run the application, use the following command:
 ```bash
 node app.js
-``` 
+```
+## 🌐 Access the Application Locally
+
+- After starting the server, the application will run locally at:
+```bash
+http://localhost:3000
+```
+
+
