@@ -122,7 +122,6 @@ footer {
   left: 0;
 }
 
-
 #navbar-container {
   position: fixed;
   top: 0;
@@ -132,9 +131,9 @@ footer {
   background-color: #007bff;
   color: white;
   padding: 10px 20px;
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
@@ -193,3 +192,41 @@ footer {
   display: block;
 }
 
+.selected-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.date-tag {
+  background-color: #e9f5ff;
+  border: 1px solid #0951bd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.date-tag span {
+  margin-right: 5px;
+}
+
+.date-tag button {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+}
+
+.availability-container {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+}
+
+.flatpickr-calendar {
+  z-index: 9999 !important; /* ✅ Ensures it stays on top */
+}

@@ -5,74 +5,37 @@ document.addEventListener("DOMContentLoaded", function () {
   const availabilityDatesInput = document.getElementById("availability-dates");
   let selectedDates = [];
 
-  // Check if we have a registered user ID from the previous step
   const userId = sessionStorage.getItem("registeredUserId");
-  const username = sessionStorage.getItem("registeredUsername");
-
   if (!userId) {
-    console.warn(
-      "No user ID found in session storage. User may not have completed registration step 1."
-    );
+    console.warn("No user ID found. Redirecting to registration start.");
     window.location.href = "Registration.html";
     return;
   }
 
-  // Ensure consistent styling for the availability input
-  function matchInputStyles() {
-    const standardInput = document.getElementById("fullName"); // Using fullName as reference
-    if (standardInput) {
-      // Get computed styles from standard input
-      const computedStyle = window.getComputedStyle(standardInput);
-
-      // Apply the same width styling to availability input
-      availabilityInput.style.width = computedStyle.width;
-    }
-  }
-
-  // Call initially to set proper width
-  matchInputStyles();
-
-  // Also handle window resize
-  window.addEventListener("resize", matchInputStyles);
-
-  // Initialize flatpickr
+  // ✅ Fixed Flatpickr Initialization
   const datePicker = flatpickr("#availability", {
     mode: "multiple",
     dateFormat: "Y-m-d",
     minDate: "today",
     inline: false,
-    static: true,
+    static: false,               // ✅ Allows floating outside the container
     disableMobile: "true",
-    position: "below",
+    position: "auto",            // ✅ Smart positioning
+    appendTo: document.body,     // ✅ Prevents cutting off by containers
     monthSelectorType: "static",
-    onChange: function (selectedDatesArray, dateStr) {
-      selectedDates = selectedDatesArray.map((date) => {
-        return flatpickr.formatDate(date, "Y-m-d");
-      });
-
-      // Update hidden input with selected dates
+    onChange: function (selectedDatesArray) {
+      selectedDates = selectedDatesArray.map((date) =>
+        flatpickr.formatDate(date, "Y-m-d")
+      );
       availabilityDatesInput.value = JSON.stringify(selectedDates);
-
-      // Update visual display of selected dates
-      updateSelectedDatesDisplay();
-    },
-    onOpen: function (selectedDates, dateStr, instance) {
-      // Ensure calendar width matches input width
-      const inputWidth = availabilityInput.offsetWidth;
-      instance.calendarContainer.style.width = inputWidth + "px";
-
-      // Re-apply styles to maintain consistent width
-      matchInputStyles();
+      updateSelectedDatesDisplay(); // ✅ Draw blue rectangles
     },
     onClose: function () {
-      // Ensure the input shows something when dates are selected
-      if (selectedDates.length > 0) {
-        availabilityInput.value = `${selectedDates.length} date(s) selected`;
-      }
-    },
+      availabilityInput.value = selectedDates.length > 0 ? `${selectedDates.length} date(s) selected` : "";
+    }
   });
 
-  // Function to update the display of selected dates
+  // ✅ Draw the selected dates (blue rectangles)
   function updateSelectedDatesDisplay() {
     selectedDatesContainer.innerHTML = "";
 
@@ -96,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Format date for display
+  // ✅ Format date for blue tag display
   function formatDisplayDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
@@ -106,30 +69,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Remove a date from selection
+  // ✅ Remove a selected date (when clicking the "×" button)
   function removeDate(dateToRemove) {
     selectedDates = selectedDates.filter((date) => date !== dateToRemove);
     datePicker.setDate(selectedDates);
     availabilityDatesInput.value = JSON.stringify(selectedDates);
     updateSelectedDatesDisplay();
-
-    if (selectedDates.length > 0) {
-      availabilityInput.value = `${selectedDates.length} date(s) selected`;
-    } else {
-      availabilityInput.value = "";
-    }
+    availabilityInput.value = selectedDates.length > 0 ? `${selectedDates.length} date(s) selected` : "";
   }
 
+  // ✅ Submit the form
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-
-    // Show loading state
     const submitButton = this.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.textContent = "Submitting...";
     submitButton.disabled = true;
 
-    // Collect values from the form
     const fullName = document.getElementById("fullName").value;
     const middleName = document.getElementById("middleName")?.value || "";
     const lastName = document.getElementById("lastName").value;
@@ -138,35 +94,35 @@ document.addEventListener("DOMContentLoaded", function () {
     const city = document.getElementById("city").value;
     const state = document.getElementById("state").value;
     const zip = document.getElementById("zip").value;
-    const skills = document.getElementById("skills").value;
     const preferences = document.getElementById("preferences")?.value || "";
 
-    // Get availability dates from the hidden input
+    // ✅ Collect selected skills (checkboxes)
+    const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked'))
+      .map((checkbox) => checkbox.value);
+
     const availabilityDates = selectedDates;
 
-    // Validate required fields
-    if (fullName && lastName && address && city && state && zip && skills) {
-      // Prepare profile data
+    // ✅ Validation
+    if (fullName && lastName && address && city && state && zip && selectedSkills.length > 0) {
       const profileData = {
         name: fullName,
+        middleName: middleName,
         lastName: lastName,
         address: address,
+        address2: address2,
         city: city,
         state: state,
         zipCode: zip,
-        skills: [skills],
+        skills: selectedSkills, // ✅ Skills sent as array
         preferences: preferences,
-        availability: availabilityDates,
+        availability: availabilityDates, // ✅ Dates also sent as array
       };
 
-      // Call the API to update user profile with the correct endpoint
       fetch(`/api/userinfo`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, profileData }),
-        credentials: "include", // Important for session cookies
+        credentials: "include",
       })
         .then((response) => {
           if (!response.ok) {
@@ -178,11 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
           console.log("Profile updated successfully:", data);
-
-          // Store user profile in session storage
           sessionStorage.setItem("user", JSON.stringify(data.profile));
-
-          // Show success message and redirect
           alert("Registration successful!");
           window.location.href = "Signin.html";
         })
@@ -191,12 +143,11 @@ document.addEventListener("DOMContentLoaded", function () {
           alert(error.message || "Failed to update profile. Please try again.");
         })
         .finally(() => {
-          // Reset button state
           submitButton.textContent = originalButtonText;
           submitButton.disabled = false;
         });
     } else {
-      alert("Please fill in all required fields.");
+      alert("Please fill in all required fields and select at least one skill.");
       submitButton.textContent = originalButtonText;
       submitButton.disabled = false;
     }

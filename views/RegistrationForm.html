@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile Form</title>
+    <title>Registration Form</title>
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -14,46 +14,10 @@
     />
     <link rel="stylesheet" href="RegistrationForm.css" />
     <style>
-      /* Add dropdown styles */
-      .dropdown {
-        position: absolute;
-        top: 60px;
-        right: 25px;
-        background-color: #0951bd;
-        padding: 10px;
-        border-radius: 4px;
-        display: none;
-      }
-
-      .dropdown-content {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
-      }
-
-      .dropdown-content a {
-        color: whitesmoke;
-        text-decoration: none;
-        padding: 8px;
-        border-radius: 4px;
-        display: block;
-      }
-
-      .dropdown-content a:hover {
-        background-color: #2563eb;
-      }
-
-      .show {
-        display: block;
-      }
-
-      /* Form styles to ensure consistency */
       .form-group {
         margin-bottom: 20px;
         width: 100%;
       }
-
       .form-group input,
       .form-group select,
       .form-group textarea {
@@ -63,74 +27,21 @@
         border-radius: 4px;
         box-sizing: border-box;
       }
-
-      /* Styles for date picker */
-      .availability-container {
-        width: 100%;
-        position: relative;
-      }
-
-      #availability {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-        height: auto;
-      }
-
-      .flatpickr-calendar {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-      }
-
-      .flatpickr-months,
-      .flatpickr-weekdays,
-      .flatpickr-days {
-        width: 100% !important;
-      }
-
-      .dayContainer {
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-        display: flex;
-        flex-wrap: wrap;
-      }
-
-      span.flatpickr-day {
-        flex-basis: 14.28% !important;
-        max-width: 14.28% !important;
-      }
-
-      .selected-dates {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-top: 10px;
-      }
-
-      .date-tag {
-        background-color: #e9f5ff;
-        border: 1px solid #0951bd;
-        border-radius: 4px;
-        padding: 5px 10px;
-        display: flex;
-        align-items: center;
-      }
-
-      .date-tag span {
-        margin-right: 5px;
-      }
-
-      .date-tag button {
-        background: none;
-        border: none;
-        color: #f44336;
+      #skills-container label {
+        display: inline-block;
+        background-color: #e0e0e0;
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 20px;
         cursor: pointer;
-        padding: 0;
-        font-size: 14px;
+        transition: 0.3s;
+      }
+      #skills-container input[type="checkbox"] {
+        display: none;
+      }
+      #skills-container input[type="checkbox"]:checked + label {
+        background-color: #0951bd;
+        color: white;
       }
     </style>
   </head>
@@ -143,6 +54,7 @@
 
     <div class="container">
       <form id="registrationForm">
+        <!-- Your other form fields -->
         <div class="form-group">
           <label for="fullName">First Name</label>
           <input type="text" id="fullName" placeholder="required" required />
@@ -155,22 +67,18 @@
           <label for="lastName">Last Name</label>
           <input type="text" id="lastName" placeholder="required" required />
         </div>
-
         <div class="form-group">
           <label for="address">Address</label>
           <input type="text" id="address" placeholder="required" required />
         </div>
-
         <div class="form-group">
           <label for="address2">Address 2</label>
           <input type="text" id="address2" placeholder="optional" />
         </div>
-
         <div class="form-group">
           <label for="city">City</label>
           <input type="text" id="city" placeholder="required" required />
         </div>
-
         <div class="form-group">
           <label for="state">State</label>
           <select id="state" required>
@@ -225,25 +133,66 @@
             <option value="WV">West Virginia</option>
             <option value="WI">Wisconsin</option>
             <option value="WY">Wyoming</option>
+            <!-- Add other states here -->
           </select>
         </div>
-
         <div class="form-group">
           <label for="zip">Zip Code</label>
           <input type="text" id="zip" placeholder="required" required />
         </div>
 
+        <!-- ✅ Skills with Checkboxes -->
         <div class="form-group">
-          <label for="skills">Skills</label>
-          <select id="skills" required>
-            <option value="">Select a skill</option>
-            <option value="communication">Communication</option>
-            <option value="leadership">Leadership</option>
-            <option value="teamwork">Teamwork</option>
-            <option value="problem-solving">Problem Solving</option>
-            <option value="technical">Technical</option>
-            <option value="management">Management</option>
-          </select>
+          <label>Skills (Select one or more):</label>
+          <div id="skills-container">
+            <input
+              type="checkbox"
+              id="communication"
+              name="skills"
+              value="communication"
+            />
+            <label for="communication">Communication</label>
+
+            <input
+              type="checkbox"
+              id="leadership"
+              name="skills"
+              value="leadership"
+            />
+            <label for="leadership">Leadership</label>
+
+            <input
+              type="checkbox"
+              id="teamwork"
+              name="skills"
+              value="teamwork"
+            />
+            <label for="teamwork">Teamwork</label>
+
+            <input
+              type="checkbox"
+              id="problem-solving"
+              name="skills"
+              value="problem-solving"
+            />
+            <label for="problem-solving">Problem Solving</label>
+
+            <input
+              type="checkbox"
+              id="technical"
+              name="skills"
+              value="technical"
+            />
+            <label for="technical">Technical</label>
+
+            <input
+              type="checkbox"
+              id="management"
+              name="skills"
+              value="management"
+            />
+            <label for="management">Management</label>
+          </div>
         </div>
 
         <div class="form-group">
@@ -251,6 +200,7 @@
           <textarea id="preferences" placeholder="optional"></textarea>
         </div>
 
+        <!-- Availability selection remains unchanged -->
         <div class="form-group">
           <label for="availability">Availability (Select Multiple Dates)</label>
           <div class="availability-container">
@@ -280,46 +230,5 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="RegistrationForm.js"></script>
-    <script>
-      // Toggle dropdown function
-      function toggleDropdown() {
-        document.getElementById("userDropdown").classList.toggle("show");
-      }
-
-      // Check if user has started registration
-      document.addEventListener("DOMContentLoaded", function () {
-        const registeredUserId = sessionStorage.getItem("registeredUserId");
-        if (!registeredUserId) {
-          // Redirect to registration first step if no user ID
-          window.location.href = "Registration.html";
-          return;
-        }
-
-        // Check if user is logged in and show admin links if admin
-        const userJson = sessionStorage.getItem("user");
-        if (userJson) {
-          const user = JSON.parse(userJson);
-          if (user.role === "admin") {
-            const adminLinks = document.querySelectorAll(".admin-only");
-            adminLinks.forEach((link) => {
-              link.style.display = "block";
-            });
-          }
-        }
-      });
-
-      // Close dropdown when clicking outside
-      window.onclick = function (event) {
-        if (!event.target.matches(".profile-icon")) {
-          const dropdowns = document.getElementsByClassName("dropdown");
-          for (let i = 0; i < dropdowns.length; i++) {
-            const openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains("show")) {
-              openDropdown.classList.remove("show");
-            }
-          }
-        }
-      };
-    </script>
   </body>
 </html>
