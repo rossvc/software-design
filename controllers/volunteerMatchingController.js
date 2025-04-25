@@ -234,8 +234,10 @@ const createBatchMatches = async (req, res) => {
 
 // Get all matches
 const getMatches = async (req, res) => {
+  const { eventId } = req.query; // Extract eventId from query parameters
   try {
-    const matches = await volunteerMatchingModel.getAllMatches();
+    // Pass eventId to the model function (if provided)
+    const matches = await volunteerMatchingModel.getAllMatches(eventId);
     res.status(200).json(matches);
   } catch (error) {
     console.error("Error getting matches:", error);

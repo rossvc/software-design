@@ -522,7 +522,7 @@
             volunteersList.innerHTML = "";
             matches.forEach((match) => {
               const li = document.createElement("li");
-              li.textContent = `${match.volunteerName} - ${
+              li.textContent = `${match.volunteer} - ${ // Changed volunteerName to volunteer
                 match.status || "Pending"
               }`;
               volunteersList.appendChild(li);

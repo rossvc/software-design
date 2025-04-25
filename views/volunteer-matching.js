@@ -299,8 +299,32 @@ document.addEventListener("DOMContentLoaded", function () {
             updateSelectionCount();
             updateMatchButton();
 
-            // Refresh volunteer data
-            getRegisteredVolunteers(eventId);
+            // After batch match creation, update status from 'Waiting' to 'Pending'
+            Promise.all(
+              volunteerIds.map(volunteerId => {
+                // Find the matchId for this volunteer/event (fetch latest matches)
+                return fetch(`/api/matching/matches?eventId=${eventId}`, {
+                  credentials: "include"
+                })
+                  .then(res => res.json())
+                  .then(matches => {
+                    // Find the match for this volunteer with status 'Waiting'
+                    const match = matches.find(m => m.volunteerId === volunteerId && m.status === "Waiting");
+                    if (match) {
+                      // Update the match status to 'Pending'
+                      return fetch(`/api/matching/matches/${match.id}/status`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ status: "Pending" })
+                      });
+                    }
+                  });
+              })
+            ).then(() => {
+              // Refresh volunteer data after all status updates
+              getRegisteredVolunteers(eventId);
+            });
           })
           .catch((error) => {
             alert(

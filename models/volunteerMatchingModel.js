@@ -236,15 +236,23 @@ module.exports = {
     }
   },
 
-  getAllMatches: async () => {
+  getAllMatches: async (eventId) => {
     try {
-      const matches = await db.query(`
+      let query = `
         SELECT vm.id, vm.volunteer_id, vm.event_id, vm.status, vm.match_score, vm.created_at,
                up.full_name as volunteer_name, ed.name as event_name
         FROM VolunteerMatching vm
         JOIN UserProfile up ON vm.volunteer_id = up.user_id
         JOIN EventDetails ed ON vm.event_id = ed.id
-      `);
+      `;
+      const params = [];
+
+      if (eventId) {
+        query += ` WHERE vm.event_id = ?`;
+        params.push(eventId);
+      }
+
+      const matches = await db.query(query, params);
 
       return matches.map((m) => ({
         id: m.id,
@@ -257,7 +265,7 @@ module.exports = {
         createdAt: m.created_at.toISOString(),
       }));
     } catch (error) {
-      console.error("Error getting all matches:", error);
+      console.error("Error getting matches:", error);
       throw error;
     }
   },
