@@ -398,9 +398,12 @@
               let skillsArray = [];
               try {
                 if (event.required_skills) {
-                  skillsArray = typeof event.required_skills === 'string' ? 
-                    event.required_skills.split(',') : 
-                    (Array.isArray(event.required_skills) ? event.required_skills : []);
+                  skillsArray =
+                    typeof event.required_skills === "string"
+                      ? event.required_skills.split(",")
+                      : Array.isArray(event.required_skills)
+                      ? event.required_skills
+                      : [];
                 }
               } catch (error) {
                 console.error("Error parsing skills:", error, event);
@@ -437,7 +440,7 @@
               }</span>
                 <h3>${event.name}</h3>
                 <img
-                  src="${event.image_url || ''}"
+                  src="${event.image_url || ""}"
                   alt="${event.name}"
                   style="
                     width: 100%;
@@ -453,9 +456,7 @@
                     skillsArray.length > 0 ? skillsArray.join(", ") : "None"
                   }
                 </p>
-                <p><strong>Volunteers Needed:</strong> ${
-                  event.volunteersAssigned || 0
-                }/${event.volunteersNeeded || 0}</p>
+                
 
                 <div class="volunteer-list">
                   <h4>Assigned Volunteers</h4>
@@ -526,7 +527,8 @@
             volunteersList.innerHTML = "";
             matches.forEach((match) => {
               const li = document.createElement("li");
-              li.textContent = `${match.volunteer} - ${ // Changed volunteerName to volunteer
+              li.textContent = `${match.volunteer} - ${
+                // Changed volunteerName to volunteer
                 match.status || "Pending"
               }`;
               volunteersList.appendChild(li);
