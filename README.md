@@ -16,7 +16,7 @@
 
 - **Programming Language:**
   - JavaScript (Node.js for backend)
-  - Vite + JavaScript for frontend
+  - HTML + CSS for frontend
 - **Frameworks/Libraries:**
   - Express.js (Backend)
   - Vite (Frontend)
