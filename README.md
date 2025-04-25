@@ -76,5 +76,11 @@ node app.js
 ```bash
 http://localhost:3000
 ```
+## 👥 Contributors
+
+- **Ross Rezvani**
+- **Alejandro Avila**
+- **Amar Mehjazi**
+
 
 
