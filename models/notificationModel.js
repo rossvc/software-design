@@ -84,7 +84,7 @@ module.exports = {
         `INSERT INTO Notifications (user_id, title, message, type, status) 
          VALUES (?, ?, ?, ?, ?)`,
         [
-          notification.userId || 1, // Default to user 1 if not specified
+          notification.userId,
           notification.title,
           notification.message,
           notification.type,

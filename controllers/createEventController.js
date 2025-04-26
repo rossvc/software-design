@@ -1,4 +1,6 @@
 const eventsModel = require("../models/createEventModel");
+const notificationModel = require("../models/notificationModel");
+const db = require("../utils/db");
 
 const validateEventId = async (id) => {
   if (!id || isNaN(id)) {
@@ -63,6 +65,31 @@ const addEvent = async (req, res) => {
       event_date,
       image_url
     });
+
+    // Create notifications for all users
+    try {
+      // Get all users from the database
+      const users = await db.query("SELECT id FROM UserCredentials");
+      
+      // Create a notification for each user
+      const eventDate = new Date(event_date).toLocaleDateString();
+      const notificationPromises = users.map(user => {
+        return notificationModel.addNotification({
+          userId: user.id,
+          title: "New Volunteer Event",
+          message: `A new volunteer event "${name}" has been created in ${location} on ${eventDate}. Check it out!`,
+          type: "update",
+          read: false
+        });
+      });
+      
+      // Wait for all notifications to be created
+      await Promise.all(notificationPromises);
+      console.log(`Created notifications for ${users.length} users about new event: ${name}`);
+    } catch (notificationError) {
+      // Log the error but don't fail the event creation
+      console.error('Error creating notifications:', notificationError);
+    }
 
     res.status(201).json({
       message: "Event created successfully",

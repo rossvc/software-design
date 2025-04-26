@@ -1,4 +1,5 @@
 const volunteerMatchingModel = require("../models/volunteerMatchingModel");
+const notificationModel = require("../models/notificationModel");
 
 // Validate volunteer ID
 const validateVolunteerId = async (id) => {
@@ -136,6 +137,20 @@ const createMatch = async (req, res) => {
         return res.status(500).json({ message: "Failed to create match" });
       }
 
+      // Send notification to admin (userid 1)
+      try {
+        await notificationModel.addNotification({
+          userId: 1, // Admin user ID
+          title: "New Event Registration",
+          message: `Volunteer ${volunteer.name || volunteer.full_name || `ID: ${volunteerId}`} has registered for event "${event.name}" (ID: ${eventId}).`,
+          type: "update",
+          read: false
+        });
+      } catch (notificationError) {
+        console.error('Error sending admin notification:', notificationError);
+        // Continue with the process even if notification fails
+      }
+
       // Return the created match
       res.status(201).json({
         message: "Match created successfully",
@@ -196,6 +211,20 @@ const createBatchMatches = async (req, res) => {
           );
 
           if (match) {
+            // Create a notification for the matched volunteer
+            try {
+              await notificationModel.addNotification({
+                userId: Number(volunteerId),
+                title: "You've Been Matched!",
+                message: `You have been matched to the event "${event.name}" in ${event.location} on ${new Date(event.event_date).toLocaleDateString()}. Check your volunteer dashboard for details.`,
+                type: "assignment",
+                read: false
+              });
+            } catch (notificationError) {
+              console.error(`Failed to create notification for volunteer ${volunteerId}:`, notificationError);
+              // Continue with the process even if notification fails
+            }
+            
             results.push({
               volunteerId: Number(volunteerId),
               success: true,

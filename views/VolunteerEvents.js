@@ -136,25 +136,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
       events.forEach((event, index) => {
         const modalId = `modal${index + 1}`;
+        
+        // Parse required skills if it's a JSON string
+        let skills = [];
+        if (event.required_skills) {
+          try {
+            skills = JSON.parse(event.required_skills);
+          } catch (e) {
+            // If it's not valid JSON, treat it as comma-separated string
+            skills = event.required_skills.split(',');
+          }
+        }
+        
+        // Format the event date
+        const eventDate = new Date(event.event_date);
+        const formattedDate = eventDate.toLocaleDateString();
+        
         const cardHtml = `
         <div class="card">
-          <h3>${event.eventName}</h3>
-          <img src=${event.image} alt="${event.eventName}" />
+          <h3>${event.name}</h3>
+          <img src=${event.image_url} alt="${event.name}" />
           <p>${event.description || "No description available"}</p>
           <div class="event-details">
             <p>
               Location: ${event.location}<br />
               Urgency: ${event.urgency} <br />
-              Skills required: ${
-                event.skills ? event.skills.join(", ") : "None"
-              } <br />
-              Date: ${event.date} <br />
-              Time: ${event.startTime} - ${event.endTime}
+              Skills required: ${skills.length > 0 ? skills.join(", ") : "None"} <br />
+              Date: ${formattedDate} <br />
             </p>
           </div>
-          <button onclick="register('${modalId}', ${
-          event.id
-        })">Register</button>
+          <button onclick="register('${modalId}', ${event.id})">Register</button>
           <div id="message-${modalId}" class="registered-message">
             Congratulations! Registered
           </div>
